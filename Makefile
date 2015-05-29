@@ -4,22 +4,15 @@ test:
 	go test
 
 
-
-build:
-	mkdir -pv release
-	gulp clean
-	gulp build
-	go build -o itpkg -ldflags "-s" app.go
-	mv public itpkg release/
-
-
 clean:
-	-rm -r tmp/* release/*
+	-rm -r tmp/* 
 
 
 vet:
 	go vet *.go
+	go vet platform/*.go
 
 
 fmt:
 	go fmt *.go
+	go fmt platform/*.go

@@ -45,6 +45,12 @@ func Run() {
 		run := c.String("run")
 		switch run {
 		case "server":
+		case "db":
+			cmd, args := glConfig.DbShell()
+			err = Shell(cmd, args...)
+		case "redis":
+			cmd, args := glConfig.RedisShell()
+			err = Shell(cmd, args...)
 		default:
 			println("Unknown mode " + run)
 		}

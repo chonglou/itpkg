@@ -1,14 +1,18 @@
 package itpkg
 
 import (
+	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"log"
 	"os"
+	"strconv"
 )
 
 type Config struct {
-	Secret string
-	Http   struct {
+	Engines []string
+	Secret  string
+	Http    struct {
 		Port   int
 		Cookie string
 		Expire int
@@ -30,6 +34,31 @@ type Config struct {
 	}
 }
 
+func (p *Config) DbUrl() string {
+	return fmt.Sprintf(
+		"%s://%s:%s@%s:%d/%s?sslmode=%s",
+		p.Database.Driver, p.Database.User, p.Database.Password, p.Database.Host,
+		p.Database.Port, p.Database.Name, p.Database.Ssl)
+}
+
+func (p *Config) DbShell() (string, []string) {
+	d := p.Database.Driver
+	switch d {
+	case "postgres":
+		return "psql", []string{
+			"-h", p.Database.Host,
+			"-p", strconv.Itoa(p.Database.Port),
+			"-d", p.Database.Name,
+			"-U", p.Database.User}
+	default:
+		return "echo", []string{"Unknown database driver " + d}
+	}
+}
+
+func (p *Config) RedisShell() (string, []string) {
+	return "telnet", []string{p.Redis.Host, strconv.Itoa(p.Redis.Port)}
+}
+
 var glConfig = Config{}
 
 func loadConfig(file string) error {
@@ -41,8 +70,10 @@ func loadConfig(file string) error {
 		if err != nil {
 			return err
 		}
+		log.Printf("Load from config file: %s", file)
 		err = yaml.Unmarshal(yml, &glConfig)
 	} else {
+		glConfig.Engines = []string{"auth", "forum", "wiki", "shop"}
 		glConfig.Secret = string(Base64Encode(RandomBytes(512)))
 
 		glConfig.Http.Port = 8080
@@ -67,6 +98,7 @@ func loadConfig(file string) error {
 		if err != nil {
 			return err
 		}
+		log.Printf("Generate config file: %s", file)
 		err = ioutil.WriteFile(file, data, 0600)
 	}
 	return err

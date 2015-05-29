@@ -1,3 +1,9 @@
 package main
 
-import 
+import (
+	"github.com/chonglou/itpkg"
+)
+
+func main() {
+	itpkg.Run()
+}
