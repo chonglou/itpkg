@@ -1,0 +1,48 @@
+{
+  "name": "ksana",
+  "version": "2015.05.29",
+  "homepage": "https://github.com/chonglou/ksana",
+  "authors": [
+    "Jitang Zheng <jitang.zheng@gmail.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chonglou/ksana.git"
+  },
+  "description": "KSANA EXAMPLE",
+  "license": "MIT",
+  "dependencies": {
+    "jquery": "latest",
+    "html5shiv": "latest",
+    "respond": "latest",
+    "holderjs": "latest",
+
+    "bootstrap": "latest",
+    "angular": "latest",
+
+    "famfamfam-flags": "latest",
+    "famfamfam-silk": "latest",
+    "moment": "latest"
+
+  },
+  "devDependencies": {
+    "gulp": "latest",
+    "gulp-coffee": "latest",
+    "gulp-concat": "latest",
+    "gulp-uglify": "latest",
+    "gulp-imagemin": "latest",
+    "gulp-sourcemaps": "latest",
+    "gulp-connect": "latest",
+    "gulp-htmlmin": "latest",
+    "gulp-minify-css": "latest",
+    "gulp-version-append": "latest",
+    "del": "latest"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
