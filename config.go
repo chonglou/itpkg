@@ -10,10 +10,9 @@ import (
 )
 
 type Config struct {
-	Engines []string
-	secret  []byte
-	Secret  string
-	Http    struct {
+	secret []byte
+	Secret string
+	Http   struct {
 		Host   string
 		Cookie string
 		Expire int
@@ -80,7 +79,7 @@ func loadConfig(cfg *Config, file string) error {
 		cfg.secret, err = Base64Decode([]byte(cfg.Secret))
 
 	} else {
-		cfg.Engines = []string{"auth", "forum", "wiki", "shop"}
+
 		cfg.secret = RandomBytes(512)
 		cfg.Secret = string(Base64Encode(cfg.secret))
 

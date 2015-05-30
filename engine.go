@@ -1,5 +1,7 @@
 package itpkg
 
 type Engine interface {
-	Mount() error
+	Mount()
+	Migrate()
+	Info() (name string, version string, desc string)
 }

@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-const hello = "Hello, ITPKG!!!"
+const hello = "Hello, IT-PACKAGE!!!"
 
 func TestUuid(t *testing.T) {
 	log.Printf("==================UTILS=============================")
