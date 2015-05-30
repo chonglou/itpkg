@@ -1,65 +1,87 @@
 package itpkg
 
 import (
-	// "github.com/go-martini/martini"
-
 	"fmt"
 	"github.com/codegangsta/cli"
+	"github.com/go-martini/martini"
 	"log"
 	"os"
-	"strings"
 )
 
-func Run() {
-	var err error
+func Run() error {
 
-	modes := []string{"server", "db", "redis"}
+	envF := cli.StringFlag{
+		Name:   "environment, e",
+		Value:  "development",
+		Usage:  "can be production, development, etc...",
+		EnvVar: "ITPKG_ENV",
+	}
+
+	load := func(c *cli.Context, cfg *Config) {
+		env := c.String("environment")
+		os.Setenv("ITPKG_ENV", env)
+
+		if err := loadConfig(cfg, fmt.Sprintf("config/%s.yml", env)); err != nil {
+			log.Fatalf("Error on load config: %v", err)
+		}
+	}
 
 	app := cli.NewApp()
 	app.Name = "itpkg"
 	app.Usage = "IT-PACKAGE"
-	app.Flags = []cli.Flag{
-		cli.StringFlag{
-			Name:  "environment, e",
-			Value: "development",
-			Usage: "can be production, development, etc...",
+	app.Version = "v20150529"
+	app.Commands = []cli.Command{
+		{
+			Name:    "server",
+			Aliases: []string{"s"},
+			Usage:   "Start the ITPKG server",
+			Flags: []cli.Flag{
+				envF,
+				cli.IntFlag{
+					Name:   "port, p",
+					Value:  3000,
+					Usage:  "listen port",
+					EnvVar: "PORT",
+				},
+			},
+			Action: func(c *cli.Context) {
+				os.Setenv("PORT", c.String("port"))
+
+				cfg := Config{}
+				load(c, &cfg)
+				// todo
+				martini.Env = os.Getenv("ITPKG_ENV")
+				web := martini.Classic()
+				web.Run()
+			},
 		},
-		cli.StringFlag{
-			Name:  "config, c",
-			Value: "config.yml",
-			Usage: "configuration file",
+		{
+			Name:    "dbconsole",
+			Aliases: []string{"db"},
+			Usage:   "Start a console for the database",
+			Flags:   []cli.Flag{envF},
+			Action: func(c *cli.Context) {
+				cfg := Config{}
+				load(c, &cfg)
+				cmd, args := cfg.DbShell()
+				Shell(cmd, args...)
+			},
 		},
-		cli.StringFlag{
-			Name:  "run, r",
-			Value: "server",
-			Usage: fmt.Sprintf("can be %s", strings.Join(modes, ", ")),
+		{
+			Name:    "redis",
+			Aliases: []string{"r"},
+			Usage:   "Start a console for the redis",
+			Flags:   []cli.Flag{envF},
+			Action: func(c *cli.Context) {
+				cfg := Config{}
+				load(c, &cfg)
+
+				cmd, args := cfg.RedisShell()
+				Shell(cmd, args...)
+			},
 		},
 	}
-	app.Action = func(c *cli.Context) {
-		os.Setenv("MARTINI_ENV", c.String("env"))
 
-		if err = loadConfig(c.String("config")); err != nil {
-			log.Fatalf("Load config error: %v", err)
-		}
+	return app.Run(os.Args)
 
-		run := c.String("run")
-		switch run {
-		case "server":
-		case "db":
-			cmd, args := glConfig.DbShell()
-			err = Shell(cmd, args...)
-		case "redis":
-			cmd, args := glConfig.RedisShell()
-			err = Shell(cmd, args...)
-		default:
-			println("Unknown mode " + run)
-		}
-	}
-	app.Run(os.Args)
-	//app := martini.Classic()
-
-	// app.Get("/", func() string {
-	//   return "Hello world!"
-	// })
-	//app.Run()
 }

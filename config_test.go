@@ -7,7 +7,8 @@ import (
 
 func TestLoadConfig(t *testing.T) {
 	log.Printf("==================LoadConfig=============================")
-	err := loadConfig("tmp/config.yml")
+	cfg := Config{}
+	err := loadConfig(&cfg, "tmp/config.yml")
 	if err != nil {
 		t.Errorf("%v", err)
 	}
