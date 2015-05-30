@@ -11,8 +11,10 @@ import (
 
 type Config struct {
 	Engines []string
+	secret  []byte
 	Secret  string
 	Http    struct {
+		Host   string
 		Cookie string
 		Expire int
 	}
@@ -30,6 +32,10 @@ type Config struct {
 		Port int
 		Db   int
 		Pool int
+	}
+	Google struct {
+		Id     string
+		Secret string
 	}
 }
 
@@ -68,11 +74,17 @@ func loadConfig(cfg *Config, file string) error {
 			return err
 		}
 		log.Printf("Load from config file: %s", file)
-		err = yaml.Unmarshal(yml, cfg)
+		if err = yaml.Unmarshal(yml, cfg); err != nil {
+			return err
+		}
+		cfg.secret, err = Base64Decode([]byte(cfg.Secret))
+
 	} else {
 		cfg.Engines = []string{"auth", "forum", "wiki", "shop"}
-		cfg.Secret = string(Base64Encode(RandomBytes(512)))
+		cfg.secret = RandomBytes(512)
+		cfg.Secret = string(Base64Encode(cfg.secret))
 
+		cfg.Http.Host = "http://localhost"
 		cfg.Http.Cookie = RandomStr(8)
 		cfg.Http.Expire = 60 * 30
 
@@ -88,6 +100,9 @@ func loadConfig(cfg *Config, file string) error {
 		cfg.Redis.Port = 6379
 		cfg.Redis.Db = 0
 		cfg.Redis.Pool = 12
+
+		cfg.Google.Id = "CHANGE ME"
+		cfg.Google.Secret = "CHANGE ME"
 
 		if err = os.MkdirAll("config", 0700); err != nil {
 			return err
