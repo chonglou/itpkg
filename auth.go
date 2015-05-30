@@ -9,6 +9,11 @@ type AuthEngine struct {
 	db *gorm.DB
 }
 
+
+func (p *AuthEngine) Map() {
+
+}
+
 func (p *AuthEngine) Mount() {
 
 }
@@ -19,7 +24,7 @@ func (p *AuthEngine) Migrate() {
 	p.db.AutoMigrate(&Log{})
 }
 
-func (p *AuthEngine) Info() (name string, version string, desc string) {
+func (p *AuthEngine) Info() (name string, version string, desc string){
 	return "auth", "v10250530", ""
 }
 
@@ -38,7 +43,7 @@ type User struct {
 }
 
 type Contact struct {
-	ID       uint
+	Model
 	Qq       string
 	Skype    string
 	WeChat   string
@@ -54,7 +59,8 @@ type Contact struct {
 }
 
 type Log struct {
-	Model
+	ID uint
 	UserID  int    `sql:"not null;index"`
 	Message string `sql:"size:255"`
+	CreatedAt time.Time
 }

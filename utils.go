@@ -13,6 +13,9 @@ import (
 	"os"
 	"os/exec"
 	"syscall"
+	"bytes"
+	"encoding/gob"
+
 )
 
 //-----------------------------TOOLS------------------------------------------
@@ -105,4 +108,25 @@ func (a *Aes) Decrypt(src, iv []byte) []byte {
 	pt := make([]byte, len(src))
 	cfb.XORKeyStream(pt, src)
 	return pt
+}
+
+func Obj2bits(obj interface{}) ([]byte, error) {
+	var buf bytes.Buffer
+	enc := gob.NewEncoder(&buf)
+	err := enc.Encode(obj)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
+func Bits2obj(data []byte, obj interface{}) error {
+	var buf bytes.Buffer
+	dec := gob.NewDecoder(&buf)
+	buf.Write(data)
+	err := dec.Decode(obj)
+	if err != nil {
+		return err
+	}
+	return nil
 }

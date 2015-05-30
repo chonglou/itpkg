@@ -2,6 +2,9 @@ package itpkg
 
 type ForumEngine struct {
 }
+func (p *ForumEngine) Map() {
+
+}
 
 func (p *ForumEngine) Mount() {
 

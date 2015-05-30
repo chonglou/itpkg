@@ -2,6 +2,9 @@ package itpkg
 
 type TeamworkEngine struct {
 }
+func (p *TeamworkEngine) Map() {
+
+}
 
 func (p *TeamworkEngine) Mount() {
 

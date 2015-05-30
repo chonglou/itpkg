@@ -2,6 +2,9 @@ package itpkg
 
 type WikiEngine struct {
 }
+func (p *WikiEngine) Map() {
+
+}
 
 func (p *WikiEngine) Mount() {
 

@@ -6,6 +6,7 @@ import (
 	"github.com/go-martini/martini"
 	"github.com/jinzhu/gorm"
 	"github.com/martini-contrib/oauth2"
+	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
 	goauth2 "golang.org/x/oauth2"
 	"log"
@@ -69,6 +70,7 @@ func Run() error {
 				martini.Env = os.Getenv("ITPKG_ENV")
 				web := martini.Classic()
 
+				web.Use(render.Renderer())
 				web.Use(sessions.Sessions(
 					cfg.Http.Cookie,
 					sessions.NewCookieStore(cfg.secret[100:164], cfg.secret[170:202])),
@@ -88,7 +90,7 @@ func Run() error {
 				))
 
 				for _, e := range []Engine{
-					&BaseEngine{db: &db},
+					&BaseEngine{app:web, db: &db, cfg: &cfg},
 					&AuthEngine{db: &db},
 					&WikiEngine{},
 					&ForumEngine{},
@@ -98,6 +100,7 @@ func Run() error {
 					n, v, _ := e.Info()
 					log.Printf("Mount engine %s(%s)", n, v)
 					e.Migrate()
+					e.Map()
 					e.Mount()
 				}
 
