@@ -28,7 +28,10 @@ var paths = {
     'node_modules/angular-route/angular-route.min.js',
     'node_modules/angular-animate/angular-animate.min.js',
     'node_modules/angular-sanitize/angular-sanitize.min.js',
+    'node_modules/angular-resource/angular-resource.min.js',
+    'node_modules/angular-cookies/angular-cookies.min.js',
     'node_modules/angular-translate/dist/angular-translate.min.js',
+    'node_modules/angular-translate-storage-cookie/angular-translate-storage-cookie.min.js',    
     'node_modules/angular-bootstrap/dist/ui-bootstrap-tpls.min.js',
 
     'node_modules/famfamfam-flags/dist/**/*',

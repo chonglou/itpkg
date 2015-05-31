@@ -22,7 +22,10 @@
     "angular-route": "1.3.x",
     "angular-animate": "1.3.x",
     "angular-sanitize": "1.3.x",
-    "angular-translate": "latest",    
+    "angular-resource": "1.3.x",
+    "angular-translate": "latest",
+    "angular-cookies": "latest",
+    "angular-translate-storage-cookie": "latest",    
     "angular-bootstrap":"latest",
 
     "famfamfam-flags": "latest",

@@ -1,42 +1,55 @@
 <!doctype html>
 <html lang='en' ng-app='itpkgApp' ng-controller='RootCtrl'>
 <head>
-  <meta charset='utf-8'>
-  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-  <meta name='viewport' content='width=device-width, initial-scale=1'>
-  <meta name='keywords' content='{{Page.keywords()}}'>
-  <meta name='description' content='{{Page.description()}}'>
-  <meta name='author' content='{{site.author}}'>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <link rel='icon' type='image/vnd.microsoft.icon' href='/images/favicon.ico'/>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <meta name='keywords' content='{{Page.keywords()}}'>
+    <meta name='description' content='{{Page.description()}}'>
+    <meta name='author' content='{{site.author}}'>
 
-  <title>{{Page.title()}}</title>
+    <title>{{Page.title()}}</title>
 
-  <link href='node_modules/bootstrap/dist/css/bootstrap.min.css?v=@version@' rel='stylesheet'>
-  <link href='all.min.css?v=@version@' rel='stylesheet'>
+    <link href='/node_modules/bootstrap/dist/css/bootstrap.min.css?v=@version@' rel='stylesheet'>
+    <link href='/all.min.css?v=@version@' rel='stylesheet'>
 
-  <script src='node_modules/jquery/dist/jquery.min.js?v=@version@'></script>
-  <script src='node_modules/bootstrap/dist/js/bootstrap.min.js?v=@version@'></script>
+    <script src='/node_modules/jquery/dist/jquery.min.js?v=@version@'></script>
+    <script src='/node_modules/bootstrap/dist/js/bootstrap.min.js?v=@version@'></script>
 
-  <script src='node_modules/angular/angular.min.js?v=@version@'></script>
+    <script src='/node_modules/angular/angular.min.js?v=@version@'></script>
 
-  <script src='node_modules/angular-route/angular-route.min.js?v=@version@'></script>
-  <script src='node_modules/angular-animate/angular-animate.min.js?v=@version@'></script>
-  <script src='node_modules/angular-sanitize/angular-sanitize.min.js?v=@version@'></script>
-  <script src='node_modules/angular-translate/dist/angular-translate.min.js?v=@version@'></script>
-  <script src='node_modules/angular-bootstrap/dist/ui-bootstrap-tpls.min.js?v=@version@'></script>
+    <script src='/node_modules/angular-route/angular-route.min.js?v=@version@'></script>
+    <script src='/node_modules/angular-animate/angular-animate.min.js?v=@version@'></script>
+    <script src='/node_modules/angular-sanitize/angular-sanitize.min.js?v=@version@'></script>
+    <script src='/node_modules/angular-resource/angular-resource.min.js?v=@version@'></script>
+    <script src='/node_modules/angular-cookies/angular-cookies.min.js?v=@version@'></script>
 
-  <script src='node_modules/moment/min/moment-with-locales.min.js?v=@version@'></script>
-  <script src='all.min.js?v=@version@'></script>
+    <script src='/node_modules/angular-translate/dist/angular-translate.min.js?v=@version@'></script>
+    <script src='/node_modules/angular-translate-storage-cookie/angular-translate-storage-cookie.min.js?v=@version@'></script>
+
+    <script src='/node_modules/angular-bootstrap/dist/ui-bootstrap-tpls.min.js?v=@version@'></script>
+
+    <script src='/node_modules/moment/min/moment-with-locales.min.js?v=@version@'></script>
+    <script src='/all.min.js?v=@version@'></script>
 
 </head>
 <body>
-  <div>TOOOOP</div>
-  <div class='container'>
+<div>TOOOOP</div>
+<div class='container'>
     <div class='row' ng-view></div>
     <hr>
     <footer>
-      <p class='pull-right'><a href='#'>{{'links.back_to_home'|translate}}</a></p>
-      <p>{{site.copyright}}</p>
+        <p class='pull-right'>
+            <a ng-repeat='l in site.locales' style='padding-right:20px;' ng-click='setLang(l)'>
+                <img ng-src='/node_modules/famfamfam-flags/dist/png/{{l}}.png'>
+            </a>
+            &nbsp;
+            <a href='#'>{{'links.back_to_home'|translate}}</a>
+        </p>
+
+        <p>{{site.copyright}}</p>
     </footer>
-  </div>
+</div>
 </body>
 </html>

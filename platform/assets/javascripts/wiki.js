@@ -4,11 +4,11 @@
 //   function($routeProvider) {
 //     $routeProvider.
 //       when('/wiki', {
-//         templateUrl: 'wiki/index.html',
+//         templateUrl: '/wiki/index.html',
 //         controller: 'WikiListCtrl'
 //       }).
 //       when('/wiki/:wikiId', {
-//         templateUrl: 'wiki/show.html',
+//         templateUrl: '/wiki/show.html',
 //         controller: 'WikiShowCtrl'
 //       }).
 //       otherwise({
