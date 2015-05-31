@@ -7,7 +7,7 @@ var itpkgApp = angular.module(
     ]);
 
 itpkgApp.config(
-    ['$translateProvider',
+    ['$translateProvider', 
         function ($translateProvider) {
 
             $translateProvider.translations('en', {
@@ -23,9 +23,8 @@ itpkgApp.config(
             });
 
 
-            // todo fix bug
-            //$translateProvider.useCookieStorage();
 
+            $translateProvider.useCookieStorage();
             $translateProvider.preferredLanguage('en');
             $translateProvider.useSanitizeValueStrategy('escaped');
 
@@ -47,7 +46,7 @@ itpkgApp.config(['$routeProvider',
 
 itpkgApp.controller('RootCtrl', ['$translate', '$scope', '$http', 'Page',
         function ($translate, $scope, $http, Page) {
-            $http.get('/index.json').success(function (data) {
+            $http.get('/index.json', {locale:$translate.use()}).success(function (data) {
                 $scope.topNav = {};
                 $scope.site = data;
                 $scope.site.locales = ['us', 'cn'];

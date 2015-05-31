@@ -6,6 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/martini-contrib/render"
 	"log"
+	"net/http"
 	"time"
 )
 
@@ -24,14 +25,15 @@ func (p *BaseEngine) Map() {
 }
 
 func (p *BaseEngine) Mount() {
-	p.app.Get("/index.json", func(r render.Render, dao *BaseDao) {
-		lang := "zh-CN" //todo
+	p.app.Get("/index.json", func(r render.Render, dao *BaseDao, req *http.Request) {
+		lang := LangFromCookie(req)
 		si := make(map[string]interface{}, 0)
 		for _, k := range []string{"title", "author", "keywords", "description", "copyright"} {
 			var v string
 			dao.GetSiteInfo(k, lang, &v)
 			si[k] = v
 		}
+		si["locale"] = lang
 		r.JSON(200, si)
 	})
 }

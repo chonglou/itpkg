@@ -1,8 +1,17 @@
 package itpkg
 
 import (
+	"net/http"
+	"strings"
 	"time"
 )
+
+func LangFromCookie(req *http.Request) string {
+	if cke, err := req.Cookie("NG_TRANSLATE_LANG_KEY"); err == nil {
+		return strings.Replace(cke.Value, "%22", "", -1)
+	}
+	return "en"
+}
 
 type Form struct {
 	Message

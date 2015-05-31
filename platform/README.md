@@ -7,3 +7,6 @@ IT-PACKAGE(PLATFORM)
     npm install
     make clean
     make
+
+## Notes
+    npm view <pkgname> versions
