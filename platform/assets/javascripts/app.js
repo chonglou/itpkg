@@ -7,7 +7,7 @@ var itpkgApp = angular.module(
     ]);
 
 itpkgApp.config(
-    ['$translateProvider', 
+    ['$translateProvider',
         function ($translateProvider) {
 
             $translateProvider.translations('en', {

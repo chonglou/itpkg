@@ -5,11 +5,13 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/go-martini/martini"
 	"github.com/jinzhu/gorm"
+	"github.com/martini-contrib/csrf"
 	"github.com/martini-contrib/oauth2"
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
 	goauth2 "golang.org/x/oauth2"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -70,11 +72,19 @@ func Run() error {
 				martini.Env = os.Getenv("ITPKG_ENV")
 				web := martini.Classic()
 
-				web.Use(render.Renderer())
 				web.Use(sessions.Sessions(
 					cfg.Http.Cookie,
 					sessions.NewCookieStore(cfg.secret[100:164], cfg.secret[170:202])),
 				)
+				web.Use(csrf.Generate(&csrf.Options{
+					Secret:     string(cfg.secret[210:242]),
+					SessionKey: "UID",
+					ErrorFunc: func(w http.ResponseWriter) {
+						http.Error(w, "CSRF token validation failed", http.StatusBadRequest)
+					},
+				}))
+				web.Use(render.Renderer())
+
 				oauth2.PathLogin = "/oauth2/login"
 				oauth2.PathLogout = "/oauth2/logout"
 				oauth2.PathCallback = "/oauth2/callback"
