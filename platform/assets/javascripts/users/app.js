@@ -8,7 +8,7 @@ var usersApp = angular.module(
         'email': 'Email',
         'password': 'Password',
         'remember_me': 'Remember me',
-        'title':{
+        'titles':{
           'sign_in': 'Welcome to sign in'
         }
       }
@@ -20,7 +20,7 @@ var usersApp = angular.module(
         'email': '邮箱',
         'password': '密码',
         'remember_me': '记住我',
-        'title': {
+        'titles': {
           'sign_in': '欢迎登录'
         }
       }
@@ -32,15 +32,15 @@ usersApp.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
       when('/users/sign_in', {
-        templateUrl: 'users/sign_in.html',
+        templateUrl: 'users/sign_in.html?v=@version@',
         controller: 'UserFormCtrl'
       }).
       when('/users/register', {
-        templateUrl: 'users/register.html',
+        templateUrl: 'users/register.html?v=@version@',
         controller: 'UserRegisterCtrl'
       }).
       when('/users/unlock', {
-        templateUrl: 'users/unlock.html',
+        templateUrl: 'users/unlock.html?v=@version@',
         controller: 'UserUnlockCtrl'
       });
   }]);

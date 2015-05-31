@@ -28,7 +28,7 @@ var paths = {
     'node_modules/angular-route/angular-route.min.js',
     'node_modules/angular-animate/angular-animate.min.js',
     'node_modules/angular-sanitize/angular-sanitize.min.js',
-    'node_modules/angular-translate/dist/angular-translate.min.js',    
+    'node_modules/angular-translate/dist/angular-translate.min.js',
     'node_modules/angular-bootstrap/dist/ui-bootstrap-tpls.min.js',
 
     'node_modules/famfamfam-flags/dist/**/*',
@@ -60,6 +60,7 @@ gulp.task('scripts', function() {
   return gulp.src(paths.scripts)
     .pipe(sourcemaps.init())
     //.pipe(coffee())
+    .pipe(revappend(['html', 'js', 'css']))
     .pipe(uglify())
     .pipe(concat('all.min.js'))
     .pipe(sourcemaps.write())

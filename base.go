@@ -27,12 +27,11 @@ func (p *BaseEngine) Mount() {
 	p.app.Get("/index.json", func(r render.Render, dao *BaseDao) {
 		lang := "zh-CN" //todo
 		si := make(map[string]interface{}, 0)
-		for _, k := range []string{"title", "keywords", "description", "copyright"} {
+		for _, k := range []string{"title", "author", "keywords", "description", "copyright"} {
 			var v string
 			dao.GetSiteInfo(k, lang, &v)
 			si[k] = v
 		}
-		si["created"] = time.Now()
 		r.JSON(200, si)
 	})
 }
