@@ -2,6 +2,7 @@ package itpkg
 
 type ShopEngine struct {
 }
+
 func (p *ShopEngine) Map() {
 
 }

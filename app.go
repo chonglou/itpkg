@@ -90,7 +90,7 @@ func Run() error {
 				))
 
 				for _, e := range []Engine{
-					&BaseEngine{app:web, db: &db, cfg: &cfg},
+					&BaseEngine{app: web, db: &db, cfg: &cfg},
 					&AuthEngine{db: &db},
 					&WikiEngine{},
 					&ForumEngine{},

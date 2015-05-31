@@ -2,6 +2,7 @@ package itpkg
 
 type ForumEngine struct {
 }
+
 func (p *ForumEngine) Map() {
 
 }

@@ -1,0 +1,33 @@
+<div class='col-sm-offset-2 col-sm-8'>
+  <fieldset>
+    <legend>{{'user.title.sign_in'|translate}}</legend>
+    <form class='form-horizontal'>
+      <div class='form-group'>
+        <label class='col-sm-2 control-label'>{{'user.email'|translate}}</label>
+        <div class='col-sm-6'>
+          <input type='email' class='form-control' ng-model='user.email'>
+        </div>
+      </div>
+      <div class='form-group'>
+        <label class='col-sm-2 control-label'>{{'user.password'|translate}}</label>
+        <div class='col-sm-5'>
+          <input type='password' class='form-control' ng-model='user.password'>
+        </div>
+      </div>
+      <div class='form-group'>
+        <div class='col-sm-offset-2 col-sm-10'>
+          <div class='checkbox'>
+            <label>
+              <input type='checkbox' ng-model='user.remember'> {{'user.remember_me'|translate}}
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class='form-group'>
+        <div class='col-sm-offset-2 col-sm-10'>
+          <button ng-click='sign_in(user)' class='btn btn-default'>{{'user.sign_in'|translate}}</button>
+        </div>
+      </div>
+    </form>
+  </fieldset>
+</div>

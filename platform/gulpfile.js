@@ -13,16 +13,23 @@ var pkginfo = require('./package.json')
 
 var paths = {
   public: 'public',
-  scripts: 'assets/javascripts/**/*.coffee',
+  scripts: 'assets/javascripts/**/*.js',
   styles: 'assets/stylesheets/**/*.css',
   templates: 'assets/templates/**/*.html',
   images: 'assets/images/**/*',
   third: [
     'node_modules/jquery/dist/jquery.min.js',
+
     'node_modules/bootstrap/dist/css/bootstrap.min.css',
     'node_modules/bootstrap/dist/js/bootstrap.min.js',
     'node_modules/bootstrap/dist/fonts/*',
+
     'node_modules/angular/angular.min.js',
+    'node_modules/angular-route/angular-route.min.js',
+    'node_modules/angular-animate/angular-animate.min.js',
+    'node_modules/angular-sanitize/angular-sanitize.min.js',
+    'node_modules/angular-translate/dist/angular-translate.min.js',    
+    'node_modules/angular-bootstrap/dist/ui-bootstrap-tpls.min.js',
 
     'node_modules/famfamfam-flags/dist/**/*',
     'node_modules/famfamfam-silk/dist/**/*',
@@ -52,7 +59,7 @@ gulp.task('3rd', function() {
 gulp.task('scripts', function() {
   return gulp.src(paths.scripts)
     .pipe(sourcemaps.init())
-    .pipe(coffee())
+    //.pipe(coffee())
     .pipe(uglify())
     .pipe(concat('all.min.js'))
     .pipe(sourcemaps.write())

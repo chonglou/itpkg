@@ -1,6 +1,7 @@
 package itpkg
 
 import (
+	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/hmac"
@@ -8,14 +9,12 @@ import (
 	"crypto/rand"
 	"crypto/sha512"
 	"encoding/base64"
+	"encoding/gob"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"syscall"
-	"bytes"
-	"encoding/gob"
-
 )
 
 //-----------------------------TOOLS------------------------------------------
