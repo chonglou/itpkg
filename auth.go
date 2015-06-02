@@ -1,21 +1,28 @@
 package itpkg
 
 import (
+	"github.com/go-martini/martini"
 	"github.com/jinzhu/gorm"
+	"github.com/martini-contrib/render"
 	"log"
 	"time"
 )
 
 type AuthEngine struct {
-	db *gorm.DB
+	cfg *Config
+	db  *gorm.DB
+	app *martini.ClassicMartini
 }
 
 func (p *AuthEngine) Map() {
-
+	p.app.Map(&AuthDao{db: p.db, hmac: &Hmac{key: p.cfg.secret[120:152]}})
 }
 
 func (p *AuthEngine) Mount() {
-
+	p.app.Get("/testm", func(r render.Render, dao *AuthDao, mailer *Mailer) {
+		go mailer.Send([]string{"2682287010@qq.com"}, "test", "body")
+		r.JSON(200, map[string]interface{}{"aaa": true})
+	})
 }
 
 func (p *AuthEngine) Migrate() {

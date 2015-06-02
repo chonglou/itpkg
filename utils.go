@@ -12,10 +12,44 @@ import (
 	"encoding/gob"
 	"fmt"
 	"log"
+	"net/smtp"
 	"os"
 	"os/exec"
 	"syscall"
 )
+
+//-----------------------------Mailer------------------------------------------
+
+type Mailer struct {
+	auth    smtp.Auth
+	perform bool
+	addr    string
+	bcc     string
+	from    string
+}
+
+func (p *Mailer) Auth(from, host string, port int, ssl bool, username, password, bcc string) {
+	p.addr = fmt.Sprintf("%s:%d", host, port)
+	p.bcc = bcc
+	p.auth = smtp.PlainAuth("", username, password, host)
+}
+
+func (p *Mailer) Send(to []string, subject, body string) {
+
+	if p.perform {
+		log.Printf("Send mail to %v: %s", to, subject)
+		p.send(to, []byte(fmt.Sprintf("subject: %s\r\n\r\n%s", subject, body)))
+	} else {
+		log.Printf("Send mail to %v\nSubject: %s\nBody: \n %s", to, subject, body)
+	}
+
+}
+
+func (p *Mailer) send(to []string, msg []byte) {
+	if err := smtp.SendMail(p.addr, p.auth, p.from, to, msg); err != nil {
+		log.Printf("error on sendmail: %v", err)
+	}
+}
 
 //-----------------------------TOOLS------------------------------------------
 

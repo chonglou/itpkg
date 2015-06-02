@@ -37,6 +37,28 @@ type Config struct {
 		Id     string
 		Secret string
 	}
+	Smtp struct {
+		From     string
+		Host     string
+		Port     int
+		Ssl      bool
+		Username string
+		Password string
+		Bcc      string
+	}
+}
+
+func (p *Config) Mailer() *Mailer {
+	m := Mailer{}
+	m.Auth(
+		p.Smtp.From,
+		p.Smtp.Host,
+		p.Smtp.Port,
+		p.Smtp.Ssl,
+		p.Smtp.Username,
+		p.Smtp.Password,
+		p.Smtp.Bcc)
+	return &m
 }
 
 func (p *Config) DbUrl() string {
@@ -104,6 +126,11 @@ func loadConfig(cfg *Config, file string) error {
 
 		cfg.Google.Id = "CHANGE ME"
 		cfg.Google.Secret = "CHANGE ME"
+
+		cfg.Smtp.Host = "CHANGE ME"
+		cfg.Smtp.Port = 25
+		cfg.Smtp.Username = "CHANGE ME"
+		cfg.Smtp.Password = "CHANGE ME"
 
 		if err = os.MkdirAll("config", 0700); err != nil {
 			return err

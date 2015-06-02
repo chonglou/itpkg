@@ -1,5 +1,17 @@
 usersApp.controller('UserFormCtrl', ['$scope', function ($scope) {
-    $scope.sign_in = function (user) {
+    $scope.login = function (user) {
+        console.log(user);
+    };
+    $scope.register = function (user) {
+        console.log(user);
+    };
+    $scope.password = function (user) {
+        console.log(user);
+    };
+    $scope.confirm = function (user) {
+        console.log(user);
+    };
+    $scope.unlock = function (user) {
         console.log(user);
     };
     $scope.reset = function () {

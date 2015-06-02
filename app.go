@@ -84,7 +84,9 @@ func Run() error {
 						http.Error(w, "CSRF token validation failed", http.StatusBadRequest)
 					},
 				}))
+
 				web.Use(render.Renderer())
+				web.Map(cfg.Mailer())
 
 				oauth2.PathLogin = "/oauth2/login"
 				oauth2.PathLogout = "/oauth2/logout"
@@ -102,7 +104,7 @@ func Run() error {
 
 				for _, e := range []Engine{
 					&BaseEngine{app: web, db: &db, cfg: &cfg},
-					&AuthEngine{db: &db},
+					&AuthEngine{app: web, db: &db, cfg: &cfg},
 					&WikiEngine{},
 					&ForumEngine{},
 					&TeamworkEngine{},
