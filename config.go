@@ -14,6 +14,7 @@ type Config struct {
 	Secret string
 	Http   struct {
 		Host   string
+		Port int
 		Cookie string
 		Expire int
 	}
@@ -84,6 +85,7 @@ func loadConfig(cfg *Config, file string) error {
 		cfg.Secret = string(Base64Encode(cfg.secret))
 
 		cfg.Http.Host = "http://localhost"
+		cfg.Http.Port = 3000
 		cfg.Http.Cookie = RandomStr(8)
 		cfg.Http.Expire = 60 * 30
 
