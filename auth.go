@@ -4,6 +4,7 @@ import (
 	"github.com/go-martini/martini"
 	"github.com/jinzhu/gorm"
 	"github.com/martini-contrib/render"
+	"github.com/martini-contrib/sessions"
 	"time"
 )
 
@@ -18,9 +19,17 @@ func (p *AuthEngine) Map() {
 }
 
 func (p *AuthEngine) Mount() {
-	p.app.Get("/testm", func(r render.Render, dao *AuthDao, mailer *Mailer) {
+	p.app.Post("/users/register", func(r render.Render, dao *AuthDao, mailer *Mailer) {
 		//go mailer.Text([]string{"2682287010@qq.com"}, "test", "body")
 		r.JSON(200, map[string]interface{}{"aaa": true})
+	})
+	p.app.Post("/users/login", func() {})
+	p.app.Get("/users/unlock", func() {})
+	p.app.Post("/users/password", func() {})
+	p.app.Post("/users/confirm", func() {})
+	p.app.Get("/users/logout", func(r render.Render, ss sessions.Session) {
+		ss.Clear()
+		r.JSON(200, Message{Ok: true})
 	})
 }
 

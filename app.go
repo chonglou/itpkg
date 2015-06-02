@@ -32,6 +32,10 @@ func Run() error {
 		env := c.String("environment")
 		os.Setenv("ITPKG_ENV", env)
 
+		if err = LoadLocales("locales"); err != nil {
+			log.Error("Error on load locales: %s", err.Error())
+		}
+
 		cfg := Config{}
 		if err = loadConfig(&cfg, fmt.Sprintf("config/%s.yml", env)); err != nil {
 			log.Fatalf("Error on load config: %v", err)
