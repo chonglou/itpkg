@@ -14,7 +14,7 @@ type Config struct {
 	Secret string
 	Http   struct {
 		Host   string
-		Port int
+		Port   int
 		Cookie string
 		Expire int
 	}

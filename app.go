@@ -1,6 +1,7 @@
 package itpkg
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/go-martini/martini"
@@ -12,7 +13,6 @@ import (
 	goauth2 "golang.org/x/oauth2"
 	"log"
 	"net/http"
-	"bytes"
 	"os"
 )
 
@@ -114,8 +114,7 @@ func Run() error {
 					e.Map()
 					e.Mount()
 				}
-
-				web.Run()
+				web.RunOnAddr(fmt.Sprintf(":%d", cfg.Http.Port))
 			},
 		},
 		{
