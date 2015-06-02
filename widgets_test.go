@@ -2,12 +2,11 @@ package itpkg
 
 import (
 	"encoding/json"
-	"log"
 	"testing"
 )
 
 func TestWidgets(t *testing.T) {
-	log.Printf("==================WIDGETS=============================")
+	log.Info("==================WIDGETS=============================")
 	fm := Form{
 		Id:    "test-fm",
 		Token: "token",
@@ -22,5 +21,5 @@ func TestWidgets(t *testing.T) {
 	if e != nil {
 		t.Errorf("Json error: %v", e)
 	}
-	log.Printf("Form: %s", string(j))
+	log.Info("Form: %s", string(j))
 }

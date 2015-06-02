@@ -5,7 +5,6 @@ import (
 	"github.com/go-martini/martini"
 	"github.com/jinzhu/gorm"
 	"github.com/martini-contrib/render"
-	"log"
 	"net/http"
 	"time"
 )

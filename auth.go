@@ -4,7 +4,6 @@ import (
 	"github.com/go-martini/martini"
 	"github.com/jinzhu/gorm"
 	"github.com/martini-contrib/render"
-	"log"
 	"time"
 )
 
@@ -20,7 +19,7 @@ func (p *AuthEngine) Map() {
 
 func (p *AuthEngine) Mount() {
 	p.app.Get("/testm", func(r render.Render, dao *AuthDao, mailer *Mailer) {
-		go mailer.Send([]string{"2682287010@qq.com"}, "test", "body")
+		//go mailer.Text([]string{"2682287010@qq.com"}, "test", "body")
 		r.JSON(200, map[string]interface{}{"aaa": true})
 	})
 }
@@ -159,7 +158,7 @@ func (p *AuthDao) resource(args ...interface{}) (string, uint, *time.Time, *time
 		rid = args[2].(uint)
 		begin = args[2].(*time.Time)
 	default:
-		log.Printf("Ingnore role args: %v", args)
+		log.Warning("Ingnore role args: %v", args)
 	}
 	return rty, rid, begin, end
 }

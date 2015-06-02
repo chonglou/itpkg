@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"log"
 	"os"
 	"strconv"
 )
@@ -95,7 +94,7 @@ func loadConfig(cfg *Config, file string) error {
 		if err != nil {
 			return err
 		}
-		log.Printf("Load from config file: %s", file)
+		log.Info("Load from config file: %s", file)
 		if err = yaml.Unmarshal(yml, cfg); err != nil {
 			return err
 		}
@@ -141,7 +140,7 @@ func loadConfig(cfg *Config, file string) error {
 		if err != nil {
 			return err
 		}
-		log.Printf("Generate config file: %s", file)
+		log.Info("Generate config file: %s", file)
 		err = ioutil.WriteFile(file, data, 0600)
 	}
 	return err

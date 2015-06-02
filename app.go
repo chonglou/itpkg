@@ -10,11 +10,13 @@ import (
 	"github.com/martini-contrib/oauth2"
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
+	"github.com/op/go-logging"
 	goauth2 "golang.org/x/oauth2"
-	"log"
 	"net/http"
 	"os"
 )
+
+var log = logging.MustGetLogger("itpkg")
 
 func Run() error {
 
@@ -111,7 +113,7 @@ func Run() error {
 					&ShopEngine{},
 				} {
 					n, v, _ := e.Info()
-					log.Printf("Mount engine %s(%s)", n, v)
+					log.Info("Mount engine %s(%s)", n, v)
 					e.Migrate()
 					e.Map()
 					e.Mount()

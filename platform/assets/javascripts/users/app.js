@@ -29,7 +29,7 @@ usersApp.config(['$translateProvider',
                 }
             });
 
-            $translateProvider.translations('zh_CN', {
+            $translateProvider.translations('zh-CN', {
                 'user': {
                     'name': '用户名',
                     'email': '邮箱',

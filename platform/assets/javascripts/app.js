@@ -19,7 +19,7 @@ itpkgApp.config(
                 }
             });
 
-            $translateProvider.translations('zh_CN', {
+            $translateProvider.translations('zh-CN', {
                 'buttons': {
                     'reset': '重写'
                 },
@@ -64,7 +64,7 @@ itpkgApp.controller('RootCtrl', ['$translate', '$scope', '$http', 'Page',
                 $scope.setLang = function (lang) {
                     switch (lang) {
                         case 'cn':
-                            lang = 'zh_CN';
+                            lang = 'zh-CN';
                             break;
                         default:
                             lang = 'en';

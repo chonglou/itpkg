@@ -31,7 +31,7 @@ var paths = {
     'node_modules/angular-resource/angular-resource.min.js',
     'node_modules/angular-cookies/angular-cookies.min.js',
     'node_modules/angular-translate/dist/angular-translate.min.js',
-    'node_modules/angular-translate-storage-cookie/angular-translate-storage-cookie.min.js',    
+    'node_modules/angular-translate-storage-cookie/angular-translate-storage-cookie.min.js',
     'node_modules/angular-bootstrap/dist/ui-bootstrap-tpls.min.js',
 
     'node_modules/famfamfam-flags/dist/**/*',
@@ -83,6 +83,13 @@ gulp.task('templates', function() {
     .pipe(gulp.dest(paths.public))
 });
 
+gulp.task('mailer', function() {
+  return gulp.src('assets/mailer/**/*.html')
+    .pipe(revappend(['html', 'js', 'css']))
+    .pipe(htmlmin({collapseWhitespace: true}))
+    .pipe(gulp.dest('mailer'))
+});
+
 gulp.task('watch', function() {
   gulp.watch(paths.scripts, ['scripts']);
   gulp.watch(paths.styles, ['styles']);
@@ -101,4 +108,4 @@ gulp.task('server', function() {
 
 gulp.task('default', ['watch', 'build']);
 
-gulp.task('build', ['templates', 'scripts', '3rd', 'styles', 'images']);
+gulp.task('build', ['templates', 'mailer', 'scripts', '3rd', 'styles', 'images']);
