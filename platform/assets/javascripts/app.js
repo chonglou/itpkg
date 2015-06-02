@@ -11,17 +11,22 @@ itpkgApp.config(
         function ($translateProvider) {
 
             $translateProvider.translations('en', {
+                'buttons': {
+                    'reset': 'Reset'
+                },
                 'links': {
                     'back_to_home': 'Back to home'
                 }
             });
 
             $translateProvider.translations('zh_CN', {
+                'buttons': {
+                    'reset': '重写'
+                },
                 'links': {
                     'back_to_home': '返回主页'
                 }
             });
-
 
 
             $translateProvider.useCookieStorage();
@@ -43,10 +48,15 @@ itpkgApp.config(['$routeProvider',
         }]
 );
 
+itpkgApp.directive('btnReset', function () {
+    return {
+        templateUrl: '/widgets/reset.html?v=@version@'
+    };
+});
 
 itpkgApp.controller('RootCtrl', ['$translate', '$scope', '$http', 'Page',
         function ($translate, $scope, $http, Page) {
-            $http.get('/index.json', {locale:$translate.use()}).success(function (data) {
+            $http.get('/index.json', {locale: $translate.use()}).success(function (data) {
                 $scope.topNav = {};
                 $scope.site = data;
                 $scope.site.locales = ['us', 'cn'];

@@ -1,0 +1,40 @@
+<fieldset>
+    <legend>{{'user.titles.register'|translate}}</legend>
+    <form class='form-horizontal'>
+        <div class='form-group'>
+            <label class='col-sm-3 control-label required'>{{'user.name'|translate}}</label>
+
+            <div class='col-sm-4'>
+                <input type='text' class='form-control' ng-model='user.name'>
+            </div>
+        </div>
+        <div class='form-group'>
+            <label class='col-sm-3 control-label required'>{{'user.email'|translate}}</label>
+
+            <div class='col-sm-6'>
+                <input type='email' class='form-control' ng-model='user.email'>
+            </div>
+        </div>
+        <div class='form-group'>
+            <label class='col-sm-3 control-label required'>{{'user.password'|translate}}</label>
+
+            <div class='col-sm-5'>
+                <input type='password' class='form-control' ng-model='user.password'>
+            </div>
+        </div>
+        <div class='form-group'>
+            <label class='col-sm-3 control-label required'>{{'user.password_re'|translate}}</label>
+
+            <div class='col-sm-5'>
+                <input type='password' class='form-control' ng-model='user.password_confirm'>
+            </div>
+        </div>
+        <div class='form-group'>
+            <div class='col-sm-offset-3 col-sm-5'>
+                <button ng-click='register(user)' class='btn btn-primary'>{{'user.buttons.register'|translate}}</button>
+                <span btn-reset/>
+            </div>
+        </div>
+    </form>
+</fieldset>
+<div users-shared-links></div>

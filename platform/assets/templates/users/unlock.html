@@ -1,0 +1,20 @@
+<fieldset>
+    <legend>{{'user.titles.unlock'|translate}}</legend>
+    <form class='form-horizontal'>
+        <div class='form-group'>
+            <label class='col-sm-2 control-label required'>{{'user.email'|translate}}</label>
+
+            <div class='col-sm-6'>
+                <input type='email' class='form-control' ng-model='user.email'>
+            </div>
+        </div>
+        <div class='form-group'>
+            <div class='col-sm-offset-2 col-sm-10'>
+                <button ng-click='unlock(user)' class='btn btn-primary'>{{'user.buttons.unlock'|translate}}</button>
+                <span btn-reset/>
+            </div>
+        </div>
+    </form>
+</fieldset>
+<div users-shared-links></div>
+
