@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func LangFromCookie(req *http.Request) string {
+func Lang(req *http.Request) string {
 	if cke, err := req.Cookie("NG_TRANSLATE_LANG_KEY"); err == nil {
 		return strings.Replace(cke.Value, "%22", "", -1)
 	}
@@ -54,15 +54,24 @@ type Field struct {
 }
 
 type Message struct {
-	Ok      bool      `json:"ok"`
-	Type    string    `json:"type"`
-	Errors  []string  `json:"errors"`
-	Created time.Time `json:"created"`
+	Ok      bool        `json:"ok"`
+	Type    string      `json:"type"`
+	Errors  []string    `json:"errors"`
+	Data    interface{} `json:"data"`
+	Created time.Time   `json:"created"`
 }
 
 func (msg *Message) Error(err string) {
 	msg.Ok = false
 	msg.Errors = append(msg.Errors, err)
+}
+
+func NewMessage(ok bool) Message {
+	return Message{
+		Ok:      ok,
+		Errors:  make([]string, 0),
+		Created: time.Now()}
+
 }
 
 func NewForm(id string) Form {

@@ -3,10 +3,26 @@ package itpkg
 import (
 	"github.com/go-martini/martini"
 	"github.com/jinzhu/gorm"
+	"github.com/martini-contrib/binding"
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
+	"net/http"
+	"regexp"
 	"time"
 )
+
+var rxpUserEmail = regexp.MustCompile("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*")
+var rxpUserName = regexp.MustCompile("\\w{1,64}")
+var rxpUserPassword = regexp.MustCompile(".{6,128}")
+
+func CurrentUser(ss sessions.Session, dao *AuthDao, user *User) bool {
+	uid := ss.Get("uid")
+	if uid == nil {
+		return false
+	}
+
+	return dao.UserById(uid.(uint), user)
+}
 
 type AuthEngine struct {
 	cfg *Config
@@ -19,17 +35,27 @@ func (p *AuthEngine) Map() {
 }
 
 func (p *AuthEngine) Mount() {
-	p.app.Post("/users/register", func(r render.Render, dao *AuthDao, mailer *Mailer) {
-		//go mailer.Text([]string{"2682287010@qq.com"}, "test", "body")
-		r.JSON(200, map[string]interface{}{"aaa": true})
-	})
+	p.app.Post(
+		"/users/register",
+		binding.Bind(UserRegisterFm{}),
+		func(fm UserRegisterFm, r render.Render, dao *AuthDao, mailer *Mailer) {
+			//go mailer.Text([]string{"2682287010@qq.com"}, "test", "body")
+			r.JSON(200, map[string]interface{}{"fm": fm})
+		})
 	p.app.Post("/users/login", func() {})
 	p.app.Get("/users/unlock", func() {})
-	p.app.Post("/users/password", func() {})
+	p.app.Post("/users/password/1", func() {})
+	p.app.Post("/users/password/2", func() {})
 	p.app.Post("/users/confirm", func() {})
-	p.app.Get("/users/logout", func(r render.Render, ss sessions.Session) {
-		ss.Clear()
-		r.JSON(200, Message{Ok: true})
+	p.app.Get("/users/logout", func(req *http.Request, r render.Render, ss sessions.Session, dao *AuthDao) {
+		u := User{}
+		if CurrentUser(ss, dao, &u) {
+			ss.Clear()
+			dao.Log(u.ID, T(Lang(req), "auth.log.logout"), "")
+			r.JSON(200, NewMessage(false))
+		} else {
+			r.JSON(200, NewMessage(false))
+		}
 	})
 }
 
@@ -44,6 +70,17 @@ func (p *AuthEngine) Migrate() {
 
 func (p *AuthEngine) Info() (name string, version string, desc string) {
 	return "auth", "v10250530", ""
+}
+
+type UserRegisterFm struct {
+	Name       string
+	Email      string
+	Password   string
+	RePassword string 
+}
+
+func (p UserRegisterFm) Validate(errors binding.Errors, req *http.Request) binding.Errors {
+	return errors
 }
 
 type User struct {
@@ -100,13 +137,17 @@ type AuthDao struct {
 	hmac *Hmac
 }
 
-func (p *AuthDao) Log(user uint, message string) {
-	p.db.Create(&Log{UserID: user, Message: message})
+func (p *AuthDao) UserById(id uint, user *User) bool {
+	return !p.db.First(user, id).RecordNotFound()
+}
+
+func (p *AuthDao) Log(user uint, message string, flag string) {
+	p.db.Create(&Log{UserID: user, Message: message, Type: flag})
 }
 
 func (p *AuthDao) Check(user uint, role string, args ...interface{}) bool {
 	rty, rid, _, _ := p.resource(args...)
-	r := &Role{}
+	r := Role{}
 
 	if p.db.Where(
 		"user_id = ? AND name = ? AND resource_type = ? AND resource_id = ?",

@@ -25,7 +25,7 @@ func (p *BaseEngine) Map() {
 
 func (p *BaseEngine) Mount() {
 	p.app.Get("/index.json", func(r render.Render, dao *BaseDao, req *http.Request) {
-		lang := LangFromCookie(req)
+		lang := Lang(req)
 		si := make(map[string]interface{}, 0)
 		for _, k := range []string{"title", "author", "keywords", "description", "copyright"} {
 			var v string

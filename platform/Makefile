@@ -4,7 +4,8 @@ build:
 	gulp clean
 	gulp build
 	go build -o itpkg -ldflags "-s" app.go
-	mv mailer public itpkg release/
+	mv public itpkg release/
+	cp -r locales release/
 
 
 clean:

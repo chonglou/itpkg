@@ -4,8 +4,6 @@
 format:
 	go fmt *.go
 	go fmt platform/*.go
-	#go vet *.go
-	#go vet platform/*.go
 
 
 

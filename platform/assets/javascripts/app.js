@@ -11,7 +11,19 @@ itpkgApp.config(
         function ($translateProvider) {
 
             $translateProvider.translations('en', {
+                empty_form: 'Empty form fields',
+                'titles': {
+                    'ok': 'Success!',
+                    'fail': 'Error!'
+                },
                 'buttons': {
+                    'ok': 'Ok',
+                    'cancel': 'Cancel',
+                    'close': 'Close',
+                    'submit': 'Submit',
+                    'view': 'View',
+                    'edit': 'Edit',
+                    'update': 'Update',
                     'reset': 'Reset'
                 },
                 'links': {
@@ -20,7 +32,19 @@ itpkgApp.config(
             });
 
             $translateProvider.translations('zh-CN', {
+                empty_form: '表单数据为空',
+                'titles': {
+                    'ok': '操作成功!',
+                    'fail': '操作失败!'
+                },
                 'buttons': {
+                    'ok': '确定',
+                    'cancel': '取消',
+                    'close': '关闭',
+                    'submit': '提交',
+                    'view': '查看',
+                    'edit': '编辑',
+                    'update': '更新',
                     'reset': '重写'
                 },
                 'links': {
@@ -54,9 +78,10 @@ itpkgApp.directive('btnReset', function () {
     };
 });
 
-itpkgApp.controller('RootCtrl', ['$translate', '$scope', '$http', 'Page',
+itpkgApp.controller('RootCtrl', [
+        '$translate', '$scope', '$http', 'Page',
         function ($translate, $scope, $http, Page) {
-            $http.get('/index.json', {locale: $translate.use()}).success(function (data) {
+            $http.get('/index.json').success(function (data) {
                 $scope.topNav = {};
                 $scope.site = data;
                 $scope.site.locales = ['us', 'cn'];
@@ -77,7 +102,22 @@ itpkgApp.controller('RootCtrl', ['$translate', '$scope', '$http', 'Page',
                 Page.setDescription(data.description);
             });
         }]
-);
+).controller('PostFormCtl', [
+        '$scope', '$modalInstance','url','data',
+        function($scope, $modalInstance, title, items){
+            //todo
+        }
+    ])
+    .controller('ModalInstanceCtrl', [
+        '$scope', '$modalInstance', 'title', 'items',
+        function ($scope, $modalInstance, title, items) {
+            $scope.title = title;
+            $scope.items = items;
+
+            $scope.ok = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        }]);
 
 itpkgApp.factory('Page', function () {
     var title = '';
