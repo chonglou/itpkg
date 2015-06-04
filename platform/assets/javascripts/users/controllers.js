@@ -48,3 +48,36 @@ usersApp.controller('UserFormCtrl', ['$scope', '$http', '$translate', '$modal',
             $scope.user = {};
         }
     }]);
+
+    //.controller('UserLoginCtrl', ['$scope', '$http', '$translate', '$modal',
+    //    function ($scope, $http, $translate, $modal) {
+    //        $scope.form = {
+    //            title: 'user.titles.login',
+    //            submit: {
+    //                click: function (item) {
+    //                    console.log(item);
+    //                },
+    //                label: 'user.buttons.login'
+    //            },
+    //            fields: [
+    //                {
+    //                    id: 'item.email',
+    //                    type: 'email',
+    //                    label: 'user.email',
+    //                    required: true
+    //                },
+    //                {
+    //                    id: 'item.password',
+    //                    type: 'password',
+    //                    label: 'user.password',
+    //                    required: true
+    //                },
+    //                {
+    //                    id: 'item.remember',
+    //                    type: 'checkbox',
+    //                    label: 'user.remember_me',
+    //                    required: true
+    //                }
+    //            ]
+    //        };
+    //    }]);

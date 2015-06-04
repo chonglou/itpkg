@@ -1,0 +1,41 @@
+<fieldset>
+    <legend>{{form.title|translate}}</legend>
+    <form class='form-horizontal'>
+        <div class='form-group' ng-repeat='field in form.fields'>
+            <label ng-if="['text', 'email', 'password'].indexOf(field.type) > -1"
+                   class='col-sm-3 control-label required'>
+                {{field.label|translate}}
+            </label>
+
+            <div ng-if="field.type == 'text' " class='col-sm-{{field.size || 6}}'>
+                <input type='text' class='form-control' ng-model='field.id'>
+            </div>
+            <div ng-if="field.type == 'email' " class='col-sm-4'>
+                <input type='email' class='form-control' ng-model='field.id'>
+            </div>
+            <div ng-if="field.type == 'password' " class='col-sm-5'>
+                <input type='password' class='form-control' ng-model='field.id'>
+            </div>
+            <div ng-if="field.type == 'checkbox' " class='col-sm-offset-3 col-sm-9'>
+                <div class='checkbox'>
+                    <label>
+                        <input type='checkbox' ng-model='user.remember'> {{field.label|translate}}
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <div class='col-sm-offset-3 col-sm-5'>
+                <button ng-click='form.submit.click(field)' class='btn btn-primary'>
+                    {{(form.submit.label || 'buttons.submit')|translate}}
+                </button>
+                &nbsp; &nbsp;
+                <button ng-click='form.reset.click()' class='btn btn-default'>
+                    {{'buttons.reset'|translate}}
+                </button>
+            </div>
+        </div>
+    </form>
+</fieldset>
+

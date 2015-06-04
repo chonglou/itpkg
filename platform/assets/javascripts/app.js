@@ -103,8 +103,8 @@ itpkgApp.controller('RootCtrl', [
             });
         }]
 ).controller('PostFormCtl', [
-        '$scope', '$modalInstance','url','data',
-        function($scope, $modalInstance, title, items){
+        '$scope', '$modalInstance', 'url', 'data',
+        function ($scope, $modalInstance, title, items) {
             //todo
         }
     ])
