@@ -76,6 +76,8 @@ func Run() error {
 				}
 				web := gin.Default()
 
+				// web.Use(gin.Logger())
+				// web.Use(gin.Recovery())
 				web.Use(sessions.Sessions(cfg.Http.Cookie, cfg.SessionStore()))
 
 				// web.Use(csrf.Generate(&csrf.Options{
@@ -271,5 +273,9 @@ openssl x509 -noout -text -in server-cert.pem
 	}
 
 	return app.Run(os.Args)
+
+}
+
+type Application struct{
 
 }

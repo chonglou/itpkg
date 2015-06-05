@@ -15,29 +15,32 @@ type BaseEngine struct {
 }
 
 func (p *BaseEngine) Map() {
-	aes := Aes{}
-	if err := aes.Init(p.cfg.secret[20:52]); err != nil {
-		log.Fatalf("Error on init aes: %v", err)
-	}
-	//p.app.Use(&BaseDao{db: p.db, aes: &aes})
+
+	p.app.Use(func(c *gin.Context) {
+		log.Info("Init BaseDao")
+		aes := Aes{}
+		if err := aes.Init(p.cfg.secret[20:52]); err != nil {
+			log.Fatalf("Error on init aes: %v", err)
+		}
+		c.Set("baseDao", &BaseDao{db: p.db, aes: &aes})
+	})
 }
 
 func (p *BaseEngine) Mount() {
 
-	// p.app.Get("/index.json", func(r render.Render, dao *BaseDao, req *http.Request) {
-	// 	lang := Lang(req)
-	// 	si := make(map[string]interface{}, 0)
-	// 	for _, k := range []string{"title", "author", "keywords", "description", "copyright"} {
-	// 		var v string
-	// 		dao.GetSiteInfo(k, lang, &v)
-	// 		si[k] = v
-	// 	}
-	// 	si["locale"] = lang
-	// 	r.JSON(200, si)
-	// })
-	p.app.GET("/aaa.json", func(c *gin.Context) {
-		c.JSON(200, true)
+	p.app.GET("/index.json", func(c *gin.Context) {
+		dao := c.MustGet("baseDao").(*BaseDao)
+		lang := "zh-CN" //Lang(req)
+		si := make(map[string]interface{}, 0)
+		for _, k := range []string{"title", "author", "keywords", "description", "copyright"} {
+			var v string
+			dao.GetSiteInfo(k, lang, &v)
+			si[k] = v
+		}
+		si["locale"] = lang
+		c.JSON(200, si)
 	})
+
 }
 
 func (p *BaseEngine) Migrate() {
