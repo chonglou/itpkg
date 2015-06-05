@@ -1,14 +1,14 @@
 
 
+test:
+	go test
+
 
 format:
 	go fmt *.go
 	go fmt platform/*.go
 
 
-
-test:
-	go test
 
 
 clean:

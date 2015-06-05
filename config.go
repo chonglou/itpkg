@@ -16,7 +16,9 @@ import (
 )
 
 type Config struct {
+	env    string
 	secret []byte
+
 	Secret string
 	Cache  struct {
 		Store string
@@ -74,13 +76,17 @@ func (p *Config) Mailer() *Mailer {
 	return &m
 }
 
+func (p *Config) IsProduction() bool {
+	return p.env == "production"
+}
+
 func (p *Config) Db() (*gorm.DB, error) {
 
 	db, err := gorm.Open(p.Database.Driver, p.DbUrl())
 	if err != nil {
 		return nil, err
 	}
-	db.LogMode(!IsProduction())
+	db.LogMode(!p.IsProduction())
 	if err = db.DB().Ping(); err != nil {
 		return nil, err
 	}
