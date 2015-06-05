@@ -5,10 +5,9 @@
   "auth.log.register": "账户注册",
   "auth.log.unlock": "解锁账户",
   "auth.log.password": "重置密码",
-
+  
   "auth.mailer.confirm.subject":"账户激活邮件",
-  "auth.mailer.confirm.body":"<p>欢迎您， %s!</p> \
-  <p>你可以点击如下链接激活账户：</p><p><a href='%s' target='_blank'>%s</a></p>",
+  "auth.mailer.confirm.body":"<p>欢迎您， %s!</p><p>你可以点击如下链接激活账户：</p><p><a href='%s' target='_blank'>%s</a></p>",
   "auth.mailer.unlock.subject":"账户解锁邮件",
   "auth.mailer.unlock.body":"<p>你好， %s!</p><p>点击如下链接解锁账户：</p><p><a href='%s' target='_blank'>%s</a></p>",
   "auth.mailer.password.subject":"重置密码邮件",

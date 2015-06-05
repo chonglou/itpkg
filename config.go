@@ -2,16 +2,30 @@ package itpkg
 
 import (
 	"fmt"
+	jwt_lib "github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/contrib/cache"
+	"github.com/gin-gonic/contrib/jwt"
+	"github.com/gin-gonic/contrib/sessions"
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"strconv"
+	"time"
 )
 
 type Config struct {
 	secret []byte
 	Secret string
-	Http   struct {
+	Cache  struct {
+		Store string
+	}
+	Session struct {
+		Store string
+		Pool  int
+	}
+	Http struct {
 		Host   string
 		Port   int
 		Cookie string
@@ -60,6 +74,19 @@ func (p *Config) Mailer() *Mailer {
 	return &m
 }
 
+func (p *Config) Db() (*gorm.DB, error) {
+
+	db, err := gorm.Open(p.Database.Driver, p.DbUrl())
+	if err != nil {
+		return nil, err
+	}
+	db.LogMode(!IsProduction())
+	if err = db.DB().Ping(); err != nil {
+		return nil, err
+	}
+	return &db, nil
+}
+
 func (p *Config) DbUrl() string {
 	return fmt.Sprintf(
 		"%s://%s:%s@%s:%d/%s?sslmode=%s",
@@ -79,6 +106,58 @@ func (p *Config) DbShell() (string, []string) {
 	default:
 		return "echo", []string{"Unknown database driver " + d}
 	}
+}
+
+func (p *Config) Token(user uint) (string, error) {
+	token := jwt_lib.New(jwt_lib.GetSigningMethod("HS256"))
+	// Set some claims
+	token.Claims["ID"] = user
+	token.Claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
+
+	return token.SignedString(p.authPassword())
+
+}
+
+func (p *Config) Auth() gin.HandlerFunc {
+	return jwt.Auth(string(p.authPassword()))
+}
+
+func (p *Config) authPassword() []byte {
+	return p.secret[220:252]
+}
+
+func (p *Config) CacheStore() cache.CacheStore {
+	de := time.Second
+	switch p.Cache.Store {
+	case "memory":
+		return cache.NewInMemoryStore(de)
+	case "redis":
+		return cache.NewRedisCache(p.RedisUrl(), "", de)
+	default:
+		log.Fatalf("Unknown cache store: %s", p.Cache.Store)
+	}
+	return nil
+}
+
+func (p *Config) SessionStore() sessions.Store {
+	key, iv := p.secret[100:164], p.secret[170:202]
+	switch p.Session.Store {
+	case "redis":
+		s, e := sessions.NewRedisStore(p.Session.Pool, "tcp", p.RedisUrl(), "", key, iv)
+		if e != nil {
+			log.Fatalf("Error on open redis session: %v", e)
+		}
+		return s
+	case "cookie":
+		return sessions.NewCookieStore(key, iv)
+	default:
+		log.Fatalf("Unknown session store: %s", p.Session.Store)
+	}
+	return nil
+}
+
+func (p *Config) RedisUrl() string {
+	return fmt.Sprintf("%s:%d", p.Redis.Host, p.Redis.Port)
 }
 
 func (p *Config) RedisShell() (string, []string) {
@@ -109,6 +188,10 @@ func loadConfig(cfg *Config, file string) error {
 		cfg.Http.Port = 3000
 		cfg.Http.Cookie = RandomStr(8)
 		cfg.Http.Expire = 60 * 30
+
+		cfg.Cache.Store = "redis" // can be cookie or memory
+		cfg.Session.Pool = 6
+		cfg.Session.Store = "redis" // can be cookie or redis
 
 		cfg.Database.Driver = "postgres"
 		cfg.Database.Host = "localhost"

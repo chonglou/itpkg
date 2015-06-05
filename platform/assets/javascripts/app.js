@@ -64,7 +64,7 @@ itpkgApp.config(['$routeProvider',
         function ($routeProvider) {
             $routeProvider.
                 when('/main', {
-                    templateUrl: '/partials/main.html?v=@version@'
+                    templateUrl: 'partials/main.html?v=@version@'
                 }).
                 otherwise({
                     redirectTo: '/main'
@@ -74,7 +74,7 @@ itpkgApp.config(['$routeProvider',
 
 itpkgApp.directive('btnReset', function () {
     return {
-        templateUrl: '/widgets/reset.html?v=@version@'
+        templateUrl: 'widgets/reset.html?v=@version@'
     };
 });
 

@@ -10,3 +10,11 @@ IT-PACKAGE(PLATFORM)
 
 ## Notes
     npm view <pkgname> versions
+
+
+## Running
+    cd public
+    ./itpkg -h
+    ./itpkg server # development env
+    ./itpkg server -e production  # production env
+    

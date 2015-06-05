@@ -1,7 +1,7 @@
 itpkgApp.directive('wdAlertDlg', function () {
     return {
         restrict: 'EA',
-        templateUrl: '/widgets/alert_dlg.html?v=@version@'
+        templateUrl: 'widgets/alert_dlg.html?v=@version@'
     };
 }).directive('wdForm', function () {
     return {
@@ -10,6 +10,6 @@ itpkgApp.directive('wdAlertDlg', function () {
         //scope: {
         //    form: '=form'
         //},
-        templateUrl: '/widgets/form.html?v=@version@'
+        templateUrl: 'widgets/form.html?v=@version@'
     };
 });

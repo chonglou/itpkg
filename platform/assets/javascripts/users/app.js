@@ -59,27 +59,27 @@ usersApp.config(['$routeProvider',
     function ($routeProvider) {
         $routeProvider.
             when('/users/login', {
-                templateUrl: '/users/login.html?v=@version@',
+                templateUrl: 'users/login.html?v=@version@',
                 controller: 'UserFormCtrl'
             }).
             when('/users/register', {
-                templateUrl: '/users/register.html?v=@version@',
+                templateUrl: 'users/register.html?v=@version@',
                 controller: 'UserFormCtrl'
             }).
             when('/users/unlock', {
-                templateUrl: '/users/unlock.html?v=@version@',
+                templateUrl: 'users/unlock.html?v=@version@',
                 controller: 'UserFormCtrl'
             }).
             when('/users/confirm', {
-                templateUrl: '/users/confirm.html?v=@version@',
+                templateUrl: 'users/confirm.html?v=@version@',
                 controller: 'UserFormCtrl'
             }).
             when('/users/password', {
-                templateUrl: '/users/password.html?v=@version@',
+                templateUrl: 'users/password.html?v=@version@',
                 controller: 'UserFormCtrl'
             }).
             when('/users/profile', {
-                templateUrl: '/users/profile.html?v=@version@',
+                templateUrl: 'users/profile.html?v=@version@',
                 controller: 'UserFormCtrl'
             });
     }]);

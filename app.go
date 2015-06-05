@@ -4,19 +4,19 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/codegangsta/cli"
-	"github.com/go-martini/martini"
-	"github.com/jinzhu/gorm"
-	"github.com/martini-contrib/csrf"
-	"github.com/martini-contrib/oauth2"
-	"github.com/martini-contrib/render"
-	"github.com/martini-contrib/sessions"
+	"github.com/gin-gonic/contrib/expvar"
+	"github.com/gin-gonic/contrib/sessions"
+	"github.com/gin-gonic/contrib/static"
+	"github.com/gin-gonic/gin"
 	"github.com/op/go-logging"
-	goauth2 "golang.org/x/oauth2"
-	"net/http"
 	"os"
 )
 
 var log = logging.MustGetLogger("itpkg")
+
+func IsProduction() bool {
+	return os.Getenv("ITPKG_ENV") == "production"
+}
 
 func Run() error {
 
@@ -27,7 +27,7 @@ func Run() error {
 		EnvVar: "ITPKG_ENV",
 	}
 
-	load := func(c *cli.Context) (Config, gorm.DB) {
+	load := func(c *cli.Context) Config {
 		var err error
 		env := c.String("environment")
 		os.Setenv("ITPKG_ENV", env)
@@ -41,16 +41,7 @@ func Run() error {
 			log.Fatalf("Error on load config: %v", err)
 		}
 
-		var db gorm.DB
-		if db, err = gorm.Open(cfg.Database.Driver, cfg.DbUrl()); err != nil {
-			log.Fatalf("Error on open database: %v", err)
-		}
-		db.LogMode(env != "production")
-		if err = db.DB().Ping(); err != nil {
-			log.Fatalf("Error on ping database: %v", err)
-		}
-
-		return cfg, db
+		return cfg
 	}
 
 	app := cli.NewApp()
@@ -74,43 +65,47 @@ func Run() error {
 			Action: func(c *cli.Context) {
 				os.Setenv("PORT", c.String("port"))
 
-				cfg, db := load(c)
+				cfg := load(c)
+				db, err := cfg.Db()
+				if err != nil {
+					log.Fatalf("Error on open database: %v", err)
+				}
 
-				martini.Env = os.Getenv("ITPKG_ENV")
-				web := martini.Classic()
+				if IsProduction() {
+					gin.SetMode(gin.ReleaseMode)
+				}
+				web := gin.Default()
 
-				web.Use(sessions.Sessions(
-					cfg.Http.Cookie,
-					sessions.NewCookieStore(cfg.secret[100:164], cfg.secret[170:202])),
-				)
-				web.Use(csrf.Generate(&csrf.Options{
-					Secret:     string(cfg.secret[210:242]),
-					SessionKey: "UID",
-					ErrorFunc: func(w http.ResponseWriter) {
-						http.Error(w, "CSRF token validation failed", http.StatusBadRequest)
-					},
-				}))
+				web.Use(sessions.Sessions(cfg.Http.Cookie, cfg.SessionStore()))
 
-				web.Use(render.Renderer())
-				web.Map(cfg.Mailer())
-
-				oauth2.PathLogin = "/oauth2/login"
-				oauth2.PathLogout = "/oauth2/logout"
-				oauth2.PathCallback = "/oauth2/callback"
-				oauth2.PathError = "oauth2/error"
-
-				web.Use(oauth2.Google(
-					&goauth2.Config{
-						ClientID:     cfg.Google.Id,
-						ClientSecret: cfg.Google.Secret,
-						Scopes:       []string{}, // todo
-						RedirectURL:  "redirect_url",
-					},
-				))
+				// web.Use(csrf.Generate(&csrf.Options{
+				// 	Secret:     string(cfg.secret[210:242]),
+				// 	SessionKey: "UID",
+				// 	ErrorFunc: func(w http.ResponseWriter) {
+				// 		http.Error(w, "CSRF token validation failed", http.StatusBadRequest)
+				// 	},
+				// }))
+				//
+				// web.Use(render.Renderer())
+				// web.Map(cfg.Mailer())
+				//
+				// oauth2.PathLogin = "/oauth2/login"
+				// oauth2.PathLogout = "/oauth2/logout"
+				// oauth2.PathCallback = "/oauth2/callback"
+				// oauth2.PathError = "oauth2/error"
+				//
+				// web.Use(oauth2.Google(
+				// 	&goauth2.Config{
+				// 		ClientID:     cfg.Google.Id,
+				// 		ClientSecret: cfg.Google.Secret,
+				// 		Scopes:       []string{}, // todo
+				// 		RedirectURL:  "redirect_url",
+				// 	},
+				// ))
 
 				for _, e := range []Engine{
-					&BaseEngine{app: web, db: &db, cfg: &cfg},
-					&AuthEngine{app: web, db: &db, cfg: &cfg},
+					&BaseEngine{app: web, db: db, cfg: &cfg},
+					&AuthEngine{app: web, db: db, cfg: &cfg},
 					&WikiEngine{},
 					&ForumEngine{},
 					&TeamworkEngine{},
@@ -122,7 +117,14 @@ func Run() error {
 					e.Map()
 					e.Mount()
 				}
-				web.RunOnAddr(fmt.Sprintf(":%d", cfg.Http.Port))
+
+				if !IsProduction() {
+
+					web.Use(static.Serve("/", static.LocalFile("public", false)))
+					web.GET("/debug/vars", expvar.Handler())
+				}
+
+				web.Run(fmt.Sprintf(":%d", cfg.Http.Port))
 			},
 		},
 		{
@@ -131,7 +133,7 @@ func Run() error {
 			Usage:   "Start a console for the database",
 			Flags:   []cli.Flag{envF},
 			Action: func(c *cli.Context) {
-				cfg, _ := load(c)
+				cfg := load(c)
 				cmd, args := cfg.DbShell()
 				Shell(cmd, args...)
 			},
@@ -142,7 +144,7 @@ func Run() error {
 			Usage:   "Start a console for the redis",
 			Flags:   []cli.Flag{envF},
 			Action: func(c *cli.Context) {
-				cfg, _ := load(c)
+				cfg := load(c)
 				cmd, args := cfg.RedisShell()
 				Shell(cmd, args...)
 			},
@@ -155,7 +157,7 @@ func Run() error {
 			Action: func(c *cli.Context) {
 				hn, _ := os.Hostname()
 				wd, _ := os.Getwd()
-				cfg, _ := load(c)
+				cfg := load(c)
 
 				var buf bytes.Buffer
 				fmt.Fprintf(

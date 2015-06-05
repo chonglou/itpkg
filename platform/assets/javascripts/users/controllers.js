@@ -8,7 +8,7 @@ usersApp.controller('UserFormCtrl', ['$scope', '$http', '$translate', '$modal',
             if (user) {
                 $http.post('/users/register', user).success(function (result) {
                     $modal.open({
-                        templateUrl: '/widgets/message_dlg.html',
+                        templateUrl: 'widgets/message_dlg.html?v=@version@',
                         controller: 'ModalInstanceCtrl',
                         resolve: {
                             title: function () {
@@ -22,7 +22,7 @@ usersApp.controller('UserFormCtrl', ['$scope', '$http', '$translate', '$modal',
                 });
             } else {
                 $modal.open({
-                    templateUrl: '/widgets/message_dlg.html',
+                    templateUrl: 'widgets/message_dlg.html?v=@version@',
                     controller: 'ModalInstanceCtrl',
                     resolve: {
                         title: function () {

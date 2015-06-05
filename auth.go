@@ -1,12 +1,9 @@
 package itpkg
 
 import (
-	"github.com/go-martini/martini"
+	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"github.com/martini-contrib/binding"
-	"github.com/martini-contrib/render"
-	"github.com/martini-contrib/sessions"
-	"net/http"
+	//"net/http"
 	"regexp"
 	"time"
 )
@@ -15,48 +12,49 @@ var rxpUserEmail = regexp.MustCompile("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([
 var rxpUserName = regexp.MustCompile("\\w{1,64}")
 var rxpUserPassword = regexp.MustCompile(".{6,128}")
 
-func CurrentUser(ss sessions.Session, dao *AuthDao, user *User) bool {
-	uid := ss.Get("uid")
-	if uid == nil {
-		return false
-	}
-
-	return dao.UserById(uid.(uint), user)
-}
+//
+// func CurrentUser(ss sessions.Session, dao *AuthDao, user *User) bool {
+// 	uid := ss.Get("uid")
+// 	if uid == nil {
+// 		return false
+// 	}
+//
+// 	return dao.UserById(uid.(uint), user)
+// }
 
 type AuthEngine struct {
 	cfg *Config
 	db  *gorm.DB
-	app *martini.ClassicMartini
+	app *gin.Engine
 }
 
 func (p *AuthEngine) Map() {
-	p.app.Map(&AuthDao{db: p.db, hmac: &Hmac{key: p.cfg.secret[120:152]}})
+	//	p.app.Use(&AuthDao{db: p.db, hmac: &Hmac{key: p.cfg.secret[120:152]}})
 }
 
 func (p *AuthEngine) Mount() {
-	p.app.Post(
-		"/users/register",
-		binding.Bind(UserRegisterFm{}),
-		func(fm UserRegisterFm, r render.Render, dao *AuthDao, mailer *Mailer) {
-			//go mailer.Text([]string{"2682287010@qq.com"}, "test", "body")
-			r.JSON(200, map[string]interface{}{"fm": fm})
-		})
-	p.app.Post("/users/login", func() {})
-	p.app.Get("/users/unlock", func() {})
-	p.app.Post("/users/password/1", func() {})
-	p.app.Post("/users/password/2", func() {})
-	p.app.Post("/users/confirm", func() {})
-	p.app.Get("/users/logout", func(req *http.Request, r render.Render, ss sessions.Session, dao *AuthDao) {
-		u := User{}
-		if CurrentUser(ss, dao, &u) {
-			ss.Clear()
-			dao.Log(u.ID, T(Lang(req), "auth.log.logout"), "")
-			r.JSON(200, NewMessage(false))
-		} else {
-			r.JSON(200, NewMessage(false))
-		}
-	})
+	// p.app.Post(
+	// 	"/users/register",
+	// 	binding.Bind(UserRegisterFm{}),
+	// 	func(fm UserRegisterFm, r render.Render, dao *AuthDao, mailer *Mailer) {
+	// 		//go mailer.Text([]string{"2682287010@qq.com"}, "test", "body")
+	// 		r.JSON(200, map[string]interface{}{"fm": fm})
+	// 	})
+	// p.app.Post("/users/login", func() {})
+	// p.app.Get("/users/unlock", func() {})
+	// p.app.Post("/users/password/1", func() {})
+	// p.app.Post("/users/password/2", func() {})
+	// p.app.Post("/users/confirm", func() {})
+	// p.app.Get("/users/logout", func(req *http.Request, r render.Render, ss sessions.Session, dao *AuthDao) {
+	// 	// u := User{}
+	// 	// if CurrentUser(ss, dao, &u) {
+	// 	// 	ss.Clear()
+	// 	// 	dao.Log(u.ID, T(Lang(req), "auth.log.logout"), "")
+	// 	// 	r.JSON(200, NewMessage(false))
+	// 	// } else {
+	// 	// 	r.JSON(200, NewMessage(false))
+	// 	// }
+	// })
 }
 
 func (p *AuthEngine) Migrate() {
@@ -76,12 +74,12 @@ type UserRegisterFm struct {
 	Name       string
 	Email      string
 	Password   string
-	RePassword string 
+	RePassword string
 }
 
-func (p UserRegisterFm) Validate(errors binding.Errors, req *http.Request) binding.Errors {
-	return errors
-}
+// func (p UserRegisterFm) Validate(errors binding.Errors, req *http.Request) binding.Errors {
+// 	return errors
+// }
 
 type User struct {
 	Model

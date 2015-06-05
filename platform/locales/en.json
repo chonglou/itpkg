@@ -6,7 +6,7 @@
   "auth.log.register": "Register success",
   "auth.log.unlock": "Unlock account",
   "auth.log.password": "Reset password",
-
+  
   "auth.mailer.confirm.subject":"Confirmation instructions",
   "auth.mailer.confirm.body":"<p>Welcome %s!</p><p>You can confirm your account email through the link below:</p><p><a href='%s' target='_blank'>%s</a></p>",
   "auth.mailer.unlock.subject":"Unlock instructions",
