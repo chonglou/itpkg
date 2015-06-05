@@ -2,6 +2,7 @@ package itpkg
 
 import (
 	"fmt"
+	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/sessions"
 	"github.com/jinzhu/gorm"
 	"gopkg.in/boj/redistore.v1"
@@ -9,9 +10,12 @@ import (
 	"io/ioutil"
 	"os"
 	"strconv"
+	"time"
 )
 
 type Config struct {
+	db     *gorm.DB
+	redis  *redis.Pool
 	env    string
 	secret []byte
 
@@ -76,17 +80,18 @@ func (p *Config) IsProduction() bool {
 	return p.env == "production"
 }
 
-func (p *Config) Db() (*gorm.DB, error) {
+func (p *Config) OpenDb() error {
 
 	db, err := gorm.Open(p.Database.Driver, p.DbUrl())
 	if err != nil {
-		return nil, err
+		return err
 	}
 	db.LogMode(!p.IsProduction())
 	if err = db.DB().Ping(); err != nil {
-		return nil, err
+		return err
 	}
-	return &db, nil
+	p.db = &db
+	return nil
 }
 
 func (p *Config) DbUrl() string {
@@ -118,7 +123,8 @@ func (p *Config) SessionStore() sessions.Store {
 	key, iv := p.secret[100:164], p.secret[170:202]
 	switch p.Session.Store {
 	case "redis":
-		s, e := redistore.NewRediStore(p.Session.Pool, "tcp", p.RedisUrl(), "", key, iv)
+		//s, e := redistore.NewRediStore(p.Session.Pool, "tcp", p.RedisUrl(), "", key, iv)
+		s, e := redistore.NewRediStoreWithPool(p.redis, key, iv)
 		if e != nil {
 			log.Fatalf("Error on open redis session: %v", e)
 		}
@@ -127,6 +133,28 @@ func (p *Config) SessionStore() sessions.Store {
 		return sessions.NewCookieStore(key, iv)
 	default:
 		log.Fatalf("Unknown session store: %s", p.Session.Store)
+	}
+	return nil
+}
+
+func (p *Config) RedisPool() error {
+	p.redis = &redis.Pool{
+		MaxIdle:     3,
+		IdleTimeout: 4 * 60 * time.Second,
+		Dial: func() (redis.Conn, error) {
+			c, err := redis.Dial("tcp", p.RedisUrl())
+			if err != nil {
+				return nil, err
+			}
+			if _, err = c.Do("SELECT", p.Redis.Db); err != nil {
+				return nil, err
+			}
+			return c, err
+		},
+		TestOnBorrow: func(c redis.Conn, t time.Time) error {
+			_, err := c.Do("PING")
+			return err
+		},
 	}
 	return nil
 }
