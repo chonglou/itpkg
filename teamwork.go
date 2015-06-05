@@ -1,13 +1,18 @@
 package itpkg
 
+import (
+	"github.com/gorilla/pat"
+)
+
 type TeamworkEngine struct {
+	cfg *Config
 }
 
 func (p *TeamworkEngine) Map() {
 
 }
 
-func (p *TeamworkEngine) Mount() {
+func (p *TeamworkEngine) Mount(r *pat.Router) {
 
 }
 

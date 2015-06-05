@@ -57,7 +57,15 @@ func (p *Application) Server() error {
 
 	for _, en := range []Engine{
 		&SiteEngine{cfg: p.cfg},
+		&AuthEngine{cfg: p.cfg},
+		&ShopEngine{cfg: p.cfg},
+		&CmsEngine{cfg: p.cfg},
+		&TeamworkEngine{cfg: p.cfg},
+		&ForumEngine{cfg: p.cfg},
+		&WikiEngine{cfg: p.cfg},
 	} {
+		n, v, _ := en.Info()
+		log.Info("Mount engine %s(%s)", n, v)
 		en.Map()
 		en.Migrate()
 		en.Mount(r)

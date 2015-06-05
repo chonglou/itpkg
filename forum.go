@@ -1,13 +1,18 @@
 package itpkg
 
+import (
+	"github.com/gorilla/pat"
+)
+
 type ForumEngine struct {
+	cfg *Config
 }
 
 func (p *ForumEngine) Map() {
 
 }
 
-func (p *ForumEngine) Mount() {
+func (p *ForumEngine) Mount(r *pat.Router) {
 
 }
 

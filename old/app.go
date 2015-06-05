@@ -19,7 +19,7 @@ func Run() error {
 
 	load := func(c *cli.Context) Config {
 		var err error
-		env := 
+		env :=
 		os.Setenv("ITPKG_ENV", env)
 
 
@@ -76,8 +76,6 @@ func Run() error {
 					&TeamworkEngine{},
 					&ShopEngine{},
 				} {
-					n, v, _ := e.Info()
-					log.Info("Mount engine %s(%s)", n, v)
 					e.Migrate()
 					e.Map()
 					e.Mount()

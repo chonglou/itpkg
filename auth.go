@@ -1,9 +1,9 @@
 package itpkg
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/gorilla/pat"
 	"github.com/jinzhu/gorm"
-	//"net/http"
+	"net/http"
 	"regexp"
 	"time"
 )
@@ -24,15 +24,13 @@ var rxpUserPassword = regexp.MustCompile(".{6,128}")
 
 type AuthEngine struct {
 	cfg *Config
-	db  *gorm.DB
-	app *gin.Engine
 }
 
 func (p *AuthEngine) Map() {
-	//	p.app.Use(&AuthDao{db: p.db, hmac: &Hmac{key: p.cfg.secret[120:152]}})
+	p.cfg.Use("authDao", &AuthDao{db: p.cfg.db, hmac: &Hmac{key: p.cfg.secret[120:152]}})
 }
 
-func (p *AuthEngine) Mount() {
+func (p *AuthEngine) Mount(r *pat.Router) {
 	// p.app.Post(
 	// 	"/users/register",
 	// 	binding.Bind(UserRegisterFm{}),
@@ -58,12 +56,12 @@ func (p *AuthEngine) Mount() {
 }
 
 func (p *AuthEngine) Migrate() {
-	p.db.AutoMigrate(&Contact{})
-	p.db.AutoMigrate(&User{})
-	p.db.Model(&User{}).AddUniqueIndex("idx_user_login", "token", "provider")
-	p.db.AutoMigrate(&Log{})
-	p.db.AutoMigrate(&Role{})
-	p.db.Model(&Role{}).AddUniqueIndex("idx_role_", "user_id", "name", "resource_type", "resource_id")
+	p.cfg.db.AutoMigrate(&Contact{})
+	p.cfg.db.AutoMigrate(&User{})
+	p.cfg.db.Model(&User{}).AddUniqueIndex("idx_user_login", "token", "provider")
+	p.cfg.db.AutoMigrate(&Log{})
+	p.cfg.db.AutoMigrate(&Role{})
+	p.cfg.db.Model(&Role{}).AddUniqueIndex("idx_role_", "user_id", "name", "resource_type", "resource_id")
 }
 
 func (p *AuthEngine) Info() (name string, version string, desc string) {
@@ -77,9 +75,9 @@ type UserRegisterFm struct {
 	RePassword string
 }
 
-// func (p UserRegisterFm) Validate(errors binding.Errors, req *http.Request) binding.Errors {
-// 	return errors
-// }
+func (p UserRegisterFm) Validate(req *http.Request) []error {
+	return nil
+}
 
 type User struct {
 	Model

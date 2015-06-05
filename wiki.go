@@ -1,13 +1,18 @@
 package itpkg
 
+import (
+	"github.com/gorilla/pat"
+)
+
 type WikiEngine struct {
+	cfg *Config
 }
 
 func (p *WikiEngine) Map() {
 
 }
 
-func (p *WikiEngine) Mount() {
+func (p *WikiEngine) Mount(r *pat.Router) {
 
 }
 
