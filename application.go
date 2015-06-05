@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/codegangsta/cli"
+	"github.com/gorilla/pat"
 	"github.com/op/go-logging"
+	"net/http"
 	"os"
 )
 
@@ -14,7 +16,7 @@ type Application struct {
 
 func (p *Application) Init(env string) error {
 
-	cfg := Config{}
+	cfg := Config{beans: make(map[string]interface{}, 0)}
 	if err := LoadLocales("locales"); err != nil {
 		return err
 	}
@@ -30,16 +32,46 @@ func (p *Application) Init(env string) error {
 		if err != nil {
 			return err
 		}
-		logging.SetBackend(bkd)
+		lvl := logging.AddModuleLevel(bkd)
+		lvl.SetLevel(logging.INFO, "")
+		logging.SetBackend(lvl)
 	} else {
+		logging.SetLevel(logging.DEBUG, "")
 		logging.SetFormatter(logging.MustStringFormatter("%{color}%{time:15:04:05.000} %{shortfunc} ▶ %{level:.4s} %{id:03x}%{color:reset} %{message}"))
 	}
 	return nil
 }
 
 func (p *Application) Server() error {
-	log.Info("start")
-	return nil
+	err := p.cfg.OpenDb()
+	if err != nil {
+		return err
+	}
+	p.cfg.OpenRedis()
+
+	if err = p.cfg.OpenSession(); err != nil {
+		return err
+	}
+
+	r := pat.New()
+
+	for _, en := range []Engine{
+		&SiteEngine{cfg: p.cfg},
+	} {
+		en.Map()
+		en.Migrate()
+		en.Mount(r)
+	}
+
+	if p.cfg.IsProduction() {
+		r.Schemes("https")
+		r.Host(p.cfg.Http.Host)
+	} else {
+		r.PathPrefix("/").Handler(http.FileServer(http.Dir("public/")))
+	}
+
+	http.Handle("/", r)
+	return http.ListenAndServe(fmt.Sprintf(":%d", p.cfg.Http.Port), nil)
 }
 
 func (p *Application) Db() error {
@@ -197,7 +229,9 @@ func Run() error {
 			},
 			Action: func(c *cli.Context) {
 				a := load(c)
-				a.Server()
+				if e := a.Server(); e != nil {
+					log.Fatalf("Error on start server: %v", e)
+				}
 			},
 		},
 		{

@@ -2,34 +2,29 @@ package itpkg
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
+	"github.com/gorilla/pat"
 	"github.com/jinzhu/gorm"
-	//"net/http"
+	"net/http"
 	"time"
 )
 
-type BaseEngine struct {
+type SiteEngine struct {
 	cfg *Config
-	db  *gorm.DB
-	app *gin.Engine
 }
 
-func (p *BaseEngine) Map() {
-
-	p.app.Use(func(c *gin.Context) {
-		log.Info("Init BaseDao")
-		aes := Aes{}
-		if err := aes.Init(p.cfg.secret[20:52]); err != nil {
-			log.Fatalf("Error on init aes: %v", err)
-		}
-		c.Set("baseDao", &BaseDao{db: p.db, aes: &aes})
-	})
+func (p *SiteEngine) Map() {
+	log.Info("Init SiteDao")
+	aes := Aes{}
+	if err := aes.Init(p.cfg.secret[20:52]); err != nil {
+		log.Fatalf("Error on init aes: %v", err)
+	}
+	p.cfg.Use("siteDao", &SiteDao{db: p.cfg.db, aes: &aes})
 }
 
-func (p *BaseEngine) Mount() {
+func (p *SiteEngine) Mount(r *pat.Router) {
 
-	p.app.GET("/index.json", func(c *gin.Context) {
-		dao := c.MustGet("baseDao").(*BaseDao)
+	r.Get("/index.json", func(wrt http.ResponseWriter, req *http.Request) {
+		dao := p.cfg.Get("siteDao").(*SiteDao)
 		lang := "zh-CN" //Lang(req)
 		si := make(map[string]interface{}, 0)
 		for _, k := range []string{"title", "author", "keywords", "description", "copyright"} {
@@ -38,17 +33,17 @@ func (p *BaseEngine) Mount() {
 			si[k] = v
 		}
 		si["locale"] = lang
-		c.JSON(200, si)
+		JSON(wrt, si)
 	})
 
 }
 
-func (p *BaseEngine) Migrate() {
-	p.db.AutoMigrate(&Setting{})
+func (p *SiteEngine) Migrate() {
+	p.cfg.db.AutoMigrate(&Setting{})
 }
 
-func (p *BaseEngine) Info() (name string, version string, desc string) {
-	return "base", "v10150530", "Base framework"
+func (p *SiteEngine) Info() (name string, version string, desc string) {
+	return "base", "v10150530", "Site framework"
 }
 
 type Model struct {
@@ -63,24 +58,24 @@ type Setting struct {
 	Iv  []byte `sql:"size:32"`
 }
 
-type BaseDao struct {
+type SiteDao struct {
 	db  *gorm.DB
 	aes *Aes
 }
 
-func (p *BaseDao) siteInfo(key string, lang string) string {
+func (p *SiteDao) siteInfo(key string, lang string) string {
 	return fmt.Sprintf("site://%s/%s", key, lang)
 }
 
-func (p *BaseDao) SetSiteInfo(key string, lang string, val interface{}) {
+func (p *SiteDao) SetSiteInfo(key string, lang string, val interface{}) {
 	p.Set(p.siteInfo(key, lang), val, false)
 }
 
-func (p *BaseDao) GetSiteInfo(key string, lang string, val interface{}) {
+func (p *SiteDao) GetSiteInfo(key string, lang string, val interface{}) {
 	p.Get(p.siteInfo(key, lang), val, false)
 }
 
-func (p *BaseDao) Set(key string, val interface{}, enc bool) error {
+func (p *SiteDao) Set(key string, val interface{}, enc bool) error {
 	dt, err := Obj2bits(val)
 	if err != nil {
 		return err
@@ -103,7 +98,7 @@ func (p *BaseDao) Set(key string, val interface{}, enc bool) error {
 	return nil
 }
 
-func (p *BaseDao) Get(key string, val interface{}, enc bool) error {
+func (p *SiteDao) Get(key string, val interface{}, enc bool) error {
 	st := Setting{}
 	p.db.Where("id = ?", key).First(&st)
 	if st.Val != nil {

@@ -1,6 +1,7 @@
 package itpkg
 
 import (
+	"errors"
 	"fmt"
 	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/sessions"
@@ -14,15 +15,15 @@ import (
 )
 
 type Config struct {
-	db     *gorm.DB
-	redis  *redis.Pool
-	env    string
-	secret []byte
+	db      *gorm.DB
+	redis   *redis.Pool
+	mailer  *Mailer
+	session sessions.Store
+	env     string
+	secret  []byte
+	beans   map[string]interface{}
 
-	Secret string
-	Cache  struct {
-		Store string
-	}
+	Secret  string
 	Session struct {
 		Store string
 		Pool  int
@@ -63,7 +64,15 @@ type Config struct {
 	}
 }
 
-func (p *Config) Mailer() *Mailer {
+func (p *Config) Use(name string, val interface{}) {
+	p.beans[name] = val
+}
+
+func (p *Config) Get(name string) interface{} {
+	return p.beans[name]
+}
+
+func (p *Config) OpenMailer() {
 	m := Mailer{}
 	m.Auth(
 		p.Smtp.From,
@@ -73,7 +82,7 @@ func (p *Config) Mailer() *Mailer {
 		p.Smtp.Username,
 		p.Smtp.Password,
 		p.Smtp.Bcc)
-	return &m
+	p.mailer = &m
 }
 
 func (p *Config) IsProduction() bool {
@@ -119,25 +128,25 @@ func (p *Config) Token() Token {
 	return Token{key: p.secret[220:252]}
 }
 
-func (p *Config) SessionStore() sessions.Store {
+func (p *Config) OpenSession() error {
 	key, iv := p.secret[100:164], p.secret[170:202]
 	switch p.Session.Store {
 	case "redis":
 		//s, e := redistore.NewRediStore(p.Session.Pool, "tcp", p.RedisUrl(), "", key, iv)
 		s, e := redistore.NewRediStoreWithPool(p.redis, key, iv)
 		if e != nil {
-			log.Fatalf("Error on open redis session: %v", e)
+			return e
 		}
-		return s
+		p.session = s
 	case "cookie":
-		return sessions.NewCookieStore(key, iv)
+		p.session = sessions.NewCookieStore(key, iv)
 	default:
-		log.Fatalf("Unknown session store: %s", p.Session.Store)
+		return errors.New(fmt.Sprintf("Unknown session store: %s", p.Session.Store))
 	}
 	return nil
 }
 
-func (p *Config) RedisPool() error {
+func (p *Config) OpenRedis() {
 	p.redis = &redis.Pool{
 		MaxIdle:     3,
 		IdleTimeout: 4 * 60 * time.Second,
@@ -156,7 +165,6 @@ func (p *Config) RedisPool() error {
 			return err
 		},
 	}
-	return nil
 }
 
 func (p *Config) RedisUrl() string {
@@ -187,12 +195,11 @@ func loadConfig(cfg *Config, file string) error {
 		cfg.secret = RandomBytes(512)
 		cfg.Secret = string(Base64Encode(cfg.secret))
 
-		cfg.Http.Host = "http://localhost"
+		cfg.Http.Host = "CHANGE ME"
 		cfg.Http.Port = 3000
 		cfg.Http.Cookie = RandomStr(8)
 		cfg.Http.Expire = 60 * 30
 
-		cfg.Cache.Store = "redis" // can be cookie or memory
 		cfg.Session.Pool = 6
 		cfg.Session.Store = "redis" // can be cookie or redis
 
