@@ -2,17 +2,13 @@ package itpkg
 
 import (
 	"fmt"
-	jwt_lib "github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/contrib/cache"
-	"github.com/gin-gonic/contrib/jwt"
-	"github.com/gin-gonic/contrib/sessions"
-	"github.com/gin-gonic/gin"
+	"github.com/gorilla/sessions"
 	"github.com/jinzhu/gorm"
+	"gopkg.in/boj/redistore.v1"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"strconv"
-	"time"
 )
 
 type Config struct {
@@ -114,42 +110,15 @@ func (p *Config) DbShell() (string, []string) {
 	}
 }
 
-func (p *Config) Token(user uint) (string, error) {
-	token := jwt_lib.New(jwt_lib.GetSigningMethod("HS256"))
-	// Set some claims
-	token.Claims["ID"] = user
-	token.Claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
-
-	return token.SignedString(p.authPassword())
-
-}
-
-func (p *Config) Auth() gin.HandlerFunc {
-	return jwt.Auth(string(p.authPassword()))
-}
-
-func (p *Config) authPassword() []byte {
-	return p.secret[220:252]
-}
-
-func (p *Config) CacheStore() cache.CacheStore {
-	de := time.Second
-	switch p.Cache.Store {
-	case "memory":
-		return cache.NewInMemoryStore(de)
-	case "redis":
-		return cache.NewRedisCache(p.RedisUrl(), "", de)
-	default:
-		log.Fatalf("Unknown cache store: %s", p.Cache.Store)
-	}
-	return nil
+func (p *Config) Token() Token {
+	return Token{key: p.secret[220:252]}
 }
 
 func (p *Config) SessionStore() sessions.Store {
 	key, iv := p.secret[100:164], p.secret[170:202]
 	switch p.Session.Store {
 	case "redis":
-		s, e := sessions.NewRedisStore(p.Session.Pool, "tcp", p.RedisUrl(), "", key, iv)
+		s, e := redistore.NewRediStore(p.Session.Pool, "tcp", p.RedisUrl(), "", key, iv)
 		if e != nil {
 			log.Fatalf("Error on open redis session: %v", e)
 		}

@@ -13,26 +13,32 @@ type Application struct {
 }
 
 func (p *Application) Init(env string) error {
-	var err error
 
 	cfg := Config{}
-	if err = LoadLocales("locales"); err != nil {
+	if err := LoadLocales("locales"); err != nil {
 		return err
 	}
 
-	if err = loadConfig(&cfg, fmt.Sprintf("config/%s.yml", env)); err != nil {
+	if err := loadConfig(&cfg, fmt.Sprintf("config/%s.yml", env)); err != nil {
 		return err
 	}
 
 	cfg.env = env
 	p.cfg = &cfg
-	if !p.cfg.IsProduction() {
+	if p.cfg.IsProduction() {
+		bkd, err := logging.NewSyslogBackend("itpkg")
+		if err != nil {
+			return err
+		}
+		logging.SetBackend(bkd)
+	} else {
 		logging.SetFormatter(logging.MustStringFormatter("%{color}%{time:15:04:05.000} %{shortfunc} ▶ %{level:.4s} %{id:03x}%{color:reset} %{message}"))
 	}
 	return nil
 }
 
 func (p *Application) Server() error {
+	log.Info("start")
 	return nil
 }
 
