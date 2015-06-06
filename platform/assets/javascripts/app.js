@@ -107,17 +107,7 @@ itpkgApp.controller('RootCtrl', [
         function ($scope, $modalInstance, title, items) {
             //todo
         }
-    ])
-    .controller('ModalInstanceCtrl', [
-        '$scope', '$modalInstance', 'title', 'items',
-        function ($scope, $modalInstance, title, items) {
-            $scope.title = title;
-            $scope.items = items;
-
-            $scope.ok = function () {
-                $modalInstance.dismiss('cancel');
-            };
-        }]);
+    ]);
 
 itpkgApp.factory('Page', function () {
     var title = '';

@@ -1,10 +1,13 @@
 package itpkg
 
 import (
+	"expvar"
 	"fmt"
+	"github.com/gorilla/feeds"
 	"github.com/gorilla/pat"
 	"github.com/jinzhu/gorm"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -22,10 +25,51 @@ func (p *SiteEngine) Map() {
 }
 
 func (p *SiteEngine) Mount(r *pat.Router) {
+	r.Get("/rss.atom", func(wrt http.ResponseWriter, req *http.Request) {
+		dao := p.cfg.Get("siteDao").(*SiteDao)
+		lang := LANG(req)
+		var title, description, author string
+		dao.GetSiteInfo("title", lang, &title)
+		dao.GetSiteInfo("description", lang, &description)
+		dao.GetSiteInfo("author", lang, &author)
+		feed := &feeds.Feed{
+			Title:       title,
+			Link:        &feeds.Link{Href: fmt.Sprintf("https://%s", p.cfg.Http.Host)},
+			Description: description,
+			Author:      &feeds.Author{strings.Split(author, "@")[0], author},
+			Created:     time.Now(),
+		}
+		feed.Items = []*feeds.Item{
+		//todo read from redis
+		}
+
+		wrt.Header().Set("Content-Type", "application/xml")
+
+		if err := feed.WriteAtom(wrt); err == nil {
+
+			fmt.Fprintf(wrt, "\n")
+		} else {
+			ERROR(wrt, err)
+		}
+	})
+	r.Get("/debug/vars", func(w http.ResponseWriter, req *http.Request) {
+		// todo need login
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		fmt.Fprintf(w, "{")
+		first := true
+		expvar.Do(func(kv expvar.KeyValue) {
+			if !first {
+				fmt.Fprintf(w, ",\n")
+			}
+			first = false
+			fmt.Fprintf(w, "%q: %s", kv.Key, kv.Value)
+		})
+		fmt.Fprintf(w, "}\n")
+	})
 
 	r.Get("/index.json", func(wrt http.ResponseWriter, req *http.Request) {
 		dao := p.cfg.Get("siteDao").(*SiteDao)
-		lang := "zh-CN" //Lang(req)
+		lang := LANG(req)
 		si := make(map[string]interface{}, 0)
 		for _, k := range []string{"title", "author", "keywords", "description", "copyright"} {
 			var v string

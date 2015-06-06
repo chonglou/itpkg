@@ -78,8 +78,8 @@ func (p *Application) Server() error {
 		r.PathPrefix("/").Handler(http.FileServer(http.Dir("public/")))
 	}
 
-	http.Handle("/", r)
-	return http.ListenAndServe(fmt.Sprintf(":%d", p.cfg.Http.Port), nil)
+	//http.Handle("/", r)
+	return http.ListenAndServe(fmt.Sprintf(":%d", p.cfg.Http.Port), r)
 }
 
 func (p *Application) Db() error {
