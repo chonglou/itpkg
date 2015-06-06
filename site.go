@@ -3,6 +3,7 @@ package itpkg
 import (
 	"expvar"
 	"fmt"
+	"github.com/chonglou/sitemap"
 	"github.com/gorilla/feeds"
 	"github.com/gorilla/pat"
 	"github.com/jinzhu/gorm"
@@ -25,6 +26,12 @@ func (p *SiteEngine) Map() {
 }
 
 func (p *SiteEngine) Mount(r *pat.Router) {
+	r.Get("/sitemap.xml", func(wrt http.ResponseWriter, req *http.Request) {
+		si := sitemap.New()
+		//todo add links from redis
+		XML(wrt, si)
+	})
+
 	r.Get("/rss.atom", func(wrt http.ResponseWriter, req *http.Request) {
 		dao := p.cfg.Get("siteDao").(*SiteDao)
 		lang := LANG(req)
