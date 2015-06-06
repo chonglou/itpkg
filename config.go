@@ -125,7 +125,7 @@ func (p *Config) DbShell() (string, []string) {
 }
 
 func (p *Config) Token() Token {
-	return Token{key: p.secret[220:252]}
+	return Token{redis: p.redis}
 }
 
 func (p *Config) OpenSession() error {

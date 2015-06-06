@@ -6,10 +6,10 @@ import (
 
 const hello = "Hello, IT-PACKAGE!!!"
 
-func TestUuid(t *testing.T) {
-	log.Info("==================UTILS=============================")
-	log.Info("UUID: %s\t%s", Uuid(), Uuid())
-}
+// func TestUuid(t *testing.T) {
+// 	log.Info("==================UTILS=============================")
+// 	log.Info("UUID: %s\t%s", Uuid(), Uuid())
+// }
 
 func TestRandom(t *testing.T) {
 	log.Info("Random string: %s\t%s", RandomStr(16), RandomStr(16))
