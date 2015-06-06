@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 	//"html/template"
+	"fmt"
 	"time"
 )
 
@@ -21,14 +22,13 @@ func LANG(req *http.Request) string {
 	return "en"
 }
 
-func XML(writer http.ResponseWriter, val interface{}) {
-	writer.Header().Set("Content-Type", "application/xml")
-
-	x, e := xml.MarshalIndent(val, "", "  ")
-	if e == nil {
-		writer.Write(x)
+func XML(wrt http.ResponseWriter, val interface{}) {
+	wrt.Header().Set("Content-Type", "application/xml")
+	wrt.Write([]byte(xml.Header))
+	if err := xml.NewEncoder(wrt).Encode(val); err == nil {
+		fmt.Fprintf(wrt, "\n")
 	} else {
-		ERROR(writer, e)
+		ERROR(wrt, err)
 	}
 }
 
@@ -36,13 +36,11 @@ func ERROR(writer http.ResponseWriter, e error) {
 	http.Error(writer, e.Error(), http.StatusInternalServerError)
 }
 
-func JSON(writer http.ResponseWriter, val interface{}) {
-	writer.Header().Set("Content-Type", "application/json")
-	j, e := json.Marshal(val)
-	if e == nil {
-		writer.Write(j)
-	} else {
-		ERROR(writer, e)
+func JSON(wrt http.ResponseWriter, val interface{}) {
+	wrt.Header().Set("Content-Type", "application/json")
+	en := json.NewEncoder(wrt)
+	if err := en.Encode(val); err != nil {
+		ERROR(wrt, err)
 	}
 }
 

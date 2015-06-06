@@ -43,15 +43,10 @@ func (p *SiteEngine) Mount(r *pat.Router) {
 		//todo read from redis
 		}
 
-		wrt.Header().Set("Content-Type", "application/xml")
-
-		if err := feed.WriteAtom(wrt); err == nil {
-
-			fmt.Fprintf(wrt, "\n")
-		} else {
-			ERROR(wrt, err)
-		}
+		atom := feeds.Atom{feed}
+		XML(wrt, atom.FeedXml())
 	})
+
 	r.Get("/debug/vars", func(w http.ResponseWriter, req *http.Request) {
 		// todo need login
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
