@@ -10,7 +10,7 @@ import (
 var locales = make(map[string]map[string]string, 0)
 
 func LoadLocales(path string) error {
-	log.Info("Loading i18n from " + path)
+	Log.Info("Loading i18n from " + path)
 	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		return err
@@ -31,7 +31,7 @@ func LoadLocales(path string) error {
 		if err != nil {
 			return err
 		}
-		log.Info("Find locale file %s(%d)", fn, len(ss))
+		Log.Info("Find locale file %s(%d)", fn, len(ss))
 		locales[lang] = ss
 
 	}

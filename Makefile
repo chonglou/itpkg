@@ -5,8 +5,8 @@ test:
 
 
 format:
-	go fmt *.go
-	go fmt platform/*.go
+	go fmt base/*.go 
+	go fmt wiki/*.go
 
 
 
