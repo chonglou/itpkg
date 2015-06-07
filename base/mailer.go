@@ -35,11 +35,11 @@ func (p *Mailer) Html(to []string, subject, file string, arg interface{}, files 
 	t := template.New("")
 	t, err = t.ParseFiles(file)
 	if err != nil {
-		log.Error("Parse mailer template fail " + err.Error())
+		Log.Error("Parse mailer template fail " + err.Error())
 		return
 	}
 	if err = t.Execute(&buf, arg); err != nil {
-		log.Error("Parse mailer template fail: " + err.Error())
+		Log.Error("Parse mailer template fail: " + err.Error())
 		return
 	}
 	if p.perform {
@@ -54,18 +54,18 @@ func (p *Mailer) Html(to []string, subject, file string, arg interface{}, files 
 		for _, n := range files {
 			f, e := gomail.OpenFile(n)
 			if e != nil {
-				log.Error("Faile to add attachment: " + err.Error())
+				Log.Error("Faile to add attachment: " + err.Error())
 				continue
 			}
 			msg.Attach(f)
 		}
 
 		if err := p.mailer.Send(msg); err != nil {
-			log.Error("Error on send mail")
+			Log.Error("Error on send mail")
 		}
 
 	} else {
-		log.Debug("Send mail to %v\nSubject: %s\nBody: \n %s", to, subject, buf.String())
+		Log.Debug("Send mail to %v\nSubject: %s\nBody: \n %s", to, subject, buf.String())
 	}
 }
 

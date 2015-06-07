@@ -11,9 +11,10 @@ import (
 
 type Token struct {
 	redis *redis.Pool
+	key   []byte //16 bits
 }
 
-func (p *Token) key(kid string) string {
+func (p *Token) tid(kid string) string {
 	return fmt.Sprintf("token://%s", kid)
 }
 
@@ -24,24 +25,26 @@ func (p *Token) New(data interface{}, hours uint) (string, error) {
 	token.Claims["val"] = data
 	token.Claims["exp"] = time.Now().Add(time.Hour * time.Duration(hours)).Unix()
 
-	key := RandomBytes(32)
+	key := RandomBytes(16)
 	conn := p.redis.Get()
 	defer conn.Close()
-	if _, err := conn.Do("SET", p.key(kid), key, "EX", hours*60*60+3); err != nil {
-		log.Error("Set token key error: %v", err)
+	if _, err := conn.Do("SET", p.tid(kid), key, "EX", hours*60*60+3); err != nil {
+		Log.Error("Set token key error: %v", err)
+		return "", err
 	}
-	return token.SignedString(key)
+	return token.SignedString(append(key, p.key...))
 }
 
 func (p *Token) Parse(token string) (interface{}, error) {
 	tk, err := jwt.Parse(token, func(tk *jwt.Token) (interface{}, error) {
 		conn := p.redis.Get()
 		defer conn.Close()
-		val, err := conn.Do("GET", p.key(tk.Header["kid"].(string)))
+		val, err := conn.Do("GET", p.tid(tk.Header["kid"].(string)))
 		if err != nil {
+			Log.Error("Get token key error: %v", err)
 			return nil, err
 		}
-		return val, nil
+		return append(val.([]byte), p.key...), nil
 	})
 
 	if err != nil {

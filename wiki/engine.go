@@ -5,5 +5,5 @@ import (
 )
 
 func init() {
-	Log.Info("Load engine cms")
+	Register("wiki")
 }

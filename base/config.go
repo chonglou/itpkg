@@ -26,7 +26,6 @@ type Config struct {
 	Secret  string
 	Session struct {
 		Store string
-		Pool  int
 	}
 	Http struct {
 		Host   string
@@ -41,7 +40,7 @@ type Config struct {
 		User     string
 		Password string
 		Name     string
-		Ssl      string
+		Extra    string
 	}
 	Redis struct {
 		Host string
@@ -105,9 +104,9 @@ func (p *Config) OpenDb() error {
 
 func (p *Config) DbUrl() string {
 	return fmt.Sprintf(
-		"%s://%s:%s@%s:%d/%s?sslmode=%s",
+		"%s://%s:%s@%s:%d/%s?%s",
 		p.Database.Driver, p.Database.User, p.Database.Password, p.Database.Host,
-		p.Database.Port, p.Database.Name, p.Database.Ssl)
+		p.Database.Port, p.Database.Name, p.Database.Extra)
 }
 
 func (p *Config) DbShell() (string, []string) {
@@ -125,7 +124,7 @@ func (p *Config) DbShell() (string, []string) {
 }
 
 func (p *Config) Token() Token {
-	return Token{redis: p.redis}
+	return Token{redis: p.redis, key: p.secret[190:206]}
 }
 
 func (p *Config) OpenSession() error {
@@ -184,7 +183,7 @@ func loadConfig(cfg *Config, file string) error {
 		if err != nil {
 			return err
 		}
-		log.Info("Load from config file: %s", file)
+		Log.Info("Load from config file: %s", file)
 		if err = yaml.Unmarshal(yml, cfg); err != nil {
 			return err
 		}
@@ -200,7 +199,6 @@ func loadConfig(cfg *Config, file string) error {
 		cfg.Http.Cookie = RandomStr(8)
 		cfg.Http.Expire = 60 * 30
 
-		cfg.Session.Pool = 6
 		cfg.Session.Store = "redis" // can be cookie or redis
 
 		cfg.Database.Driver = "postgres"
@@ -209,7 +207,7 @@ func loadConfig(cfg *Config, file string) error {
 		cfg.Database.User = "postgres"
 		cfg.Database.Password = ""
 		cfg.Database.Name = "itpkg"
-		cfg.Database.Ssl = "disable"
+		cfg.Database.Extra = "sslmode=disable"
 
 		cfg.Redis.Host = "localhost"
 		cfg.Redis.Port = 6379
@@ -233,7 +231,7 @@ func loadConfig(cfg *Config, file string) error {
 		if err != nil {
 			return err
 		}
-		log.Info("Generate config file: %s", file)
+		Log.Info("Generate config file: %s", file)
 		err = ioutil.WriteFile(file, data, 0600)
 	}
 	return err

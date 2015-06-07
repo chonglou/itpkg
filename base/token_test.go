@@ -21,12 +21,11 @@ func getRedis() *redis.Pool {
 }
 
 func TestToken(t *testing.T) {
-	log.Info("==================Token=============================")
 
-	tk := Token{redis: getRedis()}
+	tk := Token{redis: getRedis(), key: RandomBytes(16)}
 	ts1, _ := tk.New(hello, 1)
 	ts2, _ := tk.New(hello, 2)
-	log.Info("%s\n%s\n%s", hello, ts1, ts2)
+	t.Logf("%s\n%s\n%s", hello, ts1, ts2)
 	if ts1 == ts2 {
 		t.Errorf("Token ERROR!")
 	}
