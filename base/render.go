@@ -57,9 +57,13 @@ type Response struct {
 	Created time.Time     `json:"created"`
 }
 
-func (msg *Response) Error(err string) {
-	msg.Ok = false
-	msg.Errors = append(msg.Errors, err)
+func (p *Response) Add(items ...interface{}) {
+	p.Data = append(p.Data, items...)
+}
+
+func (p *Response) Error(errs ...string) {
+	p.Ok = false
+	p.Errors = append(p.Errors, errs...)
 }
 
 func NewResponse(ok bool, data ...interface{}) Response {

@@ -1,25 +1,12 @@
 package itpkg
 
 import (
+	valid "github.com/asaskevich/govalidator"
+	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"net/http"
-	"regexp"
 	"time"
 )
-
-var rxpUserEmail = regexp.MustCompile("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*")
-var rxpUserName = regexp.MustCompile("\\w{1,64}")
-var rxpUserPassword = regexp.MustCompile(".{6,128}")
-
-//
-// func CurrentUser(ss sessions.Session, dao *AuthDao, user *User) bool {
-// 	uid := ss.Get("uid")
-// 	if uid == nil {
-// 		return false
-// 	}
-//
-// 	return dao.UserById(uid.(uint), user)
-// }
 
 type AuthEngine struct {
 	EngineSetup
@@ -30,28 +17,34 @@ func (p *AuthEngine) Map() {
 }
 
 func (p *AuthEngine) Mount() {
-	// p.app.Post(
-	// 	"/users/register",
-	// 	binding.Bind(UserRegisterFm{}),
-	// 	func(fm UserRegisterFm, r render.Render, dao *AuthDao, mailer *Mailer) {
-	// 		//go mailer.Text([]string{"2682287010@qq.com"}, "test", "body")
-	// 		r.JSON(200, map[string]interface{}{"fm": fm})
-	// 	})
-	// p.app.Post("/users/login", func() {})
-	// p.app.Get("/users/unlock", func() {})
-	// p.app.Post("/users/password/1", func() {})
-	// p.app.Post("/users/password/2", func() {})
-	// p.app.Post("/users/confirm", func() {})
-	// p.app.Get("/users/logout", func(req *http.Request, r render.Render, ss sessions.Session, dao *AuthDao) {
-	// 	// u := User{}
-	// 	// if CurrentUser(ss, dao, &u) {
-	// 	// 	ss.Clear()
-	// 	// 	dao.Log(u.ID, T(Lang(req), "auth.log.logout"), "")
-	// 	// 	r.JSON(200, NewMessage(false))
-	// 	// } else {
-	// 	// 	r.JSON(200, NewMessage(false))
-	// 	// }
-	// })
+	r := p.cfg.router
+
+	r.POST("/users/register", func(c *gin.Context) {
+		var fm UserRegisterFm
+		c.Bind(&fm)
+		_, err := valid.ValidateStruct(fm)
+		res := NewResponse(true)
+		if err == nil {
+			//todo
+		} else {
+			res.Error(err.Error())
+		}
+		c.JSON(http.StatusOK, res)
+	})
+
+	r.POST("/users/login", func(c *gin.Context) {})
+
+	r.POST("/users/unlock", func(c *gin.Context) {})
+	r.GET("/users/unlock", func(c *gin.Context) {})
+
+	r.POST("/users/password/1", func(c *gin.Context) {})
+	r.GET("/users/password/1", func(c *gin.Context) {})
+	r.POST("/users/password/2", func(c *gin.Context) {})
+
+	r.POST("/users/confirm", func(c *gin.Context) {})
+	r.GET("/users/confirm", func(c *gin.Context) {})
+
+	r.GET("/users/logout", func(c *gin.Context) {})
 }
 
 func (p *AuthEngine) Migrate() {
@@ -67,17 +60,30 @@ func (p *AuthEngine) Info() (name string, version string, desc string) {
 	return "auth", "v10250530", ""
 }
 
+//-----------------------form---------------------------------------
 type UserRegisterFm struct {
-	Name       string
-	Email      string
-	Password   string
-	RePassword string
+	Name       string `valid:"ascii,required" json:"name"`
+	Email      string `valid:"email,required" json:"email"`
+	Password   string `valid:"ascii,required" json:"password"`
+	RePassword string `valid:"ascii,required" json:"re_password"`
 }
 
-func (p UserRegisterFm) Validate(req *http.Request) []error {
-	return nil
+type UserLoginFm struct {
+	Email      string `valid:"email,required" json:"email"`
+	Password   string `valid:"ascii,required" json:"password"`
+	RememberMe bool   `valid:"-" json:"remember_me"`
 }
 
+type UserEmailFm struct {
+	Email string `valid:"email,required" json:"email"`
+}
+
+type UserPasswordFm struct {
+	Password   string `valid:"ascii,required" json:"password"`
+	RePassword string `valid:"ascii,required" json:"re_password"`
+}
+
+//-----------------------model---------------------------------------
 type User struct {
 	Model
 	Name      string `sql:"not null;size:64;index"`
@@ -126,6 +132,8 @@ type Role struct {
 	StartUp      *time.Time `sql:"type:DATE;default:CURRENT_DATE"`
 	ShutDown     *time.Time `sql:"type:DATE;default:'9999-12-31'"`
 }
+
+//-----------------------dao---------------------------------------
 
 type AuthDao struct {
 	db   *gorm.DB
@@ -208,6 +216,7 @@ func (p *AuthDao) resource(args ...interface{}) (string, uint, *time.Time, *time
 	return rty, rid, begin, end
 }
 
+//-----------------------init---------------------------------------
 func init() {
 	Register(&AuthEngine{})
 }
