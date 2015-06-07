@@ -22,11 +22,11 @@ var rxpUserPassword = regexp.MustCompile(".{6,128}")
 // }
 
 type AuthEngine struct {
-	cfg *Config
+	EngineSetup
 }
 
 func (p *AuthEngine) Map() {
-	p.cfg.Use("authDao", &AuthDao{db: p.cfg.db, hmac: &Hmac{key: p.cfg.secret[120:152]}})
+	p.Use("authDao", &AuthDao{db: p.cfg.db, hmac: &Hmac{key: p.cfg.secret[120:152]}})
 }
 
 func (p *AuthEngine) Mount() {
@@ -209,5 +209,5 @@ func (p *AuthDao) resource(args ...interface{}) (string, uint, *time.Time, *time
 }
 
 func init() {
-	Register("auth")
+	Register(&AuthEngine{})
 }

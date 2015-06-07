@@ -68,14 +68,6 @@ type Config struct {
 	}
 }
 
-func (p *Config) Use(name string, val interface{}) {
-	p.beans[name] = val
-}
-
-func (p *Config) Get(name string) interface{} {
-	return p.beans[name]
-}
-
 func (p *Config) OpenCache() error {
 	const expire = time.Second
 	switch p.Cache.Store {

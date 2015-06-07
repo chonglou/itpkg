@@ -2,7 +2,6 @@ package itpkg
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/op/go-logging"
@@ -57,20 +56,14 @@ func (p *Application) loop(f func(en Engine)) error {
 		return err
 	}
 
-	for n, _ := range engines {
-		var en Engine
-		switch n {
-		case "auth":
-			en = &AuthEngine{cfg: p.cfg}
-		case "site":
-			en = &SiteEngine{cfg: p.cfg}
-		default:
-			return errors.New("Unknown engine " + n)
-		}
+	p.cfg.beans["db"] = p.cfg.db
+	p.cfg.beans["cache"] = p.cfg.cache
+
+	for _, en := range engines {
 		n, v, _ := en.Info()
 		Logger.Info("Load engine %s(%s)", n, v)
+		en.Setup(p.cfg)
 		f(en)
-		engines[n] = en
 	}
 	return nil
 }

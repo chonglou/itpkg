@@ -12,7 +12,7 @@ import (
 )
 
 type SiteEngine struct {
-	cfg *Config
+	EngineSetup
 	dao *SiteDao
 }
 
@@ -23,7 +23,7 @@ func (p *SiteEngine) Map() {
 		Logger.Fatalf("Error on init aes: %v", err)
 	}
 	p.dao = &SiteDao{db: p.cfg.db, aes: &aes}
-	p.cfg.Use("siteDao", p.dao)
+	p.Use("siteDao", p.dao)
 }
 
 func (p *SiteEngine) Mount() {
@@ -185,5 +185,5 @@ func (p *SiteDao) Get(key string, val interface{}, enc bool) error {
 }
 
 func init() {
-	Register("site")
+	Register(&SiteEngine{})
 }
