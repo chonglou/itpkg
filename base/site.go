@@ -3,16 +3,17 @@ package itpkg
 import (
 	//"expvar"
 	"fmt"
-	//"github.com/chonglou/sitemap"
-	//"github.com/gorilla/feeds"
+	"github.com/chonglou/sitemap"
+	"github.com/gorilla/feeds"
+	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	//"net/http"
-	//"strings"
+	"net/http"
 	"time"
 )
 
 type SiteEngine struct {
 	cfg *Config
+	dao *SiteDao
 }
 
 func (p *SiteEngine) Map() {
@@ -21,29 +22,31 @@ func (p *SiteEngine) Map() {
 	if err := aes.Init(p.cfg.secret[20:52]); err != nil {
 		Logger.Fatalf("Error on init aes: %v", err)
 	}
-	p.cfg.Use("siteDao", &SiteDao{db: p.cfg.db, aes: &aes})
+	p.dao = &SiteDao{db: p.cfg.db, aes: &aes}
+	p.cfg.Use("siteDao", p.dao)
 }
 
 func (p *SiteEngine) Mount() {
-	/*
-		r.Get("/sitemap.xml", func(wrt http.ResponseWriter, req *http.Request) {
+	r := p.cfg.router
+
+		r.GET("/sitemap.xml", func(c *gin.Context) {
 			si := sitemap.New()
 			//todo add links from redis
-			XML(wrt, si)
+			c.XML(http.StatusOK, si)
 		})
 
-		r.Get("/rss.atom", func(wrt http.ResponseWriter, req *http.Request) {
-			dao := p.cfg.Get("siteDao").(*SiteDao)
-			lang := LANG(req)
-			var title, description, author string
-			dao.GetSiteInfo("title", lang, &title)
-			dao.GetSiteInfo("description", lang, &description)
-			dao.GetSiteInfo("author", lang, &author)
+		r.GET("/rss.atom", func(c *gin.Context) {
+			lang := LANG(c)
+			var title, description, author_n, author_e string
+			p.dao.GetSiteInfo("title", lang, &title)
+			p.dao.GetSiteInfo("description", lang, &description)
+			p.dao.GetSiteInfo("author.name", lang, &author_n)
+			p.dao.GetSiteInfo("author.email", lang, &author_e)
 			feed := &feeds.Feed{
 				Title:       title,
 				Link:        &feeds.Link{Href: fmt.Sprintf("https://%s", p.cfg.Http.Host)},
 				Description: description,
-				Author:      &feeds.Author{strings.Split(author, "@")[0], author},
+				Author:      &feeds.Author{author_n, author_e},
 				Created:     time.Now(),
 			}
 			feed.Items = []*feeds.Item{
@@ -51,9 +54,10 @@ func (p *SiteEngine) Mount() {
 			}
 
 			atom := feeds.Atom{feed}
-			XML(wrt, atom.FeedXml())
+			c.XML(http.StatusOK, atom.FeedXml())
 		})
 
+	/*
 		r.Get("/debug/vars", func(w http.ResponseWriter, req *http.Request) {
 			// todo need login
 			w.Header().Set("Content-Type", "application/json; charset=utf-8")
@@ -68,20 +72,19 @@ func (p *SiteEngine) Mount() {
 			})
 			fmt.Fprintf(w, "}\n")
 		})
+	*/
 
-		r.Get("/index.json", func(wrt http.ResponseWriter, req *http.Request) {
-			dao := p.cfg.Get("siteDao").(*SiteDao)
-			lang := LANG(req)
+		r.GET("/index.json", func(c *gin.Context) {
+			lang := LANG(c)
 			si := make(map[string]interface{}, 0)
-			for _, k := range []string{"title", "author", "keywords", "description", "copyright"} {
+			for _, k := range []string{"title", "author.email", "author.name", "keywords", "description", "copyright"} {
 				var v string
-				dao.GetSiteInfo(k, lang, &v)
+				p.dao.GetSiteInfo(k, lang, &v)
 				si[k] = v
 			}
 			si["locale"] = lang
-			JSON(wrt, si)
+			c.JSON(http.StatusOK, si)
 		})
-	*/
 
 }
 

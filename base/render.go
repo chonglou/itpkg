@@ -1,17 +1,19 @@
 package itpkg
 
 import (
-	"encoding/json"
-	"encoding/xml"
-	"net/http"
-	"strings"
+	//"encoding/json"
+	//"encoding/xml"
+	//"net/http"
+	//"strings"
 	//"html/template"
-	"fmt"
+	"github.com/gin-gonic/gin"
+	//"fmt"
 	"time"
 )
 
-func LANG(req *http.Request) string {
-
+func LANG(c *gin.Context) string {
+	return c.DefaultQuery("locale", "en")
+/*
 	lang := req.URL.Query().Get("locale")
 	if lang != "" {
 		return lang
@@ -20,7 +22,9 @@ func LANG(req *http.Request) string {
 		return strings.Replace(cke.Value, "%22", "", -1)
 	}
 	return "en"
+	*/
 }
+/*
 
 func XML(wrt http.ResponseWriter, val interface{}) {
 	wrt.Header().Set("Content-Type", "application/xml")
@@ -43,6 +47,7 @@ func JSON(wrt http.ResponseWriter, val interface{}) {
 		ERROR(wrt, err)
 	}
 }
+*/
 
 type Response struct {
 	Ok      bool          `json:"ok"`
