@@ -13,17 +13,18 @@ import (
 
 func LANG(c *gin.Context) string {
 	return c.DefaultQuery("locale", "en")
-/*
-	lang := req.URL.Query().Get("locale")
-	if lang != "" {
-		return lang
-	}
-	if cke, err := req.Cookie("NG_TRANSLATE_LANG_KEY"); err == nil {
-		return strings.Replace(cke.Value, "%22", "", -1)
-	}
-	return "en"
+	/*
+		lang := req.URL.Query().Get("locale")
+		if lang != "" {
+			return lang
+		}
+		if cke, err := req.Cookie("NG_TRANSLATE_LANG_KEY"); err == nil {
+			return strings.Replace(cke.Value, "%22", "", -1)
+		}
+		return "en"
 	*/
 }
+
 /*
 
 func XML(wrt http.ResponseWriter, val interface{}) {

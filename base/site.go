@@ -1,11 +1,10 @@
 package itpkg
 
 import (
-	//"expvar"
 	"fmt"
 	"github.com/chonglou/sitemap"
-	"github.com/gorilla/feeds"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/feeds"
 	"github.com/jinzhu/gorm"
 	"net/http"
 	"time"
@@ -29,33 +28,33 @@ func (p *SiteEngine) Map() {
 func (p *SiteEngine) Mount() {
 	r := p.cfg.router
 
-		r.GET("/sitemap.xml", func(c *gin.Context) {
-			si := sitemap.New()
-			//todo add links from redis
-			c.XML(http.StatusOK, si)
-		})
+	r.GET("/sitemap.xml", func(c *gin.Context) {
+		si := sitemap.New()
+		//todo add links from redis
+		c.XML(http.StatusOK, si)
+	})
 
-		r.GET("/rss.atom", func(c *gin.Context) {
-			lang := LANG(c)
-			var title, description, author_n, author_e string
-			p.dao.GetSiteInfo("title", lang, &title)
-			p.dao.GetSiteInfo("description", lang, &description)
-			p.dao.GetSiteInfo("author.name", lang, &author_n)
-			p.dao.GetSiteInfo("author.email", lang, &author_e)
-			feed := &feeds.Feed{
-				Title:       title,
-				Link:        &feeds.Link{Href: fmt.Sprintf("https://%s", p.cfg.Http.Host)},
-				Description: description,
-				Author:      &feeds.Author{author_n, author_e},
-				Created:     time.Now(),
-			}
-			feed.Items = []*feeds.Item{
-			//todo read from redis
-			}
+	r.GET("/rss.atom", func(c *gin.Context) {
+		lang := LANG(c)
+		var title, description, author_n, author_e string
+		p.dao.GetSiteInfo("title", lang, &title)
+		p.dao.GetSiteInfo("description", lang, &description)
+		p.dao.GetSiteInfo("author.name", lang, &author_n)
+		p.dao.GetSiteInfo("author.email", lang, &author_e)
+		feed := &feeds.Feed{
+			Title:       title,
+			Link:        &feeds.Link{Href: fmt.Sprintf("https://%s", p.cfg.Http.Host)},
+			Description: description,
+			Author:      &feeds.Author{author_n, author_e},
+			Created:     time.Now(),
+		}
+		feed.Items = []*feeds.Item{
+		//todo read from redis
+		}
 
-			atom := feeds.Atom{feed}
-			c.XML(http.StatusOK, atom.FeedXml())
-		})
+		atom := feeds.Atom{feed}
+		c.XML(http.StatusOK, atom.FeedXml())
+	})
 
 	/*
 		r.Get("/debug/vars", func(w http.ResponseWriter, req *http.Request) {
@@ -74,17 +73,37 @@ func (p *SiteEngine) Mount() {
 		})
 	*/
 
-		r.GET("/index.json", func(c *gin.Context) {
-			lang := LANG(c)
-			si := make(map[string]interface{}, 0)
-			for _, k := range []string{"title", "author.email", "author.name", "keywords", "description", "copyright"} {
-				var v string
-				p.dao.GetSiteInfo(k, lang, &v)
-				si[k] = v
-			}
-			si["locale"] = lang
-			c.JSON(http.StatusOK, si)
-		})
+	r.GET("/index.json", func(c *gin.Context) {
+		lang := LANG(c)
+		si := make(map[string]interface{}, 0)
+		for _, k := range []string{"title", "keywords", "description", "copyright"} {
+			var v string
+			p.dao.GetSiteInfo(k, lang, &v)
+			si[k] = v
+		}
+
+		author := make(map[string]string, 0)
+		for _, k := range []string{"name", "email"} {
+			var v string
+			p.dao.GetSiteInfo("author."+k, lang, &v)
+			author[k] = v
+		}
+		si["author"] = author
+
+		si["locale"] = lang
+
+		ei := make([]map[string]string, 0)
+		for _, e := range engines {
+			n, v, d := e.Info()
+			in := make(map[string]string, 0)
+			in["name"] = n
+			in["version"] = v
+			in["description"] = d
+			ei = append(ei, in)
+		}
+		si["engines"] = ei
+		c.JSON(http.StatusOK, si)
+	})
 
 }
 
@@ -93,7 +112,7 @@ func (p *SiteEngine) Migrate() {
 }
 
 func (p *SiteEngine) Info() (name string, version string, desc string) {
-	return "base", "v10150530", "Site framework"
+	return "site", "v10150530", "Site framework"
 }
 
 type Model struct {

@@ -9,13 +9,11 @@ type Engine interface {
 	Info() (name string, version string, desc string)
 }
 
-var engines = make([]string, 0)
+var engines = make(map[string]Engine, 0)
 
 func Register(en string) {
-	for _, e := range engines {
-		if e == en {
-			return
-		}
+	if _, ok := engines[en]; ok {
+		return
 	}
-	engines = append(engines, en)
+	engines[en] = nil
 }

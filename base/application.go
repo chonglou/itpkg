@@ -54,19 +54,20 @@ func (p *Application) loop(f func(en Engine)) error {
 		return err
 	}
 
-	for _, e := range engines {
+	for n, _ := range engines {
 		var en Engine
-		switch e {
+		switch n {
 		case "auth":
 			en = &AuthEngine{cfg: p.cfg}
 		case "site":
 			en = &SiteEngine{cfg: p.cfg}
 		default:
-			return errors.New("Unknown engine " + e)
+			return errors.New("Unknown engine " + n)
 		}
 		n, v, _ := en.Info()
 		Logger.Info("Load engine %s(%s)", n, v)
 		f(en)
+		engines[n] = en
 	}
 	return nil
 }
