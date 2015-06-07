@@ -83,6 +83,7 @@ func (p *Config) OpenCache() error {
 }
 
 func (p *Config) OpenRouter() error {
+
 	if p.IsProduction() {
 		gin.SetMode(gin.ReleaseMode)
 	}
@@ -106,6 +107,11 @@ func (p *Config) OpenRouter() error {
 
 	Logger.Info("Using session by %s", p.Session.Store)
 	rt.Use(sessions.Sessions(NAME, store))
+
+	if !p.IsProduction() {
+		rt.Static("/assets", "public")
+	}
+
 	p.router = rt
 	return nil
 }

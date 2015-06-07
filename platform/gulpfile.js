@@ -18,25 +18,25 @@ var paths = {
   templates: 'assets/templates/**/*.html',
   images: 'assets/images/**/*',
   third: [
-    'node_modules/jquery/dist/jquery.min.js',
+    'bower_components/jquery/dist/jquery.min.js',
 
-    'node_modules/bootstrap/dist/css/bootstrap.min.css',
-    'node_modules/bootstrap/dist/js/bootstrap.min.js',
-    'node_modules/bootstrap/dist/fonts/*',
+    'bower_components/bootstrap/dist/css/bootstrap.min.css',
+    'bower_components/bootstrap/dist/js/bootstrap.min.js',
+    'bower_components/bootstrap/dist/fonts/*',
 
-    'node_modules/angular/angular.min.js',
-    'node_modules/angular-route/angular-route.min.js',
-    'node_modules/angular-animate/angular-animate.min.js',
-    'node_modules/angular-sanitize/angular-sanitize.min.js',
-    'node_modules/angular-resource/angular-resource.min.js',
-    'node_modules/angular-cookies/angular-cookies.min.js',
-    'node_modules/angular-translate/dist/angular-translate.min.js',
-    'node_modules/angular-translate-storage-cookie/angular-translate-storage-cookie.min.js',
-    'node_modules/angular-bootstrap/dist/ui-bootstrap-tpls.min.js',
+    'bower_components/angular/angular.min.js',
+    'bower_components/angular-route/angular-route.min.js',
+    'bower_components/angular-animate/angular-animate.min.js',
+    'bower_components/angular-sanitize/angular-sanitize.min.js',
+    'bower_components/angular-resource/angular-resource.min.js',
+    'bower_components/angular-cookies/angular-cookies.min.js',
+    'bower_components/angular-translate/angular-translate.min.js',
+    'bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.min.js',
+    'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
 
-    'node_modules/famfamfam-flags/dist/**/*',
-    'node_modules/famfamfam-silk/dist/**/*',
-    'node_modules/moment/min/moment-with-locales.min.js'
+    'bower_components/famfamfam-flags/dist/**/*',
+    'bower_components/famfamfam-silk/dist/**/*',
+    'bower_components/moment/min/moment-with-locales.min.js'
   ]
 };
 
