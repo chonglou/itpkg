@@ -49,6 +49,10 @@ func (p *Application) loop(f func(en Engine)) error {
 	}
 	p.cfg.OpenRedis()
 
+	if err = p.cfg.OpenCache(); err != nil {
+		return err
+	}
+
 	if err = p.cfg.OpenRouter(); err != nil {
 		return err
 	}

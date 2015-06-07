@@ -2,6 +2,7 @@ package itpkg
 
 import (
 	"fmt"
+	"github.com/chonglou/gin-contrib/cache"
 	"github.com/chonglou/sitemap"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/feeds"
@@ -28,13 +29,13 @@ func (p *SiteEngine) Map() {
 func (p *SiteEngine) Mount() {
 	r := p.cfg.router
 
-	r.GET("/sitemap.xml", func(c *gin.Context) {
+	r.GET("/sitemap.xml", cache.CachePage(p.cfg.cache, time.Hour*24, func(c *gin.Context) {
 		si := sitemap.New()
 		//todo add links from redis
 		c.XML(http.StatusOK, si)
-	})
+	}))
 
-	r.GET("/rss.atom", func(c *gin.Context) {
+	r.GET("/rss.atom", cache.CachePage(p.cfg.cache, time.Hour*3, func(c *gin.Context) {
 		lang := LANG(c)
 		var title, description, author_n, author_e string
 		p.dao.GetSiteInfo("title", lang, &title)
@@ -54,7 +55,7 @@ func (p *SiteEngine) Mount() {
 
 		atom := feeds.Atom{feed}
 		c.XML(http.StatusOK, atom.FeedXml())
-	})
+	}))
 
 	/*
 		r.Get("/debug/vars", func(w http.ResponseWriter, req *http.Request) {
@@ -73,7 +74,7 @@ func (p *SiteEngine) Mount() {
 		})
 	*/
 
-	r.GET("/index.json", func(c *gin.Context) {
+	r.GET("/index.json", cache.CachePage(p.cfg.cache, time.Hour*24, func(c *gin.Context) {
 		lang := LANG(c)
 		si := make(map[string]interface{}, 0)
 		for _, k := range []string{"title", "keywords", "description", "copyright"} {
@@ -103,7 +104,7 @@ func (p *SiteEngine) Mount() {
 		}
 		si["engines"] = ei
 		c.JSON(http.StatusOK, si)
-	})
+	}))
 
 }
 

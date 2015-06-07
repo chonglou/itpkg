@@ -3,6 +3,7 @@ package itpkg
 import (
 	"errors"
 	"fmt"
+	"github.com/chonglou/gin-contrib/cache"
 	"github.com/chonglou/gin-contrib/sessions"
 	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
@@ -15,17 +16,20 @@ import (
 )
 
 type Config struct {
-	db      *gorm.DB
-	redis   *redis.Pool
-	mailer  *Mailer
-	session sessions.Store
-	env     string
-	secret  []byte
-	beans   map[string]interface{}
-	router  *gin.Engine
+	db     *gorm.DB
+	redis  *redis.Pool
+	mailer *Mailer
+	cache  cache.CacheStore
+	env    string
+	secret []byte
+	beans  map[string]interface{}
+	router *gin.Engine
 
 	Secret  string
 	Session struct {
+		Store string
+	}
+	Cache struct {
 		Store string
 	}
 	Http struct {
@@ -70,6 +74,20 @@ func (p *Config) Use(name string, val interface{}) {
 
 func (p *Config) Get(name string) interface{} {
 	return p.beans[name]
+}
+
+func (p *Config) OpenCache() error {
+	const expire = time.Second
+	switch p.Cache.Store {
+	case "memory":
+		p.cache = cache.NewInMemoryStore(expire)
+	case "redis":
+		p.cache = cache.NewRedisCacheWithPool(p.redis, expire)
+	default:
+		return errors.New(fmt.Sprintf("Unknown cache store: %s", p.Cache.Store))
+	}
+	Logger.Info("Using cache by %s", p.Cache.Store)
+	return nil
 }
 
 func (p *Config) OpenRouter() error {
@@ -210,6 +228,7 @@ func loadConfig(cfg *Config, file string) error {
 		cfg.Http.Cookie = RandomStr(8)
 		cfg.Http.Expire = 60 * 30
 
+		cfg.Cache.Store = "redis"   // can be memory or redis
 		cfg.Session.Store = "redis" // can be cookie or redis
 
 		cfg.Database.Driver = "postgres"
