@@ -3,11 +3,10 @@ package itpkg
 import (
 	"errors"
 	"fmt"
+	"github.com/chonglou/gin-contrib/sessions"
 	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/sessions"
 	"github.com/jinzhu/gorm"
-	"gopkg.in/boj/redistore.v1"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
@@ -73,12 +72,32 @@ func (p *Config) Get(name string) interface{} {
 	return p.beans[name]
 }
 
-func (p *Config) OpenRouter() {
+func (p *Config) OpenRouter() error {
 	if p.IsProduction() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	rt := gin.Default()
+
+	var store sessions.Store
+	var err error
+
+	key, iv := p.secret[100:164], p.secret[170:202]
+	switch p.Session.Store {
+	case "redis":
+		store, err = sessions.NewRedisStoreWithPool(p.redis, key, iv)
+		if err != nil {
+			return err
+		}
+	case "cookie":
+		store = sessions.NewCookieStore(key, iv)
+	default:
+		return errors.New(fmt.Sprintf("Unknown session store: %s", p.Session.Store))
+	}
+
+	Logger.Info("Using session by %s", p.Session.Store)
+	rt.Use(sessions.Sessions(NAME, store))
 	p.router = rt
+	return nil
 }
 
 func (p *Config) OpenMailer() {
@@ -135,24 +154,6 @@ func (p *Config) DbShell() (string, []string) {
 
 func (p *Config) Token() Token {
 	return Token{redis: p.redis, key: p.secret[190:206]}
-}
-
-func (p *Config) OpenSession() error {
-	key, iv := p.secret[100:164], p.secret[170:202]
-	switch p.Session.Store {
-	case "redis":
-		//s, e := redistore.NewRediStore(p.Session.Pool, "tcp", p.RedisUrl(), "", key, iv)
-		s, e := redistore.NewRediStoreWithPool(p.redis, key, iv)
-		if e != nil {
-			return e
-		}
-		p.session = s
-	case "cookie":
-		p.session = sessions.NewCookieStore(key, iv)
-	default:
-		return errors.New(fmt.Sprintf("Unknown session store: %s", p.Session.Store))
-	}
-	return nil
 }
 
 func (p *Config) OpenRedis() {
