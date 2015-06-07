@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/codegangsta/cli"
+	"github.com/gin-gonic/gin"
 	"github.com/op/go-logging"
 	"net/http"
 	"os"
@@ -82,6 +83,17 @@ func (p *Application) Server() error {
 		return err
 	}
 	return http.ListenAndServe(fmt.Sprintf(":%d", p.cfg.Http.Port), p.cfg.router)
+}
+
+func (p *Application) Routes() error {
+	if err := p.loop(func(en Engine) {
+		gin.SetMode(gin.DebugMode)
+		en.Mount()
+	}); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (p *Application) Db() error {
@@ -255,8 +267,18 @@ func Run() error {
 			},
 		},
 		{
+			Name:    "routes",
+			Aliases: []string{"ro"},
+			Usage:   "Print out all defined routes in match order, with names",
+			Flags:   []cli.Flag{envF},
+			Action: func(c *cli.Context) {
+				a := load(c)
+				a.Routes()
+			},
+		},
+		{
 			Name:    "redis",
-			Aliases: []string{"r"},
+			Aliases: []string{"re"},
 			Usage:   "Start a console for the redis",
 			Flags:   []cli.Flag{envF},
 			Action: func(c *cli.Context) {
