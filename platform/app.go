@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/chonglou/itpkg"
+	"github.com/chonglou/itpkg/base"
 	_ "github.com/lib/pq"
 )
 

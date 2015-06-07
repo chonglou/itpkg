@@ -29,7 +29,7 @@ func (p *Token) New(data interface{}, hours uint) (string, error) {
 	conn := p.redis.Get()
 	defer conn.Close()
 	if _, err := conn.Do("SET", p.tid(kid), key, "EX", hours*60*60+3); err != nil {
-		Log.Error("Set token key error: %v", err)
+		Logger.Error("Set token key error: %v", err)
 		return "", err
 	}
 	return token.SignedString(append(key, p.key...))
@@ -41,7 +41,7 @@ func (p *Token) Parse(token string) (interface{}, error) {
 		defer conn.Close()
 		val, err := conn.Do("GET", p.tid(tk.Header["kid"].(string)))
 		if err != nil {
-			Log.Error("Get token key error: %v", err)
+			Logger.Error("Get token key error: %v", err)
 			return nil, err
 		}
 		return append(val.([]byte), p.key...), nil

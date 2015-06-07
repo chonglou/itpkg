@@ -2,9 +2,9 @@ package itpkg
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"github.com/codegangsta/cli"
-	"github.com/gorilla/pat"
 	"github.com/op/go-logging"
 	"net/http"
 	"os"
@@ -42,44 +42,49 @@ func (p *Application) Init(env string) error {
 	return nil
 }
 
-func (p *Application) Server() error {
+func (p *Application) loop(f func(en Engine)) error {
 	err := p.cfg.OpenDb()
 	if err != nil {
 		return err
 	}
 	p.cfg.OpenRedis()
+	p.cfg.OpenRouter()
 
 	if err = p.cfg.OpenSession(); err != nil {
 		return err
 	}
 
-	r := pat.New()
-
-	for _, en := range []Engine{
-		&SiteEngine{cfg: p.cfg},
-		&AuthEngine{cfg: p.cfg},
-		&ShopEngine{cfg: p.cfg},
-		&CmsEngine{cfg: p.cfg},
-		&TeamworkEngine{cfg: p.cfg},
-		&ForumEngine{cfg: p.cfg},
-		&WikiEngine{cfg: p.cfg},
-	} {
+	for _, e := range engines {
+		var en Engine
+		switch e {
+		case "auth":
+			en = &AuthEngine{cfg: p.cfg}
+		case "site":
+			en = &SiteEngine{cfg: p.cfg}
+		default:
+			return errors.New("Unknown engine " + e)
+		}
 		n, v, _ := en.Info()
-		log.Info("Mount engine %s(%s)", n, v)
-		en.Map()
+		Logger.Info("Load engine %s(%s)", n, v)
+		f(en)
+	}
+	return nil
+}
+
+func (p *Application) Migrate() error {
+	return p.loop(func(en Engine) {
 		en.Migrate()
-		en.Mount(r)
-	}
+	})
+}
 
-	if p.cfg.IsProduction() {
-		r.Schemes("https")
-		r.Host(p.cfg.Http.Host)
-	} else {
-		r.PathPrefix("/").Handler(http.FileServer(http.Dir("public/")))
+func (p *Application) Server() error {
+	if err := p.loop(func(en Engine) {
+		en.Map()
+		en.Mount()
+	}); err != nil {
+		return err
 	}
-
-	//http.Handle("/", r)
-	return http.ListenAndServe(fmt.Sprintf(":%d", p.cfg.Http.Port), r)
+	return http.ListenAndServe(fmt.Sprintf(":%d", p.cfg.Http.Port), p.cfg.router)
 }
 
 func (p *Application) Db() error {
@@ -205,7 +210,7 @@ func Run() error {
 	load := func(c *cli.Context) Application {
 		a := Application{}
 		if err := a.Init(c.String("environment")); err != nil {
-			log.Fatalf("error on load config:%v", err)
+			Logger.Fatalf("error on load config:%v", err)
 		}
 		return a
 	}
@@ -238,7 +243,7 @@ func Run() error {
 			Action: func(c *cli.Context) {
 				a := load(c)
 				if e := a.Server(); e != nil {
-					log.Fatalf("Error on start server: %v", e)
+					Logger.Fatalf("Error on start server: %v", e)
 				}
 			},
 		},
@@ -280,6 +285,16 @@ func Run() error {
 			Action: func(c *cli.Context) {
 				a := Application{}
 				a.Openssl()
+			},
+		},
+		{
+			Name:    "migrate",
+			Aliases: []string{"m"},
+			Usage:   "Migrate the database",
+			Flags:   []cli.Flag{envF},
+			Action: func(c *cli.Context) {
+				a := load(c)
+				a.Migrate()
 			},
 		},
 	}

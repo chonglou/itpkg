@@ -38,7 +38,7 @@ func RandomStr(size int) string {
 func RandomBytes(size int) []byte {
 	b := make([]byte, size)
 	if _, err := rand.Read(b); err != nil {
-		Log.Fatalf("Error on random: %v", err)
+		Logger.Fatalf("Error on random: %v", err)
 	}
 	return b
 }

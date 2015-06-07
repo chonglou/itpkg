@@ -4,4 +4,4 @@ import (
 	"github.com/op/go-logging"
 )
 
-var Log = logging.MustGetLogger("itpkg")
+var Logger = logging.MustGetLogger("itpkg")

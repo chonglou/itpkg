@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/garyburd/redigo/redis"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/sessions"
 	"github.com/jinzhu/gorm"
 	"gopkg.in/boj/redistore.v1"
@@ -22,6 +23,7 @@ type Config struct {
 	env     string
 	secret  []byte
 	beans   map[string]interface{}
+	router  *gin.Engine
 
 	Secret  string
 	Session struct {
@@ -69,6 +71,14 @@ func (p *Config) Use(name string, val interface{}) {
 
 func (p *Config) Get(name string) interface{} {
 	return p.beans[name]
+}
+
+func (p *Config) OpenRouter() {
+	if p.IsProduction() {
+		gin.SetMode(gin.ReleaseMode)
+	}
+	rt := gin.Default()
+	p.router = rt
 }
 
 func (p *Config) OpenMailer() {
@@ -183,7 +193,7 @@ func loadConfig(cfg *Config, file string) error {
 		if err != nil {
 			return err
 		}
-		Log.Info("Load from config file: %s", file)
+		Logger.Info("Load from config file: %s", file)
 		if err = yaml.Unmarshal(yml, cfg); err != nil {
 			return err
 		}
@@ -231,7 +241,7 @@ func loadConfig(cfg *Config, file string) error {
 		if err != nil {
 			return err
 		}
-		Log.Info("Generate config file: %s", file)
+		Logger.Info("Generate config file: %s", file)
 		err = ioutil.WriteFile(file, data, 0600)
 	}
 	return err

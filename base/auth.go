@@ -1,7 +1,6 @@
 package itpkg
 
 import (
-	"github.com/gorilla/pat"
 	"github.com/jinzhu/gorm"
 	"net/http"
 	"regexp"
@@ -30,7 +29,7 @@ func (p *AuthEngine) Map() {
 	p.cfg.Use("authDao", &AuthDao{db: p.cfg.db, hmac: &Hmac{key: p.cfg.secret[120:152]}})
 }
 
-func (p *AuthEngine) Mount(r *pat.Router) {
+func (p *AuthEngine) Mount() {
 	// p.app.Post(
 	// 	"/users/register",
 	// 	binding.Bind(UserRegisterFm{}),
@@ -204,7 +203,11 @@ func (p *AuthDao) resource(args ...interface{}) (string, uint, *time.Time, *time
 		rid = args[2].(uint)
 		begin = args[2].(*time.Time)
 	default:
-		log.Warning("Ingnore role args: %v", args)
+		Logger.Warning("Ingnore role args: %v", args)
 	}
 	return rty, rid, begin, end
+}
+
+func init() {
+	Register("auth")
 }
