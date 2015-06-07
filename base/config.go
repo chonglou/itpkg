@@ -258,3 +258,7 @@ func loadConfig(cfg *Config, file string) error {
 	}
 	return err
 }
+
+func init() {
+	cache.PageCachePrefix = "cache://page/"
+}
