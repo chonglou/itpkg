@@ -1,7 +1,9 @@
 package wiki
 
 import (
+	"github.com/chonglou/gin-contrib/rest"
 	. "github.com/chonglou/itpkg/base"
+	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
 
@@ -18,6 +20,8 @@ func (p *WikiEngine) Map() {
 }
 
 func (p *WikiEngine) Mount() {
+	g := p.Get("router").(*gin.Engine).Group("/wiki")
+	rest.CRUD(g, "/item", &WikiCtrl{})
 }
 
 func (p *WikiEngine) Migrate() {
@@ -33,6 +37,15 @@ type Wiki struct {
 	Title string `sql:"size:255;index;not null"`
 	Body  string `sql:"type:TEXT;not null"`
 }
+
+type WikiCtrl struct {
+}
+
+func (p *WikiCtrl) CreateHandler(*gin.Context) {}
+func (p *WikiCtrl) ListHandler(*gin.Context)   {}
+func (p *WikiCtrl) TakeHandler(*gin.Context)   {}
+func (p *WikiCtrl) UpdateHandler(*gin.Context) {}
+func (p *WikiCtrl) DeleteHandler(*gin.Context) {}
 
 type WikiDao struct {
 	db *gorm.DB

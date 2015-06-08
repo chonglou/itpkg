@@ -8,6 +8,7 @@ import (
 	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"gopkg.in/bluesuncorp/validator.v5"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
@@ -16,14 +17,15 @@ import (
 )
 
 type Config struct {
-	db     *gorm.DB
-	redis  *redis.Pool
-	mailer *Mailer
-	cache  cache.CacheStore
-	env    string
-	secret []byte
-	beans  map[string]interface{}
-	router *gin.Engine
+	db       *gorm.DB
+	redis    *redis.Pool
+	mailer   *Mailer
+	cache    cache.CacheStore
+	env      string
+	secret   []byte
+	beans    map[string]interface{}
+	router   *gin.Engine
+	validate *validator.Validate
 
 	Secret  string
 	Session struct {

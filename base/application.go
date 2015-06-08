@@ -6,6 +6,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/gin-gonic/gin"
 	"github.com/op/go-logging"
+	"gopkg.in/bluesuncorp/validator.v5"
 	"net/http"
 	"os"
 )
@@ -16,7 +17,10 @@ type Application struct {
 
 func (p *Application) Init(env string) error {
 
-	cfg := Config{beans: make(map[string]interface{}, 0)}
+	cfg := Config{
+		beans:    make(map[string]interface{}, 0),
+		validate: validator.New("validate", validator.BakedInValidators),
+	}
 	if err := LoadLocales("locales"); err != nil {
 		return err
 	}
@@ -59,6 +63,8 @@ func (p *Application) loop(f func(en Engine)) error {
 
 	p.cfg.beans["db"] = p.cfg.db
 	p.cfg.beans["cache"] = p.cfg.cache
+	p.cfg.beans["router"] = p.cfg.router
+	p.cfg.beans["validate"] = p.cfg.validate
 
 	for _, en := range engines {
 		n, v, _ := en.Info()

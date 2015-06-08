@@ -1,7 +1,6 @@
 package itpkg
 
 import (
-	valid "github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"net/http"
@@ -22,7 +21,7 @@ func (p *AuthEngine) Mount() {
 	r.POST("/users/register", func(c *gin.Context) {
 		var fm UserRegisterFm
 		c.Bind(&fm)
-		_, err := valid.ValidateStruct(fm)
+		err := p.cfg.validate.Struct(fm)
 		res := NewResponse(true)
 		if err == nil {
 			//todo
@@ -62,25 +61,25 @@ func (p *AuthEngine) Info() (name string, version string, desc string) {
 
 //-----------------------form---------------------------------------
 type UserRegisterFm struct {
-	Name       string `valid:"ascii,required" json:"name"`
-	Email      string `valid:"email,required" json:"email"`
-	Password   string `valid:"ascii,required" json:"password"`
-	RePassword string `valid:"ascii,required" json:"re_password"`
+	Name       string `validate:"required" json:"name"`
+	Email      string `validate:"email,required" json:"email"`
+	Password   string `validate:"required,min=6,max=64" json:"password"`
+	RePassword string `validate:"required" json:"re_password"`
 }
 
 type UserLoginFm struct {
-	Email      string `valid:"email,required" json:"email"`
-	Password   string `valid:"ascii,required" json:"password"`
-	RememberMe bool   `valid:"-" json:"remember_me"`
+	Email      string `validate:"email,required" json:"email"`
+	Password   string `validate:"required" json:"password"`
+	RememberMe bool   `validate:"-" json:"remember_me"`
 }
 
 type UserEmailFm struct {
-	Email string `valid:"email,required" json:"email"`
+	Email string `validate:"email,required" json:"email"`
 }
 
 type UserPasswordFm struct {
-	Password   string `valid:"ascii,required" json:"password"`
-	RePassword string `valid:"ascii,required" json:"re_password"`
+	Password   string `validate:"required,min=6,max=64" json:"password"`
+	RePassword string `validate:"required" json:"re_password"`
 }
 
 //-----------------------model---------------------------------------

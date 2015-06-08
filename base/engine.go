@@ -1,7 +1,5 @@
 package itpkg
 
-import ()
-
 type EngineSetup struct {
 	cfg *Config
 }
