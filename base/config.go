@@ -71,6 +71,15 @@ type Config struct {
 	}
 }
 
+func (p *Config) Url(lang, url string) string {
+	if p.IsProduction() {
+		return fmt.Sprintf("https://%s%s?locale=%s", p.Http.Host, url, lang)
+	} else {
+		return fmt.Sprintf("http://localhost:%d%s?locale=%s", p.Http.Port, url, lang)
+	}
+
+}
+
 func (p *Config) OpenCache() error {
 	const expire = time.Second
 	switch p.Cache.Store {

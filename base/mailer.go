@@ -28,7 +28,7 @@ func (p *Mailer) Auth(from, host string, port int, ssl bool, username, password,
 	p.from = from
 }
 
-func (p *Mailer) Html(to []string, subject, file string, arg interface{}, files ...string) {
+func (p *Mailer) HtmlT(to []string, subject, file string, arg interface{}, files ...string) {
 	var buf bytes.Buffer
 	var err error
 
@@ -42,6 +42,11 @@ func (p *Mailer) Html(to []string, subject, file string, arg interface{}, files 
 		Logger.Error("Parse mailer template fail: " + err.Error())
 		return
 	}
+
+	p.Html(to, subject, buf.String(), files...)
+}
+
+func (p *Mailer) Html(to []string, subject, body string, files ...string) {
 	if p.perform {
 		msg := gomail.NewMessage()
 		msg.SetHeader("From", p.from)
@@ -50,22 +55,22 @@ func (p *Mailer) Html(to []string, subject, file string, arg interface{}, files 
 			msg.SetHeader("Bcc", p.bcc)
 		}
 		msg.SetHeader("Subject", subject)
-		msg.SetBody("text/html", buf.String())
+		msg.SetBody("text/html", body)
 		for _, n := range files {
 			f, e := gomail.OpenFile(n)
 			if e != nil {
-				Logger.Error("Faile to add attachment: " + err.Error())
+				Logger.Error("Faile to add attachment: " + e.Error())
 				continue
 			}
 			msg.Attach(f)
 		}
 
 		if err := p.mailer.Send(msg); err != nil {
-			Logger.Error("Error on send mail")
+			Logger.Error("Error on send mail: %v", err)
 		}
 
 	} else {
-		Logger.Debug("Send mail to %v\nSubject: %s\nBody: \n %s", to, subject, buf.String())
+		Logger.Debug("Send mail to %v\nSubject: %s\nBody: \n %s", to, subject, body)
 	}
 }
 

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/pborman/uuid"
 	"net/http"
 	"time"
 )
@@ -35,7 +36,7 @@ func (p *AuthEngine) Mount() {
 				user, err := p.dao.AddEmailUser(fm.Email, fm.Name, fm.Password)
 				if err == nil {
 					p.dao.Log(user.ID, T(lang, "auth.log.register"), "")
-					go p.mail(user.Email, "register")
+					go p.mail(lang, user.Email, "confirm")
 					res.Add("send a email to confirm")
 				} else {
 					res.Invalid(err)
@@ -76,20 +77,29 @@ func (p *AuthEngine) Info() (name string, version string, desc string) {
 	return "auth", "v10250530", ""
 }
 
-func (p *AuthEngine) mail(email string, act string) {
-	switch act {
-	case "register":
-	case "password":
-	case "confirm":
-	case "unlock":
+func (p *AuthEngine) mail(lang, email string, act string) {
+	switch {
+	case act == "password" || act == "confirm" || act == "unlock":
+		tk, err := p.cfg.token.New(&userToken{Email: email, Action: act}, time.Hour*24)
+		if err != nil {
+			Logger.Error("Error on generate user token: %s", act)
+		} else {
+			url := p.cfg.Url(lang, "/users/"+act)
+			url += "&token=" + tk
+			p.cfg.mailer.Html(
+				[]string{email},
+				T(lang, "auth.mailer."+act+".subject"),
+				T(lang, "auth.mailer."+act+".body", email, url, url))
+		}
+
 	default:
 		Logger.Error("Unknown user email action: %s", act)
 	}
 }
 
 type userToken struct {
-	Email string
-	Act   string
+	Email  string
+	Action string
 }
 
 //-----------------------form---------------------------------------
@@ -120,7 +130,7 @@ type User struct {
 	Model
 	Name      string `sql:"not null;size:64;index"`
 	Email     string `sql:"size:128;index"`
-	Token     string `sql:"size:255;index"`
+	Token     string `sql:"size:255;index;not null"`
 	Provider  string `sql:"size:16;not null;default:'local';index"`
 	Password  []byte `sql:"size:64"`
 	Confirmed *time.Time
@@ -182,7 +192,8 @@ func (p *AuthDao) AddEmailUser(email, name, password string) (*User, error) {
 		Provider: "local",
 		Name:     name,
 		Email:    email,
-		Password: p.hmac.Sum([]byte(password))}
+		Password: p.hmac.Sum([]byte(password)),
+		Token:    uuid.New()}
 	p.db.Create(&u)
 	return &u, nil
 }
