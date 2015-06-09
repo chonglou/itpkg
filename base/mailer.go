@@ -47,47 +47,32 @@ func (p *Mailer) HtmlT(to []string, subject, file string, arg interface{}, files
 }
 
 func (p *Mailer) Html(to []string, subject, body string, files ...string) {
-	if p.perform {
-		msg := gomail.NewMessage()
-		msg.SetHeader("From", p.from)
-		msg.SetHeader("To", to...)
-		if p.bcc != "" {
-			msg.SetHeader("Bcc", p.bcc)
+	msg := gomail.NewMessage()
+	msg.SetHeader("From", p.from)
+	msg.SetHeader("To", to...)
+	if p.bcc != "" {
+		msg.SetHeader("Bcc", p.bcc)
+	}
+	msg.SetHeader("Subject", subject)
+	msg.SetBody("text/html", body)
+	for _, n := range files {
+		f, e := gomail.OpenFile(n)
+		if e != nil {
+			Logger.Error("Faile to add attachment: " + e.Error())
+			continue
 		}
-		msg.SetHeader("Subject", subject)
-		msg.SetBody("text/html", body)
-		for _, n := range files {
-			f, e := gomail.OpenFile(n)
-			if e != nil {
-				Logger.Error("Faile to add attachment: " + e.Error())
-				continue
-			}
-			msg.Attach(f)
-		}
+		msg.Attach(f)
+	}
 
+	p.send(msg)
+}
+
+func (p *Mailer) send(msg *gomail.Message) {
+	if p.perform {
 		if err := p.mailer.Send(msg); err != nil {
 			Logger.Error("Error on send mail: %v", err)
 		}
-
 	} else {
-		Logger.Debug("Send mail to %v\nSubject: %s\nBody: \n %s", to, subject, body)
+		Logger.Debug("%v", msg.Export())
 	}
 }
-
-//
-// func (p *Mailer) Text(to []string, subject, body string) {
-//
-// 	if p.perform {
-// 		log.Printf("Send mail to %v: %s", to, subject)
-// 		p.send(to, []byte(fmt.Sprintf("subject: %s\r\n\r\n%s", subject, body)))
-// 	} else {
-// 		log.Printf("Send mail to %v\nSubject: %s\nBody: \n %s", to, subject, body)
-// 	}
-//
-// }
-//
-// func (p *Mailer) send(to []string, msg []byte) {
-// 	if err := smtp.SendMail(p.addr, p.auth, p.from, to, msg); err != nil {
-// 		log.Printf("error on sendmail: %v", err)
-// 	}
-// }
