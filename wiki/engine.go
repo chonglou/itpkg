@@ -5,6 +5,7 @@ import (
 	. "github.com/chonglou/itpkg/base"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"time"
 )
 
 type WikiEngine struct {
@@ -32,10 +33,11 @@ func (p *WikiEngine) Info() (name string, version string, desc string) {
 }
 
 type Wiki struct {
-	Model
-	Name  string `sql:"not null;size:255;unique_index"`
-	Title string `sql:"size:255;index;not null"`
-	Body  string `sql:"type:TEXT;not null"`
+	Uid       string `sql:"size:36;index;not null"`
+	Title     string `sql:"size:255;index;not null"`
+	Body      string `sql:"type:TEXT;not null"`
+	Ver       uint   `sql:"default:0;not null"`
+	CreatedAt time.Time
 }
 
 type WikiCtrl struct {

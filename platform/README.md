@@ -20,4 +20,8 @@ IT-PACKAGE(PLATFORM)
     ./itpkg -h
     ./itpkg server # development env
     ./itpkg server -e production  # production env
-    
+
+
+## Development
+    gulp
+    go run app.go s
