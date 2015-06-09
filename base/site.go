@@ -173,7 +173,7 @@ type Setting struct {
 type Locale struct {
 	Key  string `sql:"not null;size:255;index"`
 	Val  string `sql:"not null;type:TEXT"`
-	Lang string `sql:"not null;size:5;index"`
+	Lang string `sql:"not null;size:5;index;default:'en'"`
 }
 
 type SiteDao struct {

@@ -15,6 +15,7 @@ type WikiEngine struct {
 
 func (p *WikiEngine) Map() {
 	dao := &WikiDao{db: p.Get("db").(*gorm.DB)}
+
 	p.Use("wikiDao", dao)
 	p.dao = dao
 
@@ -26,7 +27,10 @@ func (p *WikiEngine) Mount() {
 }
 
 func (p *WikiEngine) Migrate() {
-	p.Get("db").(*gorm.DB).AutoMigrate(&Wiki{})
+	db := p.Get("db").(*gorm.DB)
+
+	db.AutoMigrate(&Wiki{})
+	db.Model(&Wiki{}).AddUniqueIndex("idx_wikis_uid_ver", "uid", "ver")
 }
 func (p *WikiEngine) Info() (name string, version string, desc string) {
 	return "wiki", "v102500607", ""
