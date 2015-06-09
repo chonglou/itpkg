@@ -168,12 +168,11 @@ type Log struct {
 
 type Role struct {
 	Model
-	UserID       uint       `sql:"index"`
-	Name         string     `sql:"size:255;index;not null"`
-	ResourceType string     `sql:"size:255;index"`
-	ResourceID   uint       `sql:"index"`
-	StartUp      *time.Time `sql:"type:DATE;default:CURRENT_DATE"`
-	ShutDown     *time.Time `sql:"type:DATE;default:'9999-12-31'"`
+	UserID       uint   `sql:"index"`
+	Name         string `sql:"size:255;index;not null"`
+	ResourceType string `sql:"size:255;index"`
+	ResourceID   uint   `sql:"index"`
+	DateZone
 }
 
 //-----------------------dao---------------------------------------

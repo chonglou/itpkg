@@ -158,12 +158,6 @@ func (p *SiteEngine) loadLocales(path string) error {
 	return nil
 }
 
-type Model struct {
-	ID        uint `gorm:"primary_key"`
-	UpdatedAt time.Time
-	CreatedAt time.Time
-}
-
 type Setting struct {
 	ID  string `gorm:"primary_key"`
 	Val []byte `sql:"not null"`
