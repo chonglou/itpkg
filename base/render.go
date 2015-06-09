@@ -1,54 +1,14 @@
 package itpkg
 
 import (
-	//"encoding/json"
-	//"encoding/xml"
-	//"net/http"
-	//"strings"
-	//"html/template"
 	"github.com/gin-gonic/gin"
-	//"fmt"
+	"strings"
 	"time"
 )
 
 func LANG(c *gin.Context) string {
 	return c.DefaultQuery("locale", "en")
-	/*
-		lang := req.URL.Query().Get("locale")
-		if lang != "" {
-			return lang
-		}
-		if cke, err := req.Cookie("NG_TRANSLATE_LANG_KEY"); err == nil {
-			return strings.Replace(cke.Value, "%22", "", -1)
-		}
-		return "en"
-	*/
 }
-
-/*
-
-func XML(wrt http.ResponseWriter, val interface{}) {
-	wrt.Header().Set("Content-Type", "application/xml")
-	wrt.Write([]byte(xml.Header))
-	if err := xml.NewEncoder(wrt).Encode(val); err == nil {
-		fmt.Fprintf(wrt, "\n")
-	} else {
-		ERROR(wrt, err)
-	}
-}
-
-func ERROR(writer http.ResponseWriter, e error) {
-	http.Error(writer, e.Error(), http.StatusInternalServerError)
-}
-
-func JSON(wrt http.ResponseWriter, val interface{}) {
-	wrt.Header().Set("Content-Type", "application/json")
-	en := json.NewEncoder(wrt)
-	if err := en.Encode(val); err != nil {
-		ERROR(wrt, err)
-	}
-}
-*/
 
 type Response struct {
 	Ok      bool          `json:"ok"`
@@ -64,6 +24,11 @@ func (p *Response) Add(items ...interface{}) {
 func (p *Response) Error(errs ...string) {
 	p.Ok = false
 	p.Errors = append(p.Errors, errs...)
+}
+
+func (p *Response) Invalid(err error) {
+	errs := strings.Split(err.Error(), "\n")
+	p.Error(errs[1:(len(errs) - 1)]...)
 }
 
 func NewResponse(ok bool, data ...interface{}) Response {

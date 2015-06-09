@@ -72,6 +72,16 @@ itpkgApp.config(['$routeProvider',
         }]
 );
 
+//itpkgApp.run(['$http', function($http){
+//    $http.defaults.headers.common['X-LANG'] = 'zh-CN'
+//}]);
+
+//itpkgApp.config(['$httpProvider', '$translate',
+//    function ($httpProvider) {
+//    //$httpProvider.defaults.headers.common['X-LANG'] = $translate.use();
+//}]
+//);
+
 itpkgApp.directive('btnReset', function () {
     return {
         templateUrl: 'widgets/reset.html?v=@version@'
@@ -79,9 +89,9 @@ itpkgApp.directive('btnReset', function () {
 });
 
 itpkgApp.controller('RootCtrl', [
-        '$translate', '$scope', '$http', 'Page',
-        function ($translate, $scope, $http, Page) {
-            $http.get('/index.json').success(function (data) {
+        '$translate', '$scope', '$http', 'Page', 'localeHelper',
+        function ($translate, $scope, $http, Page, localeHelper) {
+            $http.get(localeHelper.url('/index.json'), {locale: $translate.use()}).success(function (data) {
                 $scope.topNav = {};
                 $scope.site = data;
                 $scope.site.locales = ['us', 'cn'];

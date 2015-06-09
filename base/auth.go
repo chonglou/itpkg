@@ -26,7 +26,7 @@ func (p *AuthEngine) Mount() {
 		if err == nil {
 			//todo
 		} else {
-			res.Error(err.Error())
+			res.Invalid(err)
 		}
 		c.JSON(http.StatusOK, res)
 	})
