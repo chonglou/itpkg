@@ -18,17 +18,17 @@ func (p *Token) tid(kid string) string {
 	return fmt.Sprintf("token://%s", kid)
 }
 
-func (p *Token) New(data interface{}, hours uint) (string, error) {
+func (p *Token) New(data interface{}, dur time.Duration) (string, error) {
 	kid := uuid.New()
 	token := jwt.New(jwt.SigningMethodHS512)
 	token.Header["kid"] = kid
 	token.Claims["val"] = data
-	token.Claims["exp"] = time.Now().Add(time.Hour * time.Duration(hours)).Unix()
+	token.Claims["exp"] = time.Now().Add(dur).Unix()
 
 	key := RandomBytes(16)
 	conn := p.redis.Get()
 	defer conn.Close()
-	if _, err := conn.Do("SET", p.tid(kid), key, "EX", hours*60*60+3); err != nil {
+	if _, err := conn.Do("SET", p.tid(kid), key, "EX", int(dur.Seconds())); err != nil {
 		Logger.Error("Set token key error: %v", err)
 		return "", err
 	}

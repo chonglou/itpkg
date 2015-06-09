@@ -52,6 +52,8 @@ func (p *Application) loop(f func(en Engine)) error {
 		return err
 	}
 	p.cfg.OpenRedis()
+	p.cfg.OpenMailer()
+	p.cfg.OpenToken()
 
 	if err = p.cfg.OpenCache(); err != nil {
 		return err
@@ -65,6 +67,8 @@ func (p *Application) loop(f func(en Engine)) error {
 	p.cfg.beans["cache"] = p.cfg.cache
 	p.cfg.beans["router"] = p.cfg.router
 	p.cfg.beans["validate"] = p.cfg.validate
+	p.cfg.beans["mailer"] = p.cfg.mailer
+	p.cfg.beans["token"] = p.cfg.token
 
 	for _, en := range engines {
 		n, v, _ := en.Info()

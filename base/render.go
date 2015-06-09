@@ -28,7 +28,12 @@ func (p *Response) Error(errs ...string) {
 
 func (p *Response) Invalid(err error) {
 	errs := strings.Split(err.Error(), "\n")
-	p.Error(errs[1:(len(errs) - 1)]...)
+	s := len(errs)
+	if s < 2 {
+		p.Error(errs...)
+	} else {
+		p.Error(errs[1:(len(errs) - 1)]...)
+	}
 }
 
 func NewResponse(ok bool, data ...interface{}) Response {

@@ -26,7 +26,7 @@ itpkgApp.factory('formHelper', ['$http', '$translate', '$modal', 'localeHelper',
         fm.submit = function (url, model) {
             if (model) {
                 localeHelper.form(model);
-                
+
                 model.locale = $translate.use();
                 $http.post(url, model).success(function (result) {
                     $modal.open({

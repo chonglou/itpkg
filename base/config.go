@@ -20,6 +20,7 @@ type Config struct {
 	db       *gorm.DB
 	redis    *redis.Pool
 	mailer   *Mailer
+	token    *Token
 	cache    cache.CacheStore
 	env      string
 	secret   []byte
@@ -170,8 +171,8 @@ func (p *Config) DbShell() (string, []string) {
 	}
 }
 
-func (p *Config) Token() Token {
-	return Token{redis: p.redis, key: p.secret[190:206]}
+func (p *Config) OpenToken() {
+	p.token = &Token{redis: p.redis, key: p.secret[190:206]}
 }
 
 func (p *Config) OpenRedis() {

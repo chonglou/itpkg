@@ -3,6 +3,7 @@ package itpkg
 import (
 	"github.com/garyburd/redigo/redis"
 	"testing"
+	"time"
 )
 
 func getRedis() *redis.Pool {
@@ -23,8 +24,8 @@ func getRedis() *redis.Pool {
 func TestToken(t *testing.T) {
 
 	tk := Token{redis: getRedis(), key: RandomBytes(16)}
-	ts1, _ := tk.New(hello, 1)
-	ts2, _ := tk.New(hello, 2)
+	ts1, _ := tk.New(hello, time.Hour*1)
+	ts2, _ := tk.New(hello, time.Hour*2)
 	t.Logf("%s\n%s\n%s", hello, ts1, ts2)
 	if ts1 == ts2 {
 		t.Errorf("Token ERROR!")

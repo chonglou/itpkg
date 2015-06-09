@@ -1,6 +1,7 @@
 package itpkg
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"net/http"
@@ -9,22 +10,38 @@ import (
 
 type AuthEngine struct {
 	EngineSetup
+	dao *AuthDao
 }
 
 func (p *AuthEngine) Map() {
-	p.Use("authDao", &AuthDao{db: p.cfg.db, hmac: &Hmac{key: p.cfg.secret[120:152]}})
+	dao := AuthDao{db: p.cfg.db, hmac: &Hmac{key: p.cfg.secret[120:152]}}
+	p.Use("authDao", &dao)
+	p.dao = &dao
 }
 
 func (p *AuthEngine) Mount() {
 	r := p.cfg.router
 
 	r.POST("/users/register", func(c *gin.Context) {
+		lang := LANG(c)
 		var fm UserRegisterFm
 		c.Bind(&fm)
 		err := p.cfg.validate.Struct(fm)
 		res := NewResponse(true)
 		if err == nil {
-			//todo
+			if fm.Password != fm.RePassword {
+				res.Invalid(errors.New("passwords not match"))
+			} else {
+				user, err := p.dao.AddEmailUser(fm.Email, fm.Name, fm.Password)
+				if err == nil {
+					p.dao.Log(user.ID, T(lang, "auth.log.register"), "")
+					go p.mail(user.Email, "register")
+					res.Add("send a email to confirm")
+				} else {
+					res.Invalid(err)
+				}
+			}
+
 		} else {
 			res.Invalid(err)
 		}
@@ -57,6 +74,22 @@ func (p *AuthEngine) Migrate() {
 
 func (p *AuthEngine) Info() (name string, version string, desc string) {
 	return "auth", "v10250530", ""
+}
+
+func (p *AuthEngine) mail(email string, act string) {
+	switch act {
+	case "register":
+	case "password":
+	case "confirm":
+	case "unlock":
+	default:
+		Logger.Error("Unknown user email action: %s", act)
+	}
+}
+
+type userToken struct {
+	Email string
+	Act   string
 }
 
 //-----------------------form---------------------------------------
@@ -137,6 +170,21 @@ type Role struct {
 type AuthDao struct {
 	db   *gorm.DB
 	hmac *Hmac
+}
+
+func (p *AuthDao) AddEmailUser(email, name, password string) (*User, error) {
+	var c int
+	p.db.Model(User{}).Where("email = ? AND provider = ?", email, "local").Count(&c)
+	if c > 0 {
+		return nil, errors.New("email already exist")
+	}
+	u := User{
+		Provider: "local",
+		Name:     name,
+		Email:    email,
+		Password: p.hmac.Sum([]byte(password))}
+	p.db.Create(&u)
+	return &u, nil
 }
 
 func (p *AuthDao) UserById(id uint, user *User) bool {
