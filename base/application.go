@@ -21,9 +21,6 @@ func (p *Application) Init(env string) error {
 		beans:    make(map[string]interface{}, 0),
 		validate: validator.New("validate", validator.BakedInValidators),
 	}
-	if err := LoadLocales("locales"); err != nil {
-		return err
-	}
 
 	if err := loadConfig(&cfg, fmt.Sprintf("config/%s.yml", env)); err != nil {
 		return err

@@ -1,5 +1,9 @@
 package itpkg
 
+import (
+	"fmt"
+)
+
 type EngineSetup struct {
 	cfg *Config
 }
@@ -14,6 +18,14 @@ func (p *EngineSetup) Use(name string, val interface{}) {
 
 func (p *EngineSetup) Get(name string) interface{} {
 	return p.cfg.beans[name]
+}
+
+func (p *EngineSetup) T(lang, key string, args ...interface{}) string {
+	v := p.Get("t").(*LocaleDao).Get(lang, key)
+	if v == "" {
+		return fmt.Sprintf("Translation [%s] not found", key)
+	}
+	return fmt.Sprintf(v, args...)
 }
 
 type Engine interface {

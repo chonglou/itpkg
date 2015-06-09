@@ -1,13 +1,16 @@
 package itpkg
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/chonglou/gin-contrib/cache"
 	"github.com/chonglou/sitemap"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/feeds"
 	"github.com/jinzhu/gorm"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -24,6 +27,8 @@ func (p *SiteEngine) Map() {
 	}
 	p.dao = &SiteDao{db: p.cfg.db, aes: &aes}
 	p.Use("siteDao", p.dao)
+
+	p.Use("t", &LocaleDao{db: p.cfg.db})
 }
 
 func (p *SiteEngine) Mount() {
@@ -37,16 +42,11 @@ func (p *SiteEngine) Mount() {
 
 	r.GET("/rss.atom", cache.CachePage(p.cfg.cache, time.Hour*3, func(c *gin.Context) {
 		lang := LANG(c)
-		var title, description, author_n, author_e string
-		p.dao.GetSiteInfo("title", lang, &title)
-		p.dao.GetSiteInfo("description", lang, &description)
-		p.dao.GetSiteInfo("author.name", lang, &author_n)
-		p.dao.GetSiteInfo("author.email", lang, &author_e)
 		feed := &feeds.Feed{
-			Title:       title,
+			Title:       p.T(lang, "site.title"),
 			Link:        &feeds.Link{Href: fmt.Sprintf("https://%s", p.cfg.Http.Host)},
-			Description: description,
-			Author:      &feeds.Author{author_n, author_e},
+			Description: p.T(lang, "site.description"),
+			Author:      &feeds.Author{p.T(lang, "site.author.name"), p.T(lang, "site.author.email")},
 			Created:     time.Now(),
 		}
 		feed.Items = []*feeds.Item{
@@ -78,16 +78,12 @@ func (p *SiteEngine) Mount() {
 		lang := LANG(c)
 		si := make(map[string]interface{}, 0)
 		for _, k := range []string{"title", "keywords", "description", "copyright"} {
-			var v string
-			p.dao.GetSiteInfo(k, lang, &v)
-			si[k] = v
+			si[k] = p.T(lang, "site."+k)
 		}
 
 		author := make(map[string]string, 0)
 		for _, k := range []string{"name", "email"} {
-			var v string
-			p.dao.GetSiteInfo("author."+k, lang, &v)
-			author[k] = v
+			author[k] = p.T(lang, "site.author."+k)
 		}
 		si["author"] = author
 
@@ -109,11 +105,57 @@ func (p *SiteEngine) Mount() {
 }
 
 func (p *SiteEngine) Migrate() {
-	p.cfg.db.AutoMigrate(&Setting{})
+	db := p.cfg.db
+	db.AutoMigrate(&Setting{})
+	db.AutoMigrate(&Locale{})
+	db.Model(&Locale{}).AddUniqueIndex("idx_locales_key_lang", "key", "lang")
+
+	if err := p.loadLocales("locales"); err != nil {
+		Logger.Error("Error on load locales: %v", err)
+	}
 }
 
 func (p *SiteEngine) Info() (name string, version string, desc string) {
 	return "site", "v10150530", "Site framework"
+}
+
+func (p *SiteEngine) loadLocales(path string) error {
+	Logger.Info("Loading i18n from " + path)
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		return err
+	}
+
+	tx := p.cfg.db.Begin()
+	for _, f := range files {
+		fn := f.Name()
+
+		lang := fn[0:(len(fn) - 5)]
+
+		ss := make(map[string]string, 0)
+		fd, err := os.Open(path + "/" + fn)
+		if err != nil {
+			return err
+		}
+		defer fd.Close()
+
+		err = json.NewDecoder(fd).Decode(&ss)
+		if err != nil {
+			return err
+		}
+		Logger.Info("Find locale file %s(%d)", fn, len(ss))
+		for key, val := range ss {
+			var c int
+			tx.Model(Locale{}).Where("lang = ? AND key = ?", lang, key).Count(&c)
+			if c > 0 {
+				continue
+			}
+			tx.Create(&Locale{Key: key, Lang: lang, Val: val})
+		}
+	}
+
+	tx.Commit()
+	return nil
 }
 
 type Model struct {
@@ -128,21 +170,15 @@ type Setting struct {
 	Iv  []byte `sql:"size:32"`
 }
 
+type Locale struct {
+	Key  string `sql:"not null;size:255;index"`
+	Val  string `sql:"not null;type:TEXT"`
+	Lang string `sql:"not null;size:5;index"`
+}
+
 type SiteDao struct {
 	db  *gorm.DB
 	aes *Aes
-}
-
-func (p *SiteDao) siteInfo(key string, lang string) string {
-	return fmt.Sprintf("site://%s/%s", key, lang)
-}
-
-func (p *SiteDao) SetSiteInfo(key string, lang string, val interface{}) {
-	p.Set(p.siteInfo(key, lang), val, false)
-}
-
-func (p *SiteDao) GetSiteInfo(key string, lang string, val interface{}) {
-	p.Get(p.siteInfo(key, lang), val, false)
 }
 
 func (p *SiteDao) Set(key string, val interface{}, enc bool) error {
@@ -184,6 +220,28 @@ func (p *SiteDao) Get(key string, val interface{}, enc bool) error {
 	return nil
 }
 
+type LocaleDao struct {
+	db *gorm.DB
+}
+
+func (p *LocaleDao) Get(lang, key string) string {
+	l := Locale{Lang: lang, Key: key}
+	p.db.Where("lang = ? AND key = ?", lang, key).First(&l)
+	return l.Val
+}
+
+func (p *LocaleDao) Set(lang, key, val string) {
+	l := Locale{Lang: lang, Key: key}
+	p.db.Where("lang = ? AND key = ?", lang, key).First(&l)
+	if l.Val == "" {
+		p.db.Create(&Locale{Key: key, Lang: lang, Val: val})
+	} else {
+		p.db.Model(&l).Updates(Locale{Val: val})
+	}
+
+}
+
+//---------------------------------------
 func init() {
 	Register(&SiteEngine{})
 }

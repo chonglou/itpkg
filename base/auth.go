@@ -25,6 +25,7 @@ func (p *AuthEngine) Mount() {
 
 	r.POST("/users/register", func(c *gin.Context) {
 		lang := LANG(c)
+
 		var fm UserRegisterFm
 		c.Bind(&fm)
 		err := p.cfg.validate.Struct(fm)
@@ -35,7 +36,7 @@ func (p *AuthEngine) Mount() {
 			} else {
 				user, err := p.dao.AddEmailUser(fm.Email, fm.Name, fm.Password)
 				if err == nil {
-					p.dao.Log(user.ID, T(lang, "auth.log.register"), "")
+					p.dao.Log(user.ID, p.T(lang, "auth.log.register"), "")
 					go p.mail(lang, user.Email, "confirm")
 					res.Add("send a email to confirm")
 				} else {
@@ -67,10 +68,10 @@ func (p *AuthEngine) Mount() {
 func (p *AuthEngine) Migrate() {
 	p.cfg.db.AutoMigrate(&Contact{})
 	p.cfg.db.AutoMigrate(&User{})
-	p.cfg.db.Model(&User{}).AddUniqueIndex("idx_user_login", "token", "provider")
+	p.cfg.db.Model(&User{}).AddUniqueIndex("idx_users_login", "token", "provider")
 	p.cfg.db.AutoMigrate(&Log{})
 	p.cfg.db.AutoMigrate(&Role{})
-	p.cfg.db.Model(&Role{}).AddUniqueIndex("idx_role_", "user_id", "name", "resource_type", "resource_id")
+	p.cfg.db.Model(&Role{}).AddUniqueIndex("idx_roles_", "user_id", "name", "resource_type", "resource_id")
 }
 
 func (p *AuthEngine) Info() (name string, version string, desc string) {
@@ -88,8 +89,8 @@ func (p *AuthEngine) mail(lang, email string, act string) {
 			url += "&token=" + tk
 			p.cfg.mailer.Html(
 				[]string{email},
-				T(lang, "auth.mailer."+act+".subject"),
-				T(lang, "auth.mailer."+act+".body", email, url, url))
+				p.T(lang, "auth.mailer."+act+".subject"),
+				p.T(lang, "auth.mailer."+act+".body", email, url, url))
 		}
 
 	default:
