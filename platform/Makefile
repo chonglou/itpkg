@@ -9,5 +9,5 @@ build:
 
 
 clean:
-	-rm -r tmp/* release/* mailer public
+	-rm -r tmp/* release public
 

@@ -113,6 +113,23 @@ func (p *Application) Redis() error {
 	return Shell(cmd, args...)
 }
 
+func (p *Application) ClearRedis(pat string) error {
+	p.cfg.OpenRedis()
+	r := p.cfg.redis.Get()
+	defer r.Close()
+
+	v, e := r.Do("KEYS", pat)
+	if e != nil {
+		return e
+	}
+	_, e = r.Do("DEL", v.([]interface{})...)
+	if e != nil {
+		return e
+	}
+	Logger.Info("Clear redis keys by %s succressfully!", pat)
+	return nil
+}
+
 func (p *Application) Openssl() {
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf,
@@ -321,6 +338,30 @@ func Run() error {
 			Action: func(c *cli.Context) {
 				a := load(c)
 				a.Migrate()
+			},
+		},
+		{
+			Name:    "cache:clear",
+			Aliases: []string{"cc"},
+			Usage:   "Clear cache from redis",
+			Flags:   []cli.Flag{envF},
+			Action: func(c *cli.Context) {
+				a := load(c)
+				if e := a.ClearRedis("cache://*"); e != nil {
+					Logger.Fatalf("Error on clear cache: %v", e)
+				}
+			},
+		},
+		{
+			Name:    "token:clear",
+			Aliases: []string{"tc"},
+			Usage:   "Clear tokens from redis",
+			Flags:   []cli.Flag{envF},
+			Action: func(c *cli.Context) {
+				a := load(c)
+				if e := a.ClearRedis("token://*"); e != nil {
+					Logger.Fatalf("Error on clear tokens: %v", e)
+				}
 			},
 		},
 	}
