@@ -166,6 +166,34 @@ func (p *Config) DbUrl() string {
 		p.Database.Port, p.Database.Name, p.Database.Extra)
 }
 
+func (p *Config) DbCreate() (string, []string) {
+	d := p.Database.Driver
+	switch d {
+	case "postgres":
+		return "psql", []string{
+			"-h", p.Database.Host,
+			"-p", strconv.Itoa(p.Database.Port),
+			"-U", p.Database.User,
+			"-c", fmt.Sprintf("CREATE DATABASE %s", p.Database.Name)}
+	default:
+		return "echo", []string{"Unknown database driver " + d}
+	}
+}
+
+func (p *Config) DbDrop() (string, []string) {
+	d := p.Database.Driver
+	switch d {
+	case "postgres":
+		return "psql", []string{
+			"-h", p.Database.Host,
+			"-p", strconv.Itoa(p.Database.Port),
+			"-U", p.Database.User,
+			"-c", fmt.Sprintf("DROP DATABASE %s", p.Database.Name)}
+	default:
+		return "echo", []string{"Unknown database driver " + d}
+	}
+}
+
 func (p *Config) DbShell() (string, []string) {
 	d := p.Database.Driver
 	switch d {

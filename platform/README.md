@@ -18,10 +18,13 @@ IT-PACKAGE(PLATFORM)
 ## Running
     cd public
     ./itpkg -h
-    ./itpkg server # development env
+    ./itpkg db:create -e production # create database
+    ./itpkg db:migrate -e production # migrate database
     ./itpkg server -e production  # production env
 
 
 ## Development
     gulp
-    go run app.go s
+    go run app.go db:create
+    go run app.go db:migrate
+    go run app.go server 
