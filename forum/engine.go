@@ -30,7 +30,7 @@ func (p *ForumEngine) Migrate() {
 	db := p.Get("db").(*gorm.DB)
 	db.AutoMigrate(&Article{})
 	db.AutoMigrate(&Board{})
-	db.Model(&Board{}).AddUniqueIndex("idx_boards_lang_name", "lang", "name")
+	db.Model(&Board{}).AddUniqueIndex("idx_forum_boards_lang_name", "lang", "name")
 	db.AutoMigrate(&Comment{})
 
 }
