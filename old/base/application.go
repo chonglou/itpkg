@@ -11,8 +11,15 @@ import (
 )
 
 type Application struct {
-	cfg *Config
+	Cfg *Config `inject:""`
+	engines []Engine
 }
+
+func (p *Application) Register(ens Engine...){
+	p.engines = append(p.engines, en...)
+}
+
+//-------------------------------------------------------
 
 func (p *Application) Init(env string) error {
 

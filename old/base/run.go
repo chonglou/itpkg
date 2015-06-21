@@ -2,6 +2,7 @@ package itpkg
 
 import (
 	"github.com/codegangsta/cli"
+	"github.com/facebookgo/inject"
 	"os"
 )
 

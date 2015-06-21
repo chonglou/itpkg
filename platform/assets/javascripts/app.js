@@ -52,7 +52,6 @@ itpkgApp.config(
                 }
             });
 
-
             $translateProvider.useCookieStorage();
             $translateProvider.preferredLanguage('en');
             $translateProvider.useSanitizeValueStrategy('escaped');
