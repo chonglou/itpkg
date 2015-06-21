@@ -15,36 +15,26 @@ import (
 )
 
 type SiteEngine struct {
-	EngineSetup
-	dao *SiteDao
-}
-
-func (p *SiteEngine) Map() {
-	Logger.Debug("Init SiteDao")
-	aes := Aes{}
-	if err := aes.Init(p.cfg.secret[20:52]); err != nil {
-		Logger.Fatalf("Error on init aes: %v", err)
-	}
-	p.dao = &SiteDao{db: p.cfg.db, aes: &aes}
-	p.Use("siteDao", p.dao)
-
-	p.Use("t", &LocaleDao{db: p.cfg.db})
+	BaseEngine
+	SiteDao *SiteDao       `inject:""`
+	Cfg     *Configuration `inject:""`
+	App     *Application   `inject:""`
 }
 
 func (p *SiteEngine) Mount() {
-	r := p.cfg.router
+	r := p.Router
 
-	r.GET("/sitemap.xml", cache.CachePage(p.cfg.cache, time.Hour*24, func(c *gin.Context) {
+	r.GET("/sitemap.xml", cache.CachePage(p.Cache, time.Hour*24, func(c *gin.Context) {
 		si := sitemap.New()
 		//todo add links from redis
 		c.XML(http.StatusOK, si)
 	}))
 
-	r.GET("/rss.atom", cache.CachePage(p.cfg.cache, time.Hour*3, func(c *gin.Context) {
+	r.GET("/rss.atom", cache.CachePage(p.Cache, time.Hour*3, func(c *gin.Context) {
 		lang := LANG(c)
 		feed := &feeds.Feed{
 			Title:       p.T(lang, "site.title"),
-			Link:        &feeds.Link{Href: fmt.Sprintf("https://%s", p.cfg.Http.Host)},
+			Link:        &feeds.Link{Href: fmt.Sprintf("https://%s", p.Cfg.Http.Host)},
 			Description: p.T(lang, "site.description"),
 			Author:      &feeds.Author{p.T(lang, "site.author.name"), p.T(lang, "site.author.email")},
 			Created:     time.Now(),
@@ -74,7 +64,7 @@ func (p *SiteEngine) Mount() {
 		})
 	*/
 
-	r.GET("/index.json", cache.CachePage(p.cfg.cache, time.Hour*24, func(c *gin.Context) {
+	r.GET("/index.json", cache.CachePage(p.Cache, time.Hour*24, func(c *gin.Context) {
 		lang := LANG(c)
 		si := make(map[string]interface{}, 0)
 		for _, k := range []string{"title", "keywords", "description", "copyright"} {
@@ -90,7 +80,7 @@ func (p *SiteEngine) Mount() {
 		si["locale"] = lang
 
 		ei := make([]map[string]string, 0)
-		for _, e := range engines {
+		for _, e := range p.App.engines {
 			n, v, d := e.Info()
 			in := make(map[string]string, 0)
 			in["name"] = n
@@ -105,28 +95,28 @@ func (p *SiteEngine) Mount() {
 }
 
 func (p *SiteEngine) Migrate() {
-	db := p.cfg.db
+	db := p.Db
 	db.AutoMigrate(&Setting{})
 	db.AutoMigrate(&Locale{})
 	db.Model(&Locale{}).AddUniqueIndex("idx_locales_key_lang", "key", "lang")
 
 	if err := p.loadLocales("locales"); err != nil {
-		Logger.Error("Error on load locales: %v", err)
+		p.Logger.Error("Error on load locales: %v", err)
 	}
 }
 
 func (p *SiteEngine) Info() (name string, version string, desc string) {
-	return "site", "v10150530", "Site framework"
+	return "site", "v10150621", "Site framework"
 }
 
 func (p *SiteEngine) loadLocales(path string) error {
-	Logger.Info("Loading i18n from " + path)
+	p.Logger.Info("Loading i18n from " + path)
 	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		return err
 	}
 
-	tx := p.cfg.db.Begin()
+	tx := p.Db.Begin()
 	for _, f := range files {
 		fn := f.Name()
 
@@ -143,7 +133,7 @@ func (p *SiteEngine) loadLocales(path string) error {
 		if err != nil {
 			return err
 		}
-		Logger.Info("Find locale file %s(%d)", fn, len(ss))
+		p.Logger.Info("Find locale file %s(%d)", fn, len(ss))
 		for key, val := range ss {
 			var c int
 			tx.Model(Locale{}).Where("lang = ? AND key = ?", lang, key).Count(&c)
@@ -171,8 +161,8 @@ type Locale struct {
 }
 
 type SiteDao struct {
-	db  *gorm.DB
-	aes *Aes
+	Db  *gorm.DB `inject:""`
+	Aes *Aes     `inject:""`
 }
 
 func (p *SiteDao) Set(key string, val interface{}, enc bool) error {
@@ -182,30 +172,33 @@ func (p *SiteDao) Set(key string, val interface{}, enc bool) error {
 	}
 	var iv []byte
 	if enc {
-		dt, iv = p.aes.Encrypt(dt)
+		dt, iv, err = p.Aes.Encrypt(dt)
+		if err != nil {
+			return err
+		}
 	}
 
 	st := Setting{ID: key}
 	var cn int
-	p.db.Model(st).Count(&cn)
+	p.Db.Model(st).Count(&cn)
 	if cn == 0 {
 		st.Val = dt
 		st.Iv = iv
-		p.db.Create(&st)
+		p.Db.Create(&st)
 	} else {
-		p.db.Model(&st).Updates(Setting{Val: dt, Iv: iv})
+		p.Db.Model(&st).Updates(Setting{Val: dt, Iv: iv})
 	}
 	return nil
 }
 
 func (p *SiteDao) Get(key string, val interface{}, enc bool) error {
 	st := Setting{}
-	p.db.Where("id = ?", key).First(&st)
+	p.Db.Where("id = ?", key).First(&st)
 	if st.Val != nil {
 		var dt []byte
 
 		if enc {
-			dt = p.aes.Decrypt(st.Val, st.Iv)
+			dt = p.Aes.Decrypt(st.Val, st.Iv)
 		} else {
 			dt = st.Val
 		}

@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
+	"github.com/chonglou/gin-contrib/cache"
 	"github.com/facebookgo/inject"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -63,12 +65,37 @@ func Load(env string, web bool) *Application {
 		log.Fatalf("error on open database: %v", err)
 	}
 
+	//aes
 	var cip cipher.Block
 	if cip, err = aes.NewCipher(cfg.secret[120:152]); err != nil {
 		log.Fatalf("error on generate aes cipher: %v", err)
 	}
 
-	Register(logger, &app, cfg, cfg.OpenRedis(), db, cfg.OpenMailer())
+	//redis
+	redis := cfg.OpenRedis()
+
+	//cache
+	var cacheS cache.CacheStore
+	switch cfg.Cache.Store {
+	case "memory":
+		cacheS = cache.NewInMemoryStore(time.Second)
+	case "redis":
+		cacheS = cache.NewRedisCacheWithPool(redis, time.Second)
+	default:
+		log.Fatalf("Unknown cache store: %s", cfg.Cache.Store)
+	}
+	logger.Info("Using cache by %s", cfg.Cache.Store)
+
+	//register
+	Register(
+		logger,
+		&app,
+		cfg,
+		redis,
+		db,
+		cfg.OpenMailer(),
+		cacheS,
+	)
 	RegisterWithName(map[string]interface{}{
 		"token key":   cfg.secret[100:116],
 		"aes cipher":  cip,
