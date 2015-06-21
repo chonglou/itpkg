@@ -18,6 +18,7 @@ type Application struct {
 	Router  *gin.Engine     `inject:""`
 	Redis   *redis.Pool     `inject:""`
 	Db      *gorm.DB        `inject:""`
+	Mailer  *Mailer         `inject:""`
 	engines []Engine
 }
 
@@ -56,6 +57,10 @@ func (p *Application) Server() error {
 		return err
 	}
 	return http.ListenAndServe(fmt.Sprintf(":%d", p.Cfg.Http.Port), p.Router)
+}
+
+func (p *Application) TestEmail(from, to string) {
+	p.Mailer.Html(from, "", []string{to}, "test", "<h1>Hello,ITPKG!</h1>")
 }
 
 func (p *Application) Routes() error {

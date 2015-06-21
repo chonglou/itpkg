@@ -1,6 +1,7 @@
-package itpkg
+package itpkg_test
 
 import (
+	"github.com/chonglou/itpkg/base"
 	"github.com/garyburd/redigo/redis"
 	"testing"
 	"time"
@@ -22,8 +23,8 @@ func getRedis() *redis.Pool {
 }
 
 func TestToken(t *testing.T) {
-
-	tk := Token{redis: getRedis(), key: RandomBytes(16)}
+	key, _ := itpkg.RandomBytes(16)
+	tk := itpkg.Token{Redis: getRedis(), Key: key}
 	ts1, _ := tk.New(hello, time.Hour*1)
 	ts2, _ := tk.New(hello, time.Hour*2)
 	t.Logf("%s\n%s\n%s", hello, ts1, ts2)

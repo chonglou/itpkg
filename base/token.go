@@ -3,15 +3,18 @@ package itpkg
 import (
 	"errors"
 	"fmt"
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/garyburd/redigo/redis"
+	"github.com/op/go-logging"
 	"github.com/pborman/uuid"
-	"time"
 )
 
 type Token struct {
-	redis *redis.Pool
-	key   []byte //16 bits
+	Redis  *redis.Pool     `inject:""`
+	Key    []byte          `inject:"token key"` //16 bits
+	Logger *logging.Logger `inject:""`
 }
 
 func (p *Token) tid(kid string) string {
@@ -25,26 +28,29 @@ func (p *Token) New(data interface{}, dur time.Duration) (string, error) {
 	token.Claims["val"] = data
 	token.Claims["exp"] = time.Now().Add(dur).Unix()
 
-	key := RandomBytes(16)
-	conn := p.redis.Get()
-	defer conn.Close()
-	if _, err := conn.Do("SET", p.tid(kid), key, "EX", int(dur.Seconds())); err != nil {
-		Logger.Error("Set token key error: %v", err)
+	key, err := RandomBytes(16)
+	if err != nil {
 		return "", err
 	}
-	return token.SignedString(append(key, p.key...))
+	conn := p.Redis.Get()
+	defer conn.Close()
+	if _, err := conn.Do("SET", p.tid(kid), key, "EX", int(dur.Seconds())); err != nil {
+		p.Logger.Error("Set token key error: %v", err)
+		return "", err
+	}
+	return token.SignedString(append(key, p.Key...))
 }
 
 func (p *Token) Parse(token string) (interface{}, error) {
 	tk, err := jwt.Parse(token, func(tk *jwt.Token) (interface{}, error) {
-		conn := p.redis.Get()
+		conn := p.Redis.Get()
 		defer conn.Close()
 		val, err := conn.Do("GET", p.tid(tk.Header["kid"].(string)))
 		if err != nil {
-			Logger.Error("Get token key error: %v", err)
+			p.Logger.Error("Get token key error: %v", err)
 			return nil, err
 		}
-		return append(val.([]byte), p.key...), nil
+		return append(val.([]byte), p.Key...), nil
 	})
 
 	if err != nil {

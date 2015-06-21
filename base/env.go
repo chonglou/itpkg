@@ -1,8 +1,11 @@
 package itpkg
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/facebookgo/inject"
 	"github.com/gin-gonic/gin"
@@ -12,40 +15,65 @@ import (
 
 var beans inject.Graph
 
-func Register(objects ...interface{}) {
-	items := make([]*inject.Object, len(objects))
-	for i, o := range objects {
-		items[i] = &inject.Object{Value: o}
+func RegisterWithName(objects map[string]interface{}) {
+	items := make([]*inject.Object, 0)
+	for k, v := range objects {
+		items = append(items, &inject.Object{Value: v, Name: k})
 	}
 	if err := beans.Provide(items...); err != nil {
 		log.Fatalf("error on register: %v", err)
 	}
 }
 
-func New(env string) *Application {
+func Register(objects ...interface{}) {
+	items := make([]*inject.Object, 0)
+	for _, v := range objects {
+		items = append(items, &inject.Object{Value: v})
+	}
+	if err := beans.Provide(items...); err != nil {
+		log.Fatalf("error on register: %v", err)
+	}
+}
+
+func configByEnv(env string) *Configuration {
 	var err error
+	if err = os.MkdirAll("config", 0700); err != nil {
+		log.Fatalf("config directory not exists!")
+	}
+
 	cfg := Configuration{env: env}
 	if err = LoadConfig(&cfg, fmt.Sprintf("config/%s.yml", env)); err != nil {
 		log.Fatalf("error on load config: %v", err)
 	}
-	return &Application{engines: make([]Engine, 0), Cfg: &cfg}
+	return &cfg
+}
+
+func New(env string) *Application {
+	return &Application{engines: make([]Engine, 0), Cfg: configByEnv(env)}
 }
 
 func Load(env string, web bool) *Application {
 	var err error
 	logger := logging.MustGetLogger("itpkg")
 	app := Application{engines: make([]Engine, 0)}
-	cfg := Configuration{env: env}
-	if err = LoadConfig(&cfg, fmt.Sprintf("config/%s.yml", env)); err != nil {
-		log.Fatalf("error on load config: %v", err)
-	}
+	cfg := configByEnv(env)
 
 	var db *gorm.DB
 	if db, err = cfg.OpenDb(); err != nil {
 		log.Fatalf("error on open database: %v", err)
 	}
 
-	Register(logger, &app, &cfg, cfg.OpenRedis(), db)
+	var cip cipher.Block
+	if cip, err = aes.NewCipher(cfg.secret[120:152]); err != nil {
+		log.Fatalf("error on generate aes cipher: %v", err)
+	}
+
+	Register(logger, &app, cfg, cfg.OpenRedis(), db, cfg.OpenMailer())
+	RegisterWithName(map[string]interface{}{
+		"token key":   cfg.secret[100:116],
+		"aes cipher":  cip,
+		"production?": cfg.IsProduction(),
+		"hmac key":    cfg.secret[160:192]})
 
 	if web {
 		var router *gin.Engine

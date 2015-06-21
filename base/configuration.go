@@ -1,6 +1,7 @@
 package itpkg
 
 import (
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -11,6 +12,7 @@ import (
 	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"gopkg.in/gomail.v1"
 	"gopkg.in/yaml.v2"
 )
 
@@ -63,6 +65,22 @@ type Configuration struct {
 
 func (p *Configuration) IsProduction() bool {
 	return p.env == "production"
+}
+
+func (p *Configuration) OpenMailer() *gomail.Mailer {
+	if p.Smtp.Ssl {
+		return gomail.NewMailer(
+			p.Smtp.Host,
+			p.Smtp.Username,
+			p.Smtp.Password,
+			p.Smtp.Port,
+			gomail.SetTLSConfig(&tls.Config{InsecureSkipVerify: true}))
+	}
+	return gomail.NewMailer(
+		p.Smtp.Host,
+		p.Smtp.Username,
+		p.Smtp.Password,
+		p.Smtp.Port)
 }
 
 func (p *Configuration) OpenRouter() (*gin.Engine, error) {

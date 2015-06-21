@@ -118,6 +118,27 @@ func Run() error {
 			},
 		},
 		{
+			Name:  "test:email",
+			Usage: "Test mailer",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "from, f",
+					Usage: "from-address",
+				},
+				cli.StringFlag{
+					Name:  "to, t",
+					Usage: "to-address",
+				},
+				envF,
+			},
+			Action: func(c *cli.Context) {
+				a := Load(c.String("environment"), false)
+				from := c.String("from")
+				to := c.String("to")
+				a.TestEmail(from, to)
+			},
+		},
+		{
 			Name:  "cache:clear",
 			Usage: "Clear cache from redis",
 			Flags: []cli.Flag{envF},
