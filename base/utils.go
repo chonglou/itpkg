@@ -6,10 +6,11 @@ import (
 	"crypto/cipher"
 	"crypto/hmac"
 	"crypto/md5"
-	"crypto/rand"
+	c_rand "crypto/rand"
 	"crypto/sha512"
 	"encoding/base64"
 	"encoding/gob"
+	m_rand "math/rand"
 	"os"
 	"os/exec"
 	"syscall"
@@ -26,21 +27,21 @@ func Shell(cmd string, args ...string) error {
 }
 
 func RandomStr(size int) string {
-	b := RandomBytes(size)
-	const dictionary = "0123456789abcdefghijklmnopqrstuvwxyz"
-	for k, v := range b {
-		b[k] = dictionary[v%byte(len(dictionary))]
+	const letters = "0123456789abcdefghijklmnopqrstuvwxyz"
+	buf := make([]byte, size)
+	for i := range buf {
+		buf[i] = letters[m_rand.Intn(len(letters))]
 	}
-	return string(b)
+	return string(buf)
 
 }
 
-func RandomBytes(size int) []byte {
+func RandomBytes(size int) ([]byte, error) {
 	b := make([]byte, size)
-	if _, err := rand.Read(b); err != nil {
-		Logger.Fatalf("Error on random: %v", err)
+	if _, err := c_rand.Read(b); err != nil {
+		return nil, err
 	}
-	return b
+	return b, nil
 }
 
 //--------------------------ENCRYPTS--------------------------------------------
@@ -61,13 +62,17 @@ type Hmac struct {
 	key []byte
 }
 
-func (h *Hmac) Sum(src []byte) []byte {
-	mac := hmac.New(sha512.New, h.key)
+func (p *Hmac) SetKey(key []byte) {
+	p.key = key
+}
+
+func (p *Hmac) Sum(src []byte) []byte {
+	mac := hmac.New(sha512.New, p.key)
 	mac.Write(src)
 	return mac.Sum(nil)
 }
 
-func (h *Hmac) Equal(src, dst []byte) bool {
+func (p *Hmac) Equal(src, dst []byte) bool {
 	return hmac.Equal(src, dst)
 }
 
@@ -76,26 +81,29 @@ type Aes struct {
 }
 
 //16、24或者32位的[]byte，分别对应AES-128, AES-192或AES-256算法
-func (a *Aes) Init(key []byte) error {
+func (p *Aes) SetKey(key []byte) error {
 	c, e := aes.NewCipher(key)
 	if e != nil {
 		return e
 	}
-	a.cip = c
+	p.cip = c
 	return nil
 }
 
-func (a *Aes) Encrypt(src []byte) ([]byte, []byte) {
-	iv := RandomBytes(aes.BlockSize)
-	cfb := cipher.NewCFBEncrypter(a.cip, iv)
+func (p *Aes) Encrypt(src []byte) ([]byte, []byte, error) {
+	iv, err := RandomBytes(aes.BlockSize)
+	if err != nil {
+		return nil, nil, err
+	}
+	cfb := cipher.NewCFBEncrypter(p.cip, iv)
 	ct := make([]byte, len(src))
 	cfb.XORKeyStream(ct, src)
-	return ct, iv
+	return ct, iv, nil
 
 }
 
-func (a *Aes) Decrypt(src, iv []byte) []byte {
-	cfb := cipher.NewCFBDecrypter(a.cip, iv)
+func (p *Aes) Decrypt(src, iv []byte) []byte {
+	cfb := cipher.NewCFBDecrypter(p.cip, iv)
 	pt := make([]byte, len(src))
 	cfb.XORKeyStream(pt, src)
 	return pt

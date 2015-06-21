@@ -2,19 +2,11 @@ package itpkg
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/facebookgo/inject"
+	"log"
 	"os"
 )
 
 func Run() error {
-
-	load := func(c *cli.Context) Application {
-		a := Application{}
-		if err := a.Init(c.String("environment")); err != nil {
-			Logger.Fatalf("error on load config:%v", err)
-		}
-		return a
-	}
 
 	envF := cli.StringFlag{
 		Name:   "environment, e",
@@ -42,9 +34,9 @@ func Run() error {
 				},
 			},
 			Action: func(c *cli.Context) {
-				a := load(c)
+				a := Load(c.String("environment"), true)
 				if e := a.Server(); e != nil {
-					Logger.Fatalf("Error on start server: %v", e)
+					log.Fatalf("Error on start server: %v", e)
 				}
 			},
 		},
@@ -54,8 +46,8 @@ func Run() error {
 			Usage:   "Start a console for the database",
 			Flags:   []cli.Flag{envF},
 			Action: func(c *cli.Context) {
-				a := load(c)
-				a.Db()
+				a := New(c.String("environment"))
+				a.DbShell()
 			},
 		},
 		{
@@ -64,7 +56,7 @@ func Run() error {
 			Usage:   "Print out all defined routes in match order, with names",
 			Flags:   []cli.Flag{envF},
 			Action: func(c *cli.Context) {
-				a := load(c)
+				a := Load(c.String("environment"), true)
 				a.Routes()
 			},
 		},
@@ -74,8 +66,8 @@ func Run() error {
 			Usage:   "Start a console for the redis",
 			Flags:   []cli.Flag{envF},
 			Action: func(c *cli.Context) {
-				a := load(c)
-				a.Redis()
+				a := New(c.String("environment"))
+				a.RedisShell()
 			},
 		},
 		{
@@ -84,7 +76,7 @@ func Run() error {
 			Usage:   "Nginx config file demo",
 			Flags:   []cli.Flag{envF},
 			Action: func(c *cli.Context) {
-				a := load(c)
+				a := New(c.String("environment"))
 				a.Nginx()
 			},
 		},
@@ -103,7 +95,7 @@ func Run() error {
 			Usage: "Migrate the database",
 			Flags: []cli.Flag{envF},
 			Action: func(c *cli.Context) {
-				a := load(c)
+				a := Load(c.String("environment"), false)
 				a.DbMigrate()
 			},
 		},
@@ -112,7 +104,7 @@ func Run() error {
 			Usage: "Drops the database",
 			Flags: []cli.Flag{envF},
 			Action: func(c *cli.Context) {
-				a := load(c)
+				a := New(c.String("environment"))
 				a.DbDrop()
 			},
 		},
@@ -121,7 +113,7 @@ func Run() error {
 			Usage: "Creates the database",
 			Flags: []cli.Flag{envF},
 			Action: func(c *cli.Context) {
-				a := load(c)
+				a := New(c.String("environment"))
 				a.DbCreate()
 			},
 		},
@@ -130,9 +122,9 @@ func Run() error {
 			Usage: "Clear cache from redis",
 			Flags: []cli.Flag{envF},
 			Action: func(c *cli.Context) {
-				a := load(c)
-				if e := a.ClearRedis("cache://*"); e != nil {
-					Logger.Fatalf("Error on clear cache: %v", e)
+				a := Load(c.String("environment"), false)
+				if e := a.clearRedis("cache://*"); e != nil {
+					log.Fatalf("Error on clear cache: %v", e)
 				}
 			},
 		},
@@ -141,9 +133,9 @@ func Run() error {
 			Usage: "Clear tokens from redis",
 			Flags: []cli.Flag{envF},
 			Action: func(c *cli.Context) {
-				a := load(c)
-				if e := a.ClearRedis("token://*"); e != nil {
-					Logger.Fatalf("Error on clear tokens: %v", e)
+				a := Load(c.String("environment"), false)
+				if e := a.clearRedis("token://*"); e != nil {
+					log.Fatalf("Error on clear tokens: %v", e)
 				}
 			},
 		},
