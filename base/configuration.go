@@ -227,7 +227,7 @@ func LoadConfig(cfg *Configuration, file string) error {
 		cfg.Database.Port = 5432
 		cfg.Database.User = "postgres"
 		cfg.Database.Password = ""
-		cfg.Database.Name = "itpkg"
+		cfg.Database.Name = fmt.Sprintf("itpkg_%s", cfg.env)
 		cfg.Database.Extra = "sslmode=disable"
 
 		cfg.Redis.Host = "localhost"
