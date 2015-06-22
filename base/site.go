@@ -20,9 +20,9 @@ import (
 type SiteEngine struct {
 	Db      *gorm.DB        `inject:""`
 	SiteDao *SiteDao        `inject:""`
+	I18n    *LocaleDao      `inject:""`
 	Cfg     *Configuration  `inject:""`
 	App     *Application    `inject:""`
-	I18n    *LocaleDao      `inject:""`
 	Logger  *logging.Logger `inject:""`
 	Router  *gin.Engine     `inject:""`
 	Redis   *redis.Pool     `inject:""`

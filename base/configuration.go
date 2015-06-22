@@ -67,6 +67,18 @@ func (p *Configuration) IsProduction() bool {
 	return p.env == "production"
 }
 
+func (p *Configuration) From(user string) string {
+	return fmt.Sprintf("no-reply@%s", p.Http.Host)
+}
+
+func (p *Configuration) Url(lang, url string) string {
+	if p.IsProduction() {
+		return fmt.Sprintf("https://%s%s?locale=%s", p.Http.Host, url, lang)
+	} else {
+		return fmt.Sprintf("http://localhost:%d%s?locale=%s", p.Http.Port, url, lang)
+	}
+}
+
 func (p *Configuration) OpenMailer() *gomail.Mailer {
 	if p.Smtp.Ssl {
 		return gomail.NewMailer(

@@ -13,6 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/op/go-logging"
+	"gopkg.in/bluesuncorp/validator.v5"
 )
 
 var beans inject.Graph
@@ -123,7 +124,7 @@ func Load(env string, web bool) *Application {
 		if router, err = cfg.OpenRouter(); err != nil {
 			log.Fatalf("error on open router: %v", err)
 		}
-		Register(router)
+		Register(router, validator.New("validate", validator.BakedInValidators))
 	}
 
 	if err = beans.Populate(); err != nil {

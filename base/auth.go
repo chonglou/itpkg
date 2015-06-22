@@ -2,41 +2,45 @@ package itpkg
 
 import (
 	"errors"
-	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
-	"github.com/pborman/uuid"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	"github.com/op/go-logging"
+	"github.com/pborman/uuid"
+	"gopkg.in/bluesuncorp/validator.v5"
 )
 
 type AuthEngine struct {
-	EngineSetup
-	dao *AuthDao
-}
-
-func (p *AuthEngine) Map() {
-	dao := AuthDao{db: p.cfg.db, hmac: &Hmac{key: p.cfg.secret[120:152]}}
-	p.Use("authDao", &dao)
-	p.dao = &dao
+	Cfg      *Configuration      `inject:""`
+	AuthDao  *AuthDao            `inject:""`
+	Db       *gorm.DB            `inject:""`
+	SiteDao  *SiteDao            `inject:""`
+	I18n     *LocaleDao          `inject:""`
+	Router   *gin.Engine         `inject:""`
+	Logger   *logging.Logger     `inject:""`
+	Mailer   *Mailer             `inject:""`
+	Token    *Token              `inject:""`
+	Validate *validator.Validate `inject:""`
 }
 
 func (p *AuthEngine) Mount() {
-	r := p.cfg.router
 
-	r.POST("/users/register", func(c *gin.Context) {
+	p.Router.POST("/users/register", func(c *gin.Context) {
 		lang := LANG(c)
 
 		var fm UserRegisterFm
 		c.Bind(&fm)
-		err := p.cfg.validate.Struct(fm)
+		err := p.Validate.Struct(fm)
 		res := NewResponse(true)
 		if err == nil {
 			if fm.Password != fm.RePassword {
 				res.Invalid(errors.New("passwords not match"))
 			} else {
-				user, err := p.dao.AddEmailUser(fm.Email, fm.Name, fm.Password)
+				user, err := p.AuthDao.AddEmailUser(fm.Email, fm.Name, fm.Password)
 				if err == nil {
-					p.dao.Log(user.ID, p.T(lang, "auth.log.register"), "")
+					p.AuthDao.Log(user.ID, p.I18n.T(lang, "auth.log.register"), "")
 					go p.mail(lang, user.Email, "confirm")
 					res.Add("send a email to confirm")
 				} else {
@@ -50,51 +54,53 @@ func (p *AuthEngine) Mount() {
 		c.JSON(http.StatusOK, res)
 	})
 
-	r.POST("/users/login", func(c *gin.Context) {})
+	p.Router.POST("/users/login", func(c *gin.Context) {})
 
-	r.POST("/users/unlock", func(c *gin.Context) {})
-	r.GET("/users/unlock", func(c *gin.Context) {})
+	p.Router.POST("/users/unlock", func(c *gin.Context) {})
+	p.Router.GET("/users/unlock", func(c *gin.Context) {})
 
-	r.POST("/users/password/1", func(c *gin.Context) {})
-	r.GET("/users/password/1", func(c *gin.Context) {})
-	r.POST("/users/password/2", func(c *gin.Context) {})
+	p.Router.POST("/users/password/1", func(c *gin.Context) {})
+	p.Router.GET("/users/password/1", func(c *gin.Context) {})
+	p.Router.POST("/users/password/2", func(c *gin.Context) {})
 
-	r.POST("/users/confirm", func(c *gin.Context) {})
-	r.GET("/users/confirm", func(c *gin.Context) {})
+	p.Router.POST("/users/confirm", func(c *gin.Context) {})
+	p.Router.GET("/users/confirm", func(c *gin.Context) {})
 
-	r.GET("/users/logout", func(c *gin.Context) {})
+	p.Router.GET("/users/logout", func(c *gin.Context) {})
 }
 
 func (p *AuthEngine) Migrate() {
-	p.cfg.db.AutoMigrate(&Contact{})
-	p.cfg.db.AutoMigrate(&User{})
-	p.cfg.db.Model(&User{}).AddUniqueIndex("idx_users_login", "token", "provider")
-	p.cfg.db.AutoMigrate(&Log{})
-	p.cfg.db.AutoMigrate(&Role{})
-	p.cfg.db.Model(&Role{}).AddUniqueIndex("idx_roles_", "user_id", "name", "resource_type", "resource_id")
+	p.Db.AutoMigrate(&Contact{})
+	p.Db.AutoMigrate(&User{})
+	p.Db.Model(&User{}).AddUniqueIndex("idx_users_login", "token", "provider")
+	p.Db.AutoMigrate(&Log{})
+	p.Db.AutoMigrate(&Role{})
+	p.Db.Model(&Role{}).AddUniqueIndex("idx_roles_", "user_id", "name", "resource_type", "resource_id")
 }
 
 func (p *AuthEngine) Info() (name string, version string, desc string) {
-	return "auth", "v10250530", ""
+	return "auth", "v10250530", "auth engine"
 }
 
 func (p *AuthEngine) mail(lang, email string, act string) {
 	switch {
 	case act == "password" || act == "confirm" || act == "unlock":
-		tk, err := p.cfg.token.New(&userToken{Email: email, Action: act}, time.Hour*24)
+		tk, err := p.Token.New(&userToken{Email: email, Action: act}, time.Hour*24)
 		if err != nil {
-			Logger.Error("Error on generate user token: %s", act)
+			p.Logger.Error("Error on generate user token: %s", act)
 		} else {
-			url := p.cfg.Url(lang, "/users/"+act)
+			url := p.Cfg.Url(lang, "/users/"+act)
 			url += "&token=" + tk
-			p.cfg.mailer.Html(
+			p.Mailer.Html(
+				p.Cfg.From("no-reply"),
+				p.Cfg.Smtp.Bcc,
 				[]string{email},
-				p.T(lang, "auth.mailer."+act+".subject"),
-				p.T(lang, "auth.mailer."+act+".body", email, url, url))
+				p.I18n.T(lang, "auth.mailer."+act+".subject"),
+				p.I18n.T(lang, "auth.mailer."+act+".body", email, url, url))
 		}
 
 	default:
-		Logger.Error("Unknown user email action: %s", act)
+		p.Logger.Error("Unknown user email action: %s", act)
 	}
 }
 
@@ -178,13 +184,14 @@ type Role struct {
 //-----------------------dao---------------------------------------
 
 type AuthDao struct {
-	db   *gorm.DB
-	hmac *Hmac
+	Db     *gorm.DB        `inject:""`
+	Hmac   *Hmac           `inject:""`
+	Logger *logging.Logger `inject:""`
 }
 
 func (p *AuthDao) AddEmailUser(email, name, password string) (*User, error) {
 	var c int
-	p.db.Model(User{}).Where("email = ? AND provider = ?", email, "local").Count(&c)
+	p.Db.Model(User{}).Where("email = ? AND provider = ?", email, "local").Count(&c)
 	if c > 0 {
 		return nil, errors.New("email already exist")
 	}
@@ -192,25 +199,25 @@ func (p *AuthDao) AddEmailUser(email, name, password string) (*User, error) {
 		Provider: "local",
 		Name:     name,
 		Email:    email,
-		Password: p.hmac.Sum([]byte(password)),
+		Password: p.Hmac.Sum([]byte(password)),
 		Token:    uuid.New()}
-	p.db.Create(&u)
+	p.Db.Create(&u)
 	return &u, nil
 }
 
 func (p *AuthDao) UserById(id uint, user *User) bool {
-	return !p.db.First(user, id).RecordNotFound()
+	return !p.Db.First(user, id).RecordNotFound()
 }
 
 func (p *AuthDao) Log(user uint, message string, flag string) {
-	p.db.Create(&Log{UserID: user, Message: message, Type: flag})
+	p.Db.Create(&Log{UserID: user, Message: message, Type: flag})
 }
 
 func (p *AuthDao) Check(user uint, role string, args ...interface{}) bool {
 	rty, rid, _, _ := p.resource(args...)
 	r := Role{}
 
-	if p.db.Where(
+	if p.Db.Where(
 		"user_id = ? AND name = ? AND resource_type = ? AND resource_id = ?",
 		user, role, rty, rid).First(&r).RecordNotFound() {
 		return false
@@ -222,7 +229,7 @@ func (p *AuthDao) Check(user uint, role string, args ...interface{}) bool {
 
 func (p *AuthDao) Deny(user uint, role string, args ...interface{}) {
 	rty, rid, _, _ := p.resource(args...)
-	p.db.Where(
+	p.Db.Where(
 		"user_id = ? AND name = ? AND resource_type = ? AND resource_id = ?",
 		user, role, rty, rid).Delete(Role{})
 }
@@ -231,7 +238,7 @@ func (p *AuthDao) Allow(user uint, role string, args ...interface{}) {
 	rty, rid, begin, end := p.resource(args...)
 
 	r := Role{}
-	if p.db.Model(Role{}).Where(
+	if p.Db.Model(Role{}).Where(
 		"user_id = ? AND name = ? AND resource_type = ? AND resource_id = ?",
 		user, role, rty, rid).First(&r).RecordNotFound() {
 
@@ -241,9 +248,9 @@ func (p *AuthDao) Allow(user uint, role string, args ...interface{}) {
 		r.ResourceID = rid
 		r.StartUp = begin
 		r.ShutDown = end
-		p.db.Create(&r)
+		p.Db.Create(&r)
 	} else {
-		p.db.Model(&r).Updates(map[string]interface{}{"start_up": begin, "shut_down": end})
+		p.Db.Model(&r).Updates(map[string]interface{}{"start_up": begin, "shut_down": end})
 	}
 
 }
@@ -269,7 +276,7 @@ func (p *AuthDao) resource(args ...interface{}) (string, uint, *time.Time, *time
 		rid = args[2].(uint)
 		begin = args[2].(*time.Time)
 	default:
-		Logger.Warning("Ingnore role args: %v", args)
+		p.Logger.Warning("Ingnore role args: %v", args)
 	}
 	return rty, rid, begin, end
 }
