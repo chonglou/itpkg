@@ -3,22 +3,31 @@ package itpkg
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/chonglou/gin-contrib/cache"
-	"github.com/chonglou/sitemap"
-	"github.com/gin-gonic/gin"
-	"github.com/gorilla/feeds"
-	"github.com/jinzhu/gorm"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/chonglou/gin-contrib/cache"
+	"github.com/chonglou/sitemap"
+	"github.com/garyburd/redigo/redis"
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/feeds"
+	"github.com/jinzhu/gorm"
+	"github.com/op/go-logging"
 )
 
 type SiteEngine struct {
-	BaseEngine
-	SiteDao *SiteDao       `inject:""`
-	Cfg     *Configuration `inject:""`
-	App     *Application   `inject:""`
+	Db      *gorm.DB        `inject:""`
+	SiteDao *SiteDao        `inject:""`
+	Cfg     *Configuration  `inject:""`
+	App     *Application    `inject:""`
+	I18n    *LocaleDao      `inject:""`
+	Logger  *logging.Logger `inject:""`
+	Router  *gin.Engine     `inject:""`
+	Redis   *redis.Pool     `inject:""`
+
+	Cache cache.CacheStore `inject:""`
 }
 
 func (p *SiteEngine) Mount() {
@@ -33,10 +42,10 @@ func (p *SiteEngine) Mount() {
 	r.GET("/rss.atom", cache.CachePage(p.Cache, time.Hour*3, func(c *gin.Context) {
 		lang := LANG(c)
 		feed := &feeds.Feed{
-			Title:       p.T(lang, "site.title"),
+			Title:       p.I18n.T(lang, "site.title"),
 			Link:        &feeds.Link{Href: fmt.Sprintf("https://%s", p.Cfg.Http.Host)},
-			Description: p.T(lang, "site.description"),
-			Author:      &feeds.Author{p.T(lang, "site.author.name"), p.T(lang, "site.author.email")},
+			Description: p.I18n.T(lang, "site.description"),
+			Author:      &feeds.Author{p.I18n.T(lang, "site.author.name"), p.I18n.T(lang, "site.author.email")},
 			Created:     time.Now(),
 		}
 		feed.Items = []*feeds.Item{
@@ -68,27 +77,26 @@ func (p *SiteEngine) Mount() {
 		lang := LANG(c)
 		si := make(map[string]interface{}, 0)
 		for _, k := range []string{"title", "keywords", "description", "copyright"} {
-			si[k] = p.T(lang, "site."+k)
+			si[k] = p.I18n.T(lang, "site."+k)
 		}
 
 		author := make(map[string]string, 0)
 		for _, k := range []string{"name", "email"} {
-			author[k] = p.T(lang, "site.author."+k)
+			author[k] = p.I18n.T(lang, "site.author."+k)
 		}
 		si["author"] = author
 
 		si["locale"] = lang
 
 		ei := make([]map[string]string, 0)
-		for _, e := range p.App.engines {
-			n, v, d := e.Info()
-			in := make(map[string]string, 0)
-			in["name"] = n
-			in["version"] = v
-			in["description"] = d
-			ei = append(ei, in)
-		}
+
+		LoopEngine(func(en Engine) error {
+			n, v, d := en.Info()
+			ei = append(ei, map[string]string{"name": n, "version": v, "description": d})
+			return nil
+		})
 		si["engines"] = ei
+
 		c.JSON(http.StatusOK, si)
 	}))
 
@@ -208,22 +216,30 @@ func (p *SiteDao) Get(key string, val interface{}, enc bool) error {
 }
 
 type LocaleDao struct {
-	db *gorm.DB
+	Db *gorm.DB `inject:""`
+}
+
+func (p *LocaleDao) T(lang, key string, args ...interface{}) string {
+	v := p.Get(lang, key)
+	if v == "" {
+		return fmt.Sprintf("Translation [%s] not found", key)
+	}
+	return fmt.Sprintf(v, args...)
 }
 
 func (p *LocaleDao) Get(lang, key string) string {
 	l := Locale{Lang: lang, Key: key}
-	p.db.Where("lang = ? AND key = ?", lang, key).First(&l)
+	p.Db.Where("lang = ? AND key = ?", lang, key).First(&l)
 	return l.Val
 }
 
 func (p *LocaleDao) Set(lang, key, val string) {
 	l := Locale{Lang: lang, Key: key}
-	p.db.Where("lang = ? AND key = ?", lang, key).First(&l)
+	p.Db.Where("lang = ? AND key = ?", lang, key).First(&l)
 	if l.Val == "" {
-		p.db.Create(&Locale{Key: key, Lang: lang, Val: val})
+		p.Db.Create(&Locale{Key: key, Lang: lang, Val: val})
 	} else {
-		p.db.Model(&l).Updates(Locale{Val: val})
+		p.Db.Model(&l).Updates(Locale{Val: val})
 	}
 
 }

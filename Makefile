@@ -1,9 +1,5 @@
 
 
-test:
-	go test
-
-
 format:
 	go fmt base/*.go 
 	go fmt platform/*.go

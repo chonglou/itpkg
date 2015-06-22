@@ -13,26 +13,16 @@ import (
 )
 
 type Application struct {
-	Cfg     *Configuration  `inject:""`
-	Logger  *logging.Logger `inject:""`
-	Router  *gin.Engine     `inject:""`
-	Redis   *redis.Pool     `inject:""`
-	Db      *gorm.DB        `inject:""`
-	Mailer  *Mailer         `inject:""`
-	engines []Engine
-}
-
-func (p *Application) loop(f func(en Engine) error) error {
-	for _, en := range p.engines {
-		if err := f(en); err != nil {
-			return err
-		}
-	}
-	return nil
+	Cfg    *Configuration  `inject:""`
+	Logger *logging.Logger `inject:""`
+	Router *gin.Engine     `inject:""`
+	Redis  *redis.Pool     `inject:""`
+	Db     *gorm.DB        `inject:""`
+	Mailer *Mailer         `inject:""`
 }
 
 func (p *Application) DbMigrate() error {
-	return p.loop(func(en Engine) error {
+	return LoopEngine(func(en Engine) error {
 		en.Migrate()
 		return nil
 	})
@@ -50,7 +40,7 @@ func (p *Application) DbDrop() error {
 
 func (p *Application) Server() error {
 
-	if err := p.loop(func(en Engine) error {
+	if err := LoopEngine(func(en Engine) error {
 		en.Mount()
 		return nil
 	}); err != nil {
@@ -66,7 +56,7 @@ func (p *Application) TestEmail(from, to string) {
 func (p *Application) Routes() error {
 	gin.SetMode(gin.DebugMode)
 
-	return p.loop(func(en Engine) error {
+	return LoopEngine(func(en Engine) error {
 		en.Mount()
 		return nil
 	})

@@ -17,6 +17,22 @@ import (
 
 var beans inject.Graph
 
+func LoopEngine(f func(en Engine) error) error {
+	for _, obj := range beans.Objects() {
+		switch obj.Value.(type) {
+		case Engine:
+			// en := obj.Value.(Engine)
+			// n,v,d := en.Info()
+			// log.Printf("%s %s %s", n, v, d)
+			if err := f(obj.Value.(Engine)); err != nil {
+				return err
+			}
+		default:
+		}
+	}
+	return nil
+}
+
 func RegisterWithName(objects map[string]interface{}) {
 	items := make([]*inject.Object, 0)
 	for k, v := range objects {
@@ -51,13 +67,12 @@ func configByEnv(env string) *Configuration {
 }
 
 func New(env string) *Application {
-	return &Application{engines: make([]Engine, 0), Cfg: configByEnv(env)}
+	return &Application{Cfg: configByEnv(env)}
 }
 
 func Load(env string, web bool) *Application {
 	var err error
 	logger := logging.MustGetLogger("itpkg")
-	app := Application{engines: make([]Engine, 0)}
 	cfg := configByEnv(env)
 
 	var db *gorm.DB
@@ -87,9 +102,10 @@ func Load(env string, web bool) *Application {
 	logger.Info("Using cache by %s", cfg.Cache.Store)
 
 	//register
+	app := &Application{}
 	Register(
 		logger,
-		&app,
+		app,
 		cfg,
 		redis,
 		db,
@@ -113,9 +129,9 @@ func Load(env string, web bool) *Application {
 	if err = beans.Populate(); err != nil {
 		log.Fatalf("error on init beans: %v", err)
 	}
-	return &app
+	return app
 }
 
 func init() {
-	//cache.PageCachePrefix = "cache://page/"
+	cache.PageCachePrefix = "cache://page/"
 }
