@@ -5,5 +5,5 @@ import (
 )
 
 type CmsDao struct {
-	db *gorm.DB
+	Db *gorm.DB `inject:""`
 }

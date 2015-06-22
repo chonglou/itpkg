@@ -1,32 +1,28 @@
 package cms
 
 import (
-	"github.com/chonglou/gin-contrib/rest"
-	. "github.com/chonglou/itpkg/base"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+
+	"github.com/chonglou/gin-contrib/rest"
+	. "github.com/chonglou/itpkg/base"
 )
 
 type CmsEngine struct {
-	EngineSetup
-	dao *CmsDao
-}
-
-func (p *CmsEngine) Map() {
-	dao := &CmsDao{db: p.Get("db").(*gorm.DB)}
-	p.Use("cmsDao", dao)
-	p.dao = dao
+	Db     *gorm.DB    `inject:""`
+	Dao    *CmsDao     `inject:""`
+	Router *gin.Engine `inject:""`
 }
 
 func (p *CmsEngine) Mount() {
-	g := p.Get("router").(*gin.Engine).Group("/cms")
+	g := p.Router.Group("/cms")
 	rest.CRUD(g, "/article", &ArticleCtrl{})
 	rest.CRUD(g, "/tag", &TagCtrl{})
 	rest.CRUD(g, "/comment", &CommentCtrl{})
 }
 
 func (p *CmsEngine) Migrate() {
-	db := p.Get("db").(*gorm.DB)
+	db := p.Db
 	db.AutoMigrate(&Article{})
 	db.AutoMigrate(&Tag{})
 	db.AutoMigrate(&Comment{})

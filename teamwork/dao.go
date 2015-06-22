@@ -5,5 +5,5 @@ import (
 )
 
 type TeamworkDao struct {
-	db *gorm.DB
+	Db *gorm.DB `inject:""`
 }

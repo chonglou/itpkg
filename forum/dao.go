@@ -5,5 +5,5 @@ import (
 )
 
 type ForumDao struct {
-	db *gorm.DB
+	Db *gorm.DB `inject:""`
 }

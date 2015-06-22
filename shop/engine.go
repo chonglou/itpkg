@@ -1,25 +1,21 @@
 package shop
 
 import (
-	"github.com/chonglou/gin-contrib/rest"
-	. "github.com/chonglou/itpkg/base"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+
+	"github.com/chonglou/gin-contrib/rest"
+	. "github.com/chonglou/itpkg/base"
 )
 
 type ShopEngine struct {
-	EngineSetup
-	dao *ShopDao
-}
-
-func (p *ShopEngine) Map() {
-	dao := &ShopDao{db: p.Get("db").(*gorm.DB)}
-	p.Use("shopDao", dao)
-	p.dao = dao
+	Db     *gorm.DB    `inject:""`
+	Dao    *ShopDao    `inject:""`
+	Router *gin.Engine `inject:""`
 }
 
 func (p *ShopEngine) Mount() {
-	g := p.Get("router").(*gin.Engine).Group("/shop")
+	g := p.Router.Group("/shop")
 	rest.CRUD(g, "/product", &ProductCtrl{})
 	rest.CRUD(g, "/tag", &TagCtrl{})
 	rest.CRUD(g, "/price", &PriceCtrl{})
@@ -29,7 +25,7 @@ func (p *ShopEngine) Mount() {
 }
 
 func (p *ShopEngine) Migrate() {
-	db := p.Get("db").(*gorm.DB)
+	db := p.Db
 	db.AutoMigrate(&Product{})
 	db.AutoMigrate(&Tag{})
 	db.AutoMigrate(&Price{})

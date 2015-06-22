@@ -1,25 +1,21 @@
 package teamwork
 
 import (
-	"github.com/chonglou/gin-contrib/rest"
-	. "github.com/chonglou/itpkg/base"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+
+	"github.com/chonglou/gin-contrib/rest"
+	. "github.com/chonglou/itpkg/base"
 )
 
 type TeamworkEngine struct {
-	EngineSetup
-	dao *TeamworkDao
-}
-
-func (p *TeamworkEngine) Map() {
-	dao := &TeamworkDao{db: p.Get("db").(*gorm.DB)}
-	p.Use("teamworkDao", dao)
-	p.dao = dao
+	Db     *gorm.DB     `inject:""`
+	Dao    *TeamworkDao `inject:""`
+	Router *gin.Engine  `inject:""`
 }
 
 func (p *TeamworkEngine) Mount() {
-	g := p.Get("router").(*gin.Engine).Group("/tw")
+	g := p.Router.Group("/tw")
 	rest.CRUD(g, "/project", &ProjectCtrl{})
 	rest.CRUD(g, "/task", &TaskCtrl{})
 	rest.CRUD(g, "/tag", &TagCtrl{})
@@ -27,7 +23,7 @@ func (p *TeamworkEngine) Mount() {
 }
 
 func (p *TeamworkEngine) Migrate() {
-	db := p.Get("db").(*gorm.DB)
+	db := p.Db
 	db.AutoMigrate(&Project{})
 	db.Model(&Project{}).AddUniqueIndex("idx_tw_projects_uid_ver", "uid", "ver")
 	db.AutoMigrate(&Task{})

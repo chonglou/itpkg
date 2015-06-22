@@ -1,25 +1,21 @@
 package forum
 
 import (
-	"github.com/chonglou/gin-contrib/rest"
-	. "github.com/chonglou/itpkg/base"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+
+	"github.com/chonglou/gin-contrib/rest"
+	. "github.com/chonglou/itpkg/base"
 )
 
 type ForumEngine struct {
-	EngineSetup
-	dao *ForumDao
-}
-
-func (p *ForumEngine) Map() {
-	dao := &ForumDao{db: p.Get("db").(*gorm.DB)}
-	p.Use("forumDao", dao)
-	p.dao = dao
+	Db     *gorm.DB    `inject:""`
+	Dao    *ForumDao   `inject:""`
+	Router *gin.Engine `inject:""`
 }
 
 func (p *ForumEngine) Mount() {
-	g := p.Get("router").(*gin.Engine).Group("/forum")
+	g := p.Router.Group("/forum")
 
 	rest.CRUD(g, "/article", &ArticleCtrl{})
 	rest.CRUD(g, "/board", &BoardCtrl{})
@@ -27,7 +23,7 @@ func (p *ForumEngine) Mount() {
 }
 
 func (p *ForumEngine) Migrate() {
-	db := p.Get("db").(*gorm.DB)
+	db := p.Db
 	db.AutoMigrate(&Article{})
 	db.AutoMigrate(&Board{})
 	db.Model(&Board{}).AddUniqueIndex("idx_forum_boards_lang_name", "lang", "name")

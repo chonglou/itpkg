@@ -5,5 +5,5 @@ import (
 )
 
 type ShopDao struct {
-	db *gorm.DB
+	Db *gorm.DB `inject:""`
 }
