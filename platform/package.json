@@ -1,0 +1,32 @@
+{
+  "name": "platform",
+  "version": "1.0.0",
+  "description": "IT-PACKAGE FRONTEND",
+  "dependencies": {
+    "bootstrap": "^3.3.5",
+    "jquery": "^2.1.4",
+    "react": "^0.13.3"
+  },
+  "devDependencies": {
+    "css-loader": "^0.15.1",
+    "file-loader": "^0.8.4",
+    "html-minifier": "^0.7.2",
+    "html-webpack-plugin": "^1.5.2",
+    "node-libs-browser": "^0.5.2",
+    "style-loader": "^0.12.3",
+    "webpack": "^1.9.12"
+  },
+  "scripts": {
+    "test": "echo 'Error: no test specified' && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chonglou/itpkg.git"
+  },
+  "author": "Jitang Zheng <jitang.zheng@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chonglou/itpkg/issues"
+  },
+  "homepage": "https://github.com/chonglou/itpkg#readme"
+}
