@@ -12,9 +12,13 @@
     "file-loader": "^0.8.4",
     "html-minifier": "^0.7.2",
     "html-webpack-plugin": "^1.5.2",
+    "http-server": "^0.8.0",
+    "jsx-loader": "^0.13.2",
     "node-libs-browser": "^0.5.2",
     "style-loader": "^0.12.3",
-    "webpack": "^1.9.12"
+    "url-loader": "^0.5.6",
+    "webpack": "^1.9.12",
+    "webpack-dev-server": "^1.9.0"
   },
   "scripts": {
     "test": "echo 'Error: no test specified' && exit 1"
