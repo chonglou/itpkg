@@ -1,3 +1,6 @@
+require("bootstrap/dist/css/bootstrap.css");
+require("../css/base.css");
+
 var $ = require("jquery");
 var React = require('react');
 

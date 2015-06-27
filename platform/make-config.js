@@ -2,12 +2,20 @@ var path = require("path");
 var webpack = require("webpack");
 var StatsPlugin = require("stats-webpack-plugin");
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = function (options) {
     var port = 8080;
     var entry = {
         main: options.render ? "./js/render" : "./js/server",
-        vendor: ["jquery", "react", "flux"]
+        vendor: [
+            "jquery",
+            "react",
+            "flux",
+            "react-bootstrap",
+            "react-router",
+            "react-router-bootstrap"
+        ]
     };
 
     var output = {
@@ -18,11 +26,15 @@ module.exports = function (options) {
 
     var loaders = [
         {test: /\.jsx$/, loader: 'jsx-loader?insertPragma=React.DOM&harmony'},
-        {test: /\.css$/, loader: "style-loader!css-loader?importLoaders=1"},
+
+        //{test: /\.css$/, loader: "style-loader!css-loader?importLoaders=1"},
+        {test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader")},
+
         {test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=8192'}
     ];
 
     var plugins = [
+        new ExtractTextPlugin("[name].css", {allChunks: true}),
         new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.js"),
         new webpack.PrefetchPlugin("react"),
         new webpack.PrefetchPlugin("react/lib/ReactComponentBrowserEnvironment"),
