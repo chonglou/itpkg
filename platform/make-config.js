@@ -6,7 +6,8 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = function (options) {
     var port = 8080;
     var entry = {
-        main: options.render ? "./js/render" : "./js/server"
+        main: options.render ? "./js/render" : "./js/server",
+        vendor: ["jquery", "react", "flux"]
     };
 
     var output = {
@@ -22,6 +23,7 @@ module.exports = function (options) {
     ];
 
     var plugins = [
+        new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.js"),
         new webpack.PrefetchPlugin("react"),
         new webpack.PrefetchPlugin("react/lib/ReactComponentBrowserEnvironment"),
         new StatsPlugin(path.join(__dirname, "build", "stats.json"), {
@@ -29,7 +31,9 @@ module.exports = function (options) {
         })
     ];
     if (options.render) {
-        plugins.push(new webpack.optimize.LimitChunkCountPlugin({maxChunks: 1}));
+        plugins.push(
+            new webpack.optimize.LimitChunkCountPlugin({maxChunks: 15})
+        );
     }
 
     var htmlOption = {
