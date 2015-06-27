@@ -1,4 +1,5 @@
 config/*.yml
 .idea
 node_modules
-public
+build
+*.log

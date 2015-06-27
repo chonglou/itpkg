@@ -1,5 +1,5 @@
 module.exports = [
-    require("./make-web-config")({
+    require("./make-config")({
         devServer: true,
         hotComponents: true,
         debug: true

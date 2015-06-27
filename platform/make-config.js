@@ -1,5 +1,7 @@
 var path = require("path");
 var webpack = require("webpack");
+var StatsPlugin = require("stats-webpack-plugin");
+var loadersByExtension = require("./config/loadersByExtension");
 
 module.exports = function (options) {
     var entry = {
@@ -77,6 +79,21 @@ module.exports = function (options) {
             exclude: excludeFromStats
         }));
     }
+    var asyncLoader = {
+        test: require("./app/route-handlers/async").map(function(name) {
+            return path.join(__dirname, "app", "route-handlers", name);
+        }),
+        loader: options.prerender ? "react-proxy-loader/unavailable" : "react-proxy-loader"
+    };
+    Object.keys(stylesheetLoaders).forEach(function(ext) {
+        var stylesheetLoader = stylesheetLoaders[ext];
+        if(Array.isArray(stylesheetLoader)) stylesheetLoader = stylesheetLoader.join("!");
+        if(options.prerender) {
+            stylesheetLoaders[ext] = stylesheetLoader.replace(/^css-loader/, "css-loader/locals");
+        } else {
+            stylesheetLoaders[ext] = "style-loader!" + stylesheetLoader;
+        }
+    });
 
     if (options.minimize) {
         plugins.push(
