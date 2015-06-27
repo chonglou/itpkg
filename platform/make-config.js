@@ -1,14 +1,16 @@
 var path = require("path");
 var webpack = require("webpack");
 var StatsPlugin = require("stats-webpack-plugin");
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = function (options) {
+    var port = 8080;
     var entry = {
         main: options.render ? "./config/render" : "./config/server"
     };
 
     var output = {
-        publicPath: options.server ? "http://localhost:8080/_assets/" : "/_assets/",
+        publicPath: options.server ? "http://localhost:" + port + "/_assets/" : "/",
         filename: options.render ? "[name]-[chunkhash].js" : "[name].js?_v=[chunkhash]",
         path: path.join(__dirname, "build", options.render ? "assets" : "public")
     };
@@ -34,6 +36,19 @@ module.exports = function (options) {
             new webpack.optimize.UglifyJsPlugin(),
             new webpack.optimize.OccurenceOrderPlugin()
         );
+        plugins.push(new HtmlWebpackPlugin({
+            filename: "index.html",
+            minify: {collapseWhitespace: true}
+        }));
+    }
+    else {
+        plugins.push(new HtmlWebpackPlugin({
+            filename: "index.html"
+        }));
+    }
+
+    if (options.hot) {
+        plugins.push(new webpack.HotModuleReplacementPlugin());
     }
 
     return {
@@ -46,6 +61,13 @@ module.exports = function (options) {
 
         resolve: {
             extensions: ["", ".js", ".jsx"]
+        },
+        devServer: {
+            contentBase: output.path,
+            port: port,
+            // noInfo: true,
+            hot: options.hot,
+            inline: true
         },
         debug: options.debug
     };
