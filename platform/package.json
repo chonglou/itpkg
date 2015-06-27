@@ -4,8 +4,10 @@
   "description": "IT-PACKAGE FRONTEND",
   "dependencies": {
     "bootstrap": "^3.3.5",
+    "flux": "^2.0.3",
     "jquery": "^2.1.4",
-    "react": "^0.13.3"
+    "react": "^0.13.3",
+    "react-bootstrap": "^0.23.5"
   },
   "devDependencies": {
     "async": "^1.2.1",

@@ -6,7 +6,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = function (options) {
     var port = 8080;
     var entry = {
-        main: options.render ? "./config/render" : "./config/server"
+        main: options.render ? "./js/render" : "./js/server"
     };
 
     var output = {
@@ -33,7 +33,7 @@ module.exports = function (options) {
     }
 
     var htmlOption = {
-        template: "app/index.html"
+        template: "html/index.html"
     };
     if (options.minimize) {
         plugins.push(

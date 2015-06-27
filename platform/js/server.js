@@ -1,5 +1,6 @@
-require("../app/main");
+require("./app");
+
 var $ = require("jquery");
-$(function(){
+$(function () {
     console.log("Development mode");
 });
