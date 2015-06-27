@@ -14,12 +14,13 @@ module.exports = function (options) {
             "flux",
             "react-bootstrap",
             "react-router",
-            "react-router-bootstrap"
+            "react-router-bootstrap",
+            "react-intl"
         ]
     };
 
     var output = {
-        publicPath: options.render ? "/" : "http://localhost:" + port + "/_assets/",
+       // publicPath: options.render ? "/" : "http://localhost:" + port + "/",
         filename: options.render ? "[id]-[chunkhash].js" : "[name].js",
         path: path.join(__dirname, "build", options.render ? "assets" : "public")
     };
@@ -49,7 +50,8 @@ module.exports = function (options) {
     }
 
     var htmlOption = {
-        template: "html/index.html"
+        template: "html/index.html",
+        favicon:"./image/favicon.ico"
     };
     if (options.minimize) {
         plugins.push(

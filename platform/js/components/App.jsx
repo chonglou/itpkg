@@ -1,4 +1,7 @@
 var React = require("react");
+var ReactIntl = require('react-intl');
+
+
 var Header = require("./Header");
 var Footer = require("./Footer");
 
@@ -9,6 +12,7 @@ var navPadStyle = {
 var containerClassName = "container";
 
 var App = React.createClass({
+    mixins: [ReactIntl.IntlMixin],
     render: function () {
         return (
             <div>
