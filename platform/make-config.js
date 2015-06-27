@@ -10,8 +10,8 @@ module.exports = function (options) {
     };
 
     var output = {
-        publicPath: options.server ? "http://localhost:" + port + "/_assets/" : "/",
-        filename: options.render ? "[name]-[chunkhash].js" : "[name].js?_v=[chunkhash]",
+        publicPath: options.render ? "/" : "http://localhost:" + port + "/_assets/",
+        filename: options.render ? "[id]-[chunkhash].js" : "[name].js",
         path: path.join(__dirname, "build", options.render ? "assets" : "public")
     };
 
@@ -31,21 +31,18 @@ module.exports = function (options) {
     if (options.render) {
         plugins.push(new webpack.optimize.LimitChunkCountPlugin({maxChunks: 1}));
     }
+
+    var htmlOption = {
+        template: "app/index.html"
+    };
     if (options.minimize) {
         plugins.push(
             new webpack.optimize.UglifyJsPlugin(),
             new webpack.optimize.OccurenceOrderPlugin()
         );
-        plugins.push(new HtmlWebpackPlugin({
-            filename: "index.html",
-            minify: {collapseWhitespace: true}
-        }));
+        htmlOption.minify = {collapseWhitespace: true};
     }
-    else {
-        plugins.push(new HtmlWebpackPlugin({
-            filename: "index.html"
-        }));
-    }
+    plugins.push(new HtmlWebpackPlugin(htmlOption));
 
     if (options.hot) {
         plugins.push(new webpack.HotModuleReplacementPlugin());
@@ -58,7 +55,9 @@ module.exports = function (options) {
         module: {
             loaders: loaders
         },
-
+        resolveLoader: {
+            root: path.join(__dirname, "node_modules")
+        },
         resolve: {
             extensions: ["", ".js", ".jsx"]
         },
