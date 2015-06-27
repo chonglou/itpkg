@@ -1,6 +1,6 @@
 module.exports = [
     require("./make-config")({
-        prerender: true,
+        render: true,
         minimize: true
     })
 ];

@@ -1,7 +1,7 @@
 module.exports = [
     require("./make-config")({
-        devServer: true,
-        hotComponents: true,
+        server: true,
+        hot: true,
         debug: true
     })
 ];
