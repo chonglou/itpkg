@@ -21,7 +21,8 @@
     "webpack-dev-server": "^1.9.0"
   },
   "scripts": {
-    "test": "echo 'Error: no test specified' && exit 1"
+    "server": "webpack-dev-server --config webpack-development.config.js --hot --progress --colors --port 8080 --inline",
+    "build": "webpack --config webpack-production.config.js --progress --profile --colors"
   },
   "repository": {
     "type": "git",
