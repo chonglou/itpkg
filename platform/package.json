@@ -16,6 +16,7 @@
     "http-server": "^0.8.0",
     "jsx-loader": "^0.13.2",
     "node-libs-browser": "^0.5.2",
+    "react-hot-loader": "^1.2.7",
     "stats-webpack-plugin": "^0.1.2",
     "style-loader": "^0.12.3",
     "url-loader": "^0.5.6",
@@ -23,7 +24,7 @@
     "webpack-dev-server": "^1.9.0"
   },
   "scripts": {
-    "server": "webpack-dev-server --config webpack-development.config.js --hot --progress --colors --port 8080 --inline",
+    "server": "webpack-dev-server --config webpack-development.config.js --hot --progress --colors --inline",
     "build": "webpack --config webpack-production.config.js --progress --profile --colors"
   },
   "repository": {

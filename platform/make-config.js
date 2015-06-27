@@ -43,10 +43,10 @@ module.exports = function (options) {
     var root = path.join(__dirname, "app");
     var publicPath = options.devServer ? "http://localhost:8080/_assets/" : "/_assets/";
     var output = {
-        path: path.join(__dirname, "build", options.prerender ? "prerender" : "public"),
+        path: path.join(__dirname, "build", options.prerender ? "assets" : "public"),
         publicPath: publicPath,
-        filename: options.prerender ? "[id]-[chunkhash].js" : "[name].js?[chunkhash]",
-        chunkFilename: options.prerender ? "[id]-[chunkhash].js" : "[name].js?[chunkhash]",
+        filename: options.prerender ? "[id]-[chunkhash].js" : "[name].js?_v=[chunkhash]",
+        chunkFilename: options.prerender ? "[id]-[chunkhash].js" : "[name].js?_v=[chunkhash]",
         sourceMapFilename: "debugging/[file].map",
         libraryTarget: options.prerender ? "commonjs2" : undefined,
         pathinfo: options.debug || options.prerender
@@ -60,7 +60,7 @@ module.exports = function (options) {
         new webpack.PrefetchPlugin("react/lib/ReactComponentBrowserEnvironment")
     ];
     if (options.prerender) {
-        plugins.push(new StatsPlugin(path.join(__dirname, "build", "stats.prerender.json"), {
+        plugins.push(new StatsPlugin(path.join(__dirname, "build", "stats.assets.json"), {
             chunkModules: true,
             exclude: excludeFromStats
         }));
@@ -118,7 +118,6 @@ module.exports = function (options) {
         module: {
             loaders: [asyncLoader].concat(loadersByExtension(loaders)).concat(loadersByExtension(stylesheetLoaders)).concat(additionalLoaders)
         },
-        devtool: options.devtool,
         debug: options.debug,
         resolveLoader: {
             root: path.join(__dirname, "node_modules"),

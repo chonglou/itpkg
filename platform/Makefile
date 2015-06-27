@@ -13,11 +13,7 @@ watch:
 
 
 clean:
-	-rm -r tmp/* release public
+	-rm -r build
 
-
-3rd:
-	mkdir -pv public/node_modules/react/dist/
-	cp -v  node_modules/react/dist/react-with-addons.min.js  public/node_modules/react/dist/react-with-addons.min.js
 
 
