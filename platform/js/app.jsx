@@ -6,14 +6,21 @@ var React = require('react');
 
 var Body = require("./components/Root");
 var L = require("./components/locales");
+var U = require("./components/utils");
 
-var Root = React.render(<Body {...L.enUS}/>, document.getElementById("content"));
 
+$(function () {
+    var lang;
+    switch (U.getParameterByName("locale")) {
+        case "zh-CN":
+            lang = L.zhCN;
+            break;
+        default:
+            lang = L.enUS;
 
-//$(function () {
-//    React.render(<Root {...L.enUS}/>, $("div#content")[0]);
-//});
-module.exports = {Root: Root};
+    }
+    React.render(<Body {...lang}/>, $("div#content")[0]);
+});
 
 
 
