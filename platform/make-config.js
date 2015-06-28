@@ -36,7 +36,7 @@ module.exports = function (options) {
 
     var plugins = [
         new ExtractTextPlugin("[name].css", {allChunks: true}),
-        new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.js"),
+        new webpack.optimize.CommonsChunkPlugin("vendor", "3rd.js"),
         new webpack.PrefetchPlugin("react"),
         new webpack.PrefetchPlugin("react/lib/ReactComponentBrowserEnvironment"),
         new StatsPlugin(path.join(__dirname, "build", "stats.json"), {

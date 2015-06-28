@@ -1,6 +1,5 @@
 var React = require("react");
-var ReactIntl = require('react-intl');
-
+var T = require('react-intl');
 
 var Header = require("./Header");
 var Footer = require("./Footer");
@@ -9,17 +8,17 @@ var navPadStyle = {
     height: "50px"
 };
 
-var containerClassName = "container";
 
-var App = React.createClass({
-    mixins: [ReactIntl.IntlMixin],
+var Root = React.createClass({
+    mixins: [T.IntlMixin],
     render: function () {
         return (
             <div>
                 <Header />
                 <div style={navPadStyle} />
-                <div className={containerClassName}>
+                <div className="container">
                     <h1>TEST111</h1>
+
                     <Footer />
                 </div>
             </div>
@@ -27,4 +26,4 @@ var App = React.createClass({
     }
 });
 
-module.exports = App;
+module.exports = Root;
