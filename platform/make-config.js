@@ -15,6 +15,7 @@ module.exports = function (options) {
             "react-bootstrap",
             "react-router",
             "react-router-bootstrap",
+            "react-localstorage",
             "react-intl"
         ]
     };

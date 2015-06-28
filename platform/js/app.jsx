@@ -4,14 +4,15 @@ require("../css/base.css");
 var $ = require("jquery");
 var React = require('react');
 
-var Body = require("./components/Root");
+var Root = require("./components/Root");
+var Footer = require("./components/Footer");
 var L = require("./components/locales");
-var U = require("./components/utils");
 
 
 $(function () {
     var lang;
-    switch (U.getParameterByName("locale")) {
+    console.log(Footer);
+    switch (lang) {
         case "zh-CN":
             lang = L.zhCN;
             break;
@@ -19,7 +20,7 @@ $(function () {
             lang = L.enUS;
 
     }
-    React.render(<Body {...lang}/>, $("div#content")[0]);
+    React.render(<Root {...lang}/>, $("div#content")[0]);
 });
 
 
