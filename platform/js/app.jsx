@@ -11,8 +11,7 @@ var L = require("./components/locales");
 
 $(function () {
     var lang;
-    console.log(Footer);
-    switch (lang) {
+    switch (localStorage.locale) {
         case "zh-CN":
             lang = L.zhCN;
             break;

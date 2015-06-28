@@ -1,7 +1,7 @@
 var React = require("react");
 
 var T = require('react-intl');
-var LocalStorageMixin = require('react-localstorage');
+
 var zhCN = require("famfamfam-flags/dist/png/cn.png");
 var enUS = require("famfamfam-flags/dist/png/us.png");
 
@@ -11,12 +11,9 @@ var padStyle = {
 
 
 var Footer = React.createClass({
-    mixins: [T.IntlMixin, LocalStorageMixin],
-    getInitialState: function () {
-        return {locale: "en-US"};
-    },
+    mixins: [T.IntlMixin],
     switchLocale: function (locale) {
-        this.setState({locale: locale});
+        localStorage.locale = locale;
         location.reload();
     },
     setZhCn: function () {
