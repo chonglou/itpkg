@@ -2,10 +2,12 @@ package itpkg
 
 import (
 	"encoding/json"
+	"expvar"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/chonglou/gin-contrib/cache"
@@ -28,6 +30,41 @@ type SiteEngine struct {
 	Redis   *redis.Pool     `inject:""`
 
 	Cache cache.CacheStore `inject:""`
+}
+
+func (p *SiteEngine) api() {
+	g := p.Router.Group("/base")
+
+	g.GET("/nav-bar", func(c *gin.Context) {
+
+	})
+
+	// r.GET("/index.json", cache.CachePage(p.Cache, time.Hour*24, func(c *gin.Context) {
+	// 	lang := LANG(c)
+	// 	si := make(map[string]interface{}, 0)
+	// 	for _, k := range []string{"title", "keywords", "description", "copyright"} {
+	// 		si[k] = p.I18n.T(lang, "site."+k)
+	// 	}
+	//
+	// 	author := make(map[string]string, 0)
+	// 	for _, k := range []string{"name", "email"} {
+	// 		author[k] = p.I18n.T(lang, "site.author."+k)
+	// 	}
+	// 	si["author"] = author
+	//
+	// 	si["locale"] = lang
+	//
+	// 	ei := make([]map[string]string, 0)
+	//
+	// 	LoopEngine(func(en Engine) error {
+	// 		n, v, d := en.Info()
+	// 		ei = append(ei, map[string]string{"name": n, "version": v, "description": d})
+	// 		return nil
+	// 	})
+	// 	si["engines"] = ei
+	//
+	// 	c.JSON(http.StatusOK, si)
+	// }))
 }
 
 func (p *SiteEngine) Mount() {
@@ -56,49 +93,26 @@ func (p *SiteEngine) Mount() {
 		c.XML(http.StatusOK, atom.FeedXml())
 	}))
 
-	/*
-		r.Get("/debug/vars", func(w http.ResponseWriter, req *http.Request) {
-			// todo need login
-			w.Header().Set("Content-Type", "application/json; charset=utf-8")
-			fmt.Fprintf(w, "{")
+	r.GET("/debug/vars", func(c *gin.Context) {
+		if strings.Split(c.Request.Host, ":")[0] == "localhost" {
+			w := c.Writer
+			c.Header("Content-Type", "application/json; charset=utf-8")
+			w.Write([]byte("{\n"))
 			first := true
 			expvar.Do(func(kv expvar.KeyValue) {
 				if !first {
-					fmt.Fprintf(w, ",\n")
+					w.Write([]byte(",\n"))
 				}
 				first = false
 				fmt.Fprintf(w, "%q: %s", kv.Key, kv.Value)
 			})
-			fmt.Fprintf(w, "}\n")
-		})
-	*/
+			w.Write([]byte("\n}\n"))
+			c.AbortWithStatus(http.StatusOK)
 
-	r.GET("/index.json", cache.CachePage(p.Cache, time.Hour*24, func(c *gin.Context) {
-		lang := LANG(c)
-		si := make(map[string]interface{}, 0)
-		for _, k := range []string{"title", "keywords", "description", "copyright"} {
-			si[k] = p.I18n.T(lang, "site."+k)
+		} else {
+			c.AbortWithStatus(http.StatusForbidden)
 		}
-
-		author := make(map[string]string, 0)
-		for _, k := range []string{"name", "email"} {
-			author[k] = p.I18n.T(lang, "site.author."+k)
-		}
-		si["author"] = author
-
-		si["locale"] = lang
-
-		ei := make([]map[string]string, 0)
-
-		LoopEngine(func(en Engine) error {
-			n, v, d := en.Info()
-			ei = append(ei, map[string]string{"name": n, "version": v, "description": d})
-			return nil
-		})
-		si["engines"] = ei
-
-		c.JSON(http.StatusOK, si)
-	}))
+	})
 
 }
 

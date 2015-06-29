@@ -103,9 +103,9 @@ func (p *Configuration) OpenRouter() (*gin.Engine, error) {
 	rt := gin.Default()
 
 	/*
-	if !p.IsProduction() {
-		rt.Static("/assets", "public")
-	}
+		if !p.IsProduction() {
+			rt.Static("/assets", "public")
+		}
 	*/
 
 	return rt, nil
