@@ -1,5 +1,5 @@
 var React = require("react");
-var $ = require("jquery");
+
 
 var T = require('react-intl');
 
@@ -23,26 +23,13 @@ var Footer = React.createClass({
         };
     },
     componentDidMount: function () {
-        $.ajax({
-            url: this.url("/base/copyright"),
-            success: function (rs) {
-                if (this.isMounted()) {
-                    this.setState({
-                        copyright: rs.copyright
-                    });
-                }
-            }.bind(this),
-            jsonpCallback: "cb",
-            type: "GET",
-            dataType: "jsonp"
-        });
-        //$.get(this.url("/base/copyright"), function(rs) {
-        //    if (this.isMounted()) {
-        //        this.setState({
-        //            copyright: rs.copyright
-        //        });
-        //    }
-        //}.bind(this), "jsonp");
+        this.get("/base/copyright", function (rs) {
+            if (this.isMounted()) {
+                this.setState({
+                    copyright: rs.copyright
+                });
+            }
+        }.bind(this));
     },
     render: function () {
         return (
