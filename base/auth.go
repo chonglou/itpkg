@@ -138,10 +138,10 @@ type User struct {
 	Name      string `sql:"not null;size:64;index"`
 	Email     string `sql:"size:128;index"`
 	Token     string `sql:"size:255;index;not null"`
-	Provider  string `sql:"size:16;not null;default:'local';index"`
+	Provider  string `sql:"size:16;not null;default:'email';index"`
 	Password  []byte `sql:"size:64"`
-	Confirmed *time.Time
-	Locked    *time.Time
+	Confirmed time.Time
+	Locked    time.Time
 
 	Contact Contact
 	Logs    []Log
@@ -191,7 +191,7 @@ type AuthDao struct {
 
 func (p *AuthDao) AddEmailUser(email, name, password string) (*User, error) {
 	var c int
-	p.Db.Model(User{}).Where("email = ? AND provider = ?", email, "local").Count(&c)
+	p.Db.Model(User{}).Where("email = ? AND provider = ?", email, "email").Count(&c)
 	if c > 0 {
 		return nil, errors.New("email already exist")
 	}
@@ -203,6 +203,10 @@ func (p *AuthDao) AddEmailUser(email, name, password string) (*User, error) {
 		Token:    uuid.New()}
 	p.Db.Create(&u)
 	return &u, nil
+}
+
+func (p *AuthDao) ConfirmUser(id uint) {
+	p.Db.Model(User{}).Where("id = ?", id).Updates(User{Confirmed: time.Now()})
 }
 
 func (p *AuthDao) UserById(id uint, user *User) bool {

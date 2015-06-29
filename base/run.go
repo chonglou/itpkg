@@ -41,16 +41,6 @@ func Run() error {
 			},
 		},
 		{
-			Name:    "dbconsole",
-			Aliases: []string{"db"},
-			Usage:   "Start a console for the database",
-			Flags:   []cli.Flag{envF},
-			Action: func(c *cli.Context) {
-				a := New(c.String("environment"))
-				a.DbShell()
-			},
-		},
-		{
 			Name:    "routes",
 			Aliases: []string{"ro"},
 			Usage:   "Print out all defined routes in match order, with names",
@@ -88,6 +78,25 @@ func Run() error {
 			Action: func(c *cli.Context) {
 				a := Application{}
 				a.Openssl()
+			},
+		},
+		{
+			Name:    "db:console",
+			Aliases: []string{"db"},
+			Usage:   "Start a console for the database",
+			Flags:   []cli.Flag{envF},
+			Action: func(c *cli.Context) {
+				a := New(c.String("environment"))
+				a.DbShell()
+			},
+		},
+		{
+			Name:  "db:seed",
+			Usage: "Load the seed data",
+			Flags: []cli.Flag{envF},
+			Action: func(c *cli.Context) {
+				a := Load(c.String("environment"), false)
+				a.Seed.run()
 			},
 		},
 		{

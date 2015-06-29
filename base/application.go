@@ -18,6 +18,7 @@ type Application struct {
 	Router *gin.Engine     `inject:""`
 	Redis  *redis.Pool     `inject:""`
 	Db     *gorm.DB        `inject:""`
+	Seed   *Seed           `inject:""`
 	Mailer *Mailer         `inject:""`
 }
 
