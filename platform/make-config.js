@@ -21,7 +21,7 @@ module.exports = function (options) {
     };
 
     var output = {
-       // publicPath: options.render ? "/" : "http://localhost:" + port + "/",
+        // publicPath: options.render ? "/" : "http://localhost:" + port + "/",
         filename: options.render ? "[id]-[chunkhash].js" : "[name].js",
         path: path.join(__dirname, "build", options.render ? "assets" : "public")
     };
@@ -52,15 +52,15 @@ module.exports = function (options) {
 
     var htmlOption = {
         template: "html/index.html",
-        favicon:"./image/favicon.ico"
+        favicon: "./image/favicon.ico"
     };
     if (options.minimize) {
         plugins.push(
             new webpack.optimize.DedupePlugin(),
             new webpack.optimize.UglifyJsPlugin({
                 compressor: {
-					warnings: false
-				}
+                    warnings: false
+                }
             }),
             new webpack.optimize.OccurenceOrderPlugin(),
             new webpack.NoErrorsPlugin()
@@ -91,8 +91,12 @@ module.exports = function (options) {
             port: port,
             // noInfo: true,
             hot: options.hot,
-            inline: true
+            inline: true,
+            proxy: {
+                "*": "http://localhost:3000"
+            }
         },
-        debug: options.debug
+        debug: options.debug,
+        devtool: options.devtool
     };
 };

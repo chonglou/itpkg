@@ -54,10 +54,10 @@ func (p *SiteEngine) api() {
 			})
 	})
 
-	g.GET("/copyright", cache.CachePage(p.Cache, time.Hour*24, func(c *gin.Context) {
+	g.GET("/copyright", func(c *gin.Context) {
 		//c.JSON(http.StatusOK, gin.H{"copyright": p.I18n.T(LANG(c), "site.copyright")})
 		JSONP(c, gin.H{"copyright": p.I18n.T(LANG(c), "site.copyright")})
-	}))
+	})
 }
 
 func (p *SiteEngine) Mount() {

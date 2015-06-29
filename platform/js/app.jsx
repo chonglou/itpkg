@@ -2,12 +2,14 @@ require("bootstrap/dist/css/bootstrap.css");
 require("../css/base.css");
 
 var $ = require("jquery");
+
 var React = require('react');
 
 var Root = require("./components/Root");
 var Footer = require("./components/Footer");
 var L = require("./components/locales");
 
+localStorage.jid = "";
 
 $(function () {
     var lang;

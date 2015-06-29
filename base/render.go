@@ -13,13 +13,19 @@ func CurrentUser(c *gin.Context, d *AuthDao) *User {
 }
 
 func JSONP(c *gin.Context, v interface{}) {
-	c.Header("Content-Type", "text/javascript")
-	js, _ := Obj2json(v)
-	c.String(http.StatusOK, "%s(%s)", c.DefaultQuery("callback", "call"), js)
+	cb := c.DefaultQuery("callback", "")
+	if cb == "" {
+		c.JSON(http.StatusOK, v)
+	} else {
+		c.Header("Content-Type", "text/javascript")
+		js, _ := Obj2json(v)
+		c.String(http.StatusOK, "%s(%s)", cb, js)
+	}
 }
 
 func LANG(c *gin.Context) string {
-	return c.DefaultQuery("locale", "en-US")
+	return c.Request.Header.Get("Accept-Language")
+	//return c.DefaultQuery("locale", "en-US")
 }
 
 type Link struct {

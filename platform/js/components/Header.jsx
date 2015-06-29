@@ -5,6 +5,7 @@ var Router = require('react-router');
 var RB = require('react-bootstrap');
 var RRB = require('react-router-bootstrap');
 
+var HttpMixin = require("../mixins/http");
 
 var Header = React.createClass({
     getInitialState: function () {

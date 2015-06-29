@@ -1,31 +1,33 @@
 var $ = require("jquery");
 
-var Jsonp = {
+$.ajaxSetup({
+    beforeSend: function (xhr) {
+        xhr.setRequestHeader("Accept-Language", localStorage.locale);
+        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.jid);
+    }
+});
+
+var Http = {
     get: function (url, success) {
         $.ajax({
             url: this.url(url),
             success: success,
-            data: {locale: this.locale()},
             type: "GET",
-            dataType: "jsonp"
+            dataType: "json"
         });
     },
     post: function (url, data, success) {
-        data.locale = this.locale();
         $.ajax({
             url: this.url(url),
             success: success,
             data: data,
             type: "POST",
-            dataType: "jsonp"
+            dataType: "json"
         });
-    },
-    locale: function () {
-        return localStorage.locale;
     },
     url: function (u) {
         return u;
     }
 };
 
-module.exports = Jsonp;
+module.exports = Http;
