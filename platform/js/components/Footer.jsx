@@ -1,6 +1,4 @@
 var React = require("react");
-
-
 var T = require('react-intl');
 
 var zhCN = require("famfamfam-flags/dist/png/cn.png");
@@ -12,7 +10,7 @@ var padStyle = {
 
 
 var Footer = React.createClass({
-    mixins: [T.IntlMixin, BaseUrlMixin],
+    mixins: [T.IntlMixin, HttpMixin],
     switchLocale: function (locale) {
         localStorage.locale = locale;
         location.reload();

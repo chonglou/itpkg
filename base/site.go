@@ -45,8 +45,8 @@ func (p *SiteEngine) api() {
 		var links []Link
 		Json2obj(p.I18n.Get(lang, "site.nav.links"), &links)
 
-		c.JSON(
-			http.StatusOK,
+		JSONP(
+			c,
 			gin.H{
 				"title": p.I18n.T(lang, "site.title"),
 				"user":  CurrentUser(c, p.AuthDao),

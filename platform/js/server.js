@@ -1,7 +1,7 @@
 localStorage.debug = true;
 
-BaseUrlMixin = require("./mixins/jsonp");
-BaseUrlMixin.url = function (u) {
+HttpMixin = require("./mixins/jsonp");
+HttpMixin.url = function (u) {
     return "http://localhost:3000" + u;
 };
 

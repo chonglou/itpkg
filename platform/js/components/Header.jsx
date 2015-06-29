@@ -1,4 +1,5 @@
 var React = require("react");
+var T = require('react-intl');
 
 var Router = require('react-router');
 var RB = require('react-bootstrap');
@@ -6,9 +7,25 @@ var RRB = require('react-router-bootstrap');
 
 
 var Header = React.createClass({
+    getInitialState: function () {
+        return {
+            title: ''
+        };
+    },
+    componentDidMount: function () {
+        this.get("/base/nav-bar", function (rs) {
+            document.title = rs.title;
+            if (this.isMounted()) {
+                this.setState({
+                    title: rs.title
+                });
+            }
+        }.bind(this));
+    },
+    mixins: [T.IntlMixin, HttpMixin],
     render: function () {
         return (
-            <RB.Navbar brand='IT-PACKAGE' inverse fixedTop toggleNavKey={0}>
+            <RB.Navbar brand={this.state.title} inverse fixedTop toggleNavKey={0}>
                 <RB.Nav right eventKey={0}> {}
                     <RB.NavItem eventKey={1} href='#'>Link1</RB.NavItem>
                     <RB.NavItem eventKey={2} href='#'>Link2</RB.NavItem>

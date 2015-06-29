@@ -5,7 +5,7 @@ var Jsonp = {
         $.ajax({
             url: this.url(url),
             success: success,
-            jsonpCallback: "cb",
+            //jsonpCallback: "",
             type: "GET",
             dataType: "jsonp"
         });
