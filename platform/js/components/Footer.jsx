@@ -1,4 +1,5 @@
 var React = require("react");
+var $ = require("jquery");
 
 var T = require('react-intl');
 
@@ -11,10 +12,37 @@ var padStyle = {
 
 
 var Footer = React.createClass({
-    mixins: [T.IntlMixin],
+    mixins: [T.IntlMixin, BaseUrlMixin],
     switchLocale: function (locale) {
         localStorage.locale = locale;
         location.reload();
+    },
+    getInitialState: function () {
+        return {
+            copyright: ''
+        };
+    },
+    componentDidMount: function () {
+        $.ajax({
+            url: this.url("/base/copyright"),
+            success: function (rs) {
+                if (this.isMounted()) {
+                    this.setState({
+                        copyright: rs.copyright
+                    });
+                }
+            }.bind(this),
+            jsonpCallback: "cb",
+            type: "GET",
+            dataType: "jsonp"
+        });
+        //$.get(this.url("/base/copyright"), function(rs) {
+        //    if (this.isMounted()) {
+        //        this.setState({
+        //            copyright: rs.copyright
+        //        });
+        //    }
+        //}.bind(this), "jsonp");
     },
     render: function () {
         return (
@@ -29,7 +57,7 @@ var Footer = React.createClass({
                                 message={this.getIntlMessage('links.back_to_top')}/>
                         </a>
                     </p>
-                    <p>CHANGE ME</p>
+                    <p>{this.state.copyright}</p>
                 </footer>
             </div>
         );

@@ -2,7 +2,7 @@
   "site.author.name": "CHANGE ME",
   "site.author.email": "CHANGE ME",
   "site.title": "CHANGE ME",
-  "site.copyright": "&copy; 2015",
+  "site.copyright": "© 2015",
   "site.nav.links":"[{\"url\":\"/#\",\"name\":\"Index\"},{\"url\":\"/#about-me\",\"name\":\"About me\"}]",
   "auth.log.login.success": "Sign in success",
   "auth.log.login.fail": "Sign in fail",

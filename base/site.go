@@ -43,7 +43,7 @@ func (p *SiteEngine) api() {
 		// js, _:=Obj2str(&links)
 		// p.Logger.Debug(js)
 		var links []Link
-		Str2obj(p.I18n.Get(lang, "site.nav.links"), &links)
+		Json2obj(p.I18n.Get(lang, "site.nav.links"), &links)
 
 		c.JSON(
 			http.StatusOK,
@@ -55,7 +55,8 @@ func (p *SiteEngine) api() {
 	})
 
 	g.GET("/copyright", cache.CachePage(p.Cache, time.Hour*24, func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"copyright": p.I18n.T(LANG(c), "site.copyright")})
+		//c.JSON(http.StatusOK, gin.H{"copyright": p.I18n.T(LANG(c), "site.copyright")})
+		JSONP(c, gin.H{"copyright": p.I18n.T(LANG(c), "site.copyright")})
 	}))
 }
 

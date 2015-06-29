@@ -1,14 +1,23 @@
 package itpkg
 
 import (
-	"github.com/gin-gonic/gin"
+	"net/http"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func CurrentUser(c *gin.Context, d *AuthDao) *User {
 	return nil
 }
+
+func JSONP(c *gin.Context, v interface{}) {
+	c.Header("Content-Type", "text/javascript")
+	js, _ := Obj2json(v)
+	c.String(http.StatusOK, "%s(%s)", c.DefaultQuery("callback", "call"), js)
+}
+
 func LANG(c *gin.Context) string {
 	return c.DefaultQuery("locale", "en-US")
 }
