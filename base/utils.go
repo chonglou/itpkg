@@ -10,6 +10,7 @@ import (
 	"crypto/sha512"
 	"encoding/base64"
 	"encoding/gob"
+	"encoding/json"
 	m_rand "math/rand"
 	"os"
 	"os/exec"
@@ -115,4 +116,13 @@ func Bits2obj(data []byte, obj interface{}) error {
 		return err
 	}
 	return nil
+}
+
+func Ojb2str(o interface{}) (string, error) {
+	b, e := json.Marshal(o)
+	return string(b), e
+}
+
+func Str2obj(j string, o interface{}) error {
+	return json.Unmarshal([]byte(j), o)
 }

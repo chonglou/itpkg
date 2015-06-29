@@ -1,0 +1,18 @@
+{
+  "site.author.name": "CHANGE ME",
+  "site.author.email": "CHANGE ME",
+  "site.title": "CHANGE ME",
+  "site.copyright": "&copy; 2015",
+  "auth.log.login.success": "Sign in success",
+  "auth.log.login.fail": "Sign in fail",
+  "auth.log.logout": "Sign out",
+  "auth.log.register": "Register success",
+  "auth.log.unlock": "Unlock account",
+  "auth.log.password": "Reset password",
+  "auth.mailer.confirm.subject": "Confirmation instructions",
+  "auth.mailer.confirm.body": "<p>Welcome %s!</p><p>You can confirm your account email through the link below:</p><p><a href='%s' target='_blank'>%s</a></p>",
+  "auth.mailer.unlock.subject": "Unlock instructions",
+  "auth.mailer.unlock.body": "<p>Hello %s!</p><p>Click the link below to unlock your account:</p><p><a href='%s' target='_blank'>%s</a></p>",
+  "auth.mailer.password.subject": "Reset password instructions",
+  "auth.mailer.password.body": "<p>Hello %s!</p><p>Someone has requested a link to change your password. You can do this through the link below.</p><p><a href='%s' target='_blank'>%s</a></p><p>If you didn't request this, please ignore this email.</p><p>Your password won't change until you access the link above and create a new one.</p>"
+}

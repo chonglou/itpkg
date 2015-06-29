@@ -6,8 +6,17 @@ import (
 	"time"
 )
 
+func CurrentUser(c *gin.Context, d *AuthDao) *User {
+	return nil
+}
 func LANG(c *gin.Context) string {
-	return c.DefaultQuery("locale", "en")
+	return c.DefaultQuery("locale", "en-US")
+}
+
+type Link struct {
+	Url   string `json:"url"`
+	Name  string `json:"name"`
+	Items []Link `json:"items"`
 }
 
 type Response struct {

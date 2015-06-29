@@ -22,6 +22,7 @@ import (
 type SiteEngine struct {
 	Db      *gorm.DB        `inject:""`
 	SiteDao *SiteDao        `inject:""`
+	AuthDao *AuthDao        `inject:""`
 	I18n    *LocaleDao      `inject:""`
 	Cfg     *Configuration  `inject:""`
 	App     *Application    `inject:""`
@@ -36,38 +37,27 @@ func (p *SiteEngine) api() {
 	g := p.Router.Group("/base")
 
 	g.GET("/nav-bar", func(c *gin.Context) {
+		lang := LANG(c)
 
+		var links []Link
+		Str2obj(p.I18n.Get(lang, "site.nav.links"), &links)
+		c.JSON(
+			http.StatusOK,
+			gin.H{
+				"title": p.I18n.T(lang, "site.title"),
+				"user":  CurrentUser(c, p.AuthDao),
+				"links": links,
+			})
 	})
 
-	// r.GET("/index.json", cache.CachePage(p.Cache, time.Hour*24, func(c *gin.Context) {
-	// 	lang := LANG(c)
-	// 	si := make(map[string]interface{}, 0)
-	// 	for _, k := range []string{"title", "keywords", "description", "copyright"} {
-	// 		si[k] = p.I18n.T(lang, "site."+k)
-	// 	}
-	//
-	// 	author := make(map[string]string, 0)
-	// 	for _, k := range []string{"name", "email"} {
-	// 		author[k] = p.I18n.T(lang, "site.author."+k)
-	// 	}
-	// 	si["author"] = author
-	//
-	// 	si["locale"] = lang
-	//
-	// 	ei := make([]map[string]string, 0)
-	//
-	// 	LoopEngine(func(en Engine) error {
-	// 		n, v, d := en.Info()
-	// 		ei = append(ei, map[string]string{"name": n, "version": v, "description": d})
-	// 		return nil
-	// 	})
-	// 	si["engines"] = ei
-	//
-	// 	c.JSON(http.StatusOK, si)
-	// }))
+	g.GET("/copyright", cache.CachePage(p.Cache, time.Hour*24, func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"copyright": p.I18n.T(LANG(c), "site.copyright")})
+	}))
 }
 
 func (p *SiteEngine) Mount() {
+	p.api()
+
 	r := p.Router
 
 	r.GET("/sitemap.xml", cache.CachePage(p.Cache, time.Hour*24, func(c *gin.Context) {
