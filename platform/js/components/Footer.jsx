@@ -16,20 +16,14 @@ var Footer = React.createClass({
         localStorage.locale = locale;
         location.reload();
     },
-    setZhCn: function () {
-        this.switchLocale("zh-CN");
-    },
-    setEnUs: function () {
-        this.switchLocale("en-US");
-    },
     render: function () {
         return (
             <div>
                 <hr/>
                 <footer>
                     <p className="pull-right">
-                        <img onClick={this.setEnUs} src={enUS} style={padStyle}/>
-                        <img onClick={this.setZhCn} src={zhCN} style={padStyle}/>
+                        <img onClick={this.switchLocale.bind(this, "en-US")} src={enUS} style={padStyle}/>
+                        <img onClick={this.switchLocale.bind(this, "zh-CN")} src={zhCN} style={padStyle}/>
                         <a href='#'>
                             <T.FormattedMessage
                                 message={this.getIntlMessage('links.back_to_top')}/>

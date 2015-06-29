@@ -14,9 +14,15 @@ $(function () {
     switch (localStorage.locale) {
         case "zh-CN":
             lang = L.zhCN;
+            document.documentElement.lang = "zh";
+            break;
+        case "en-US":
+            lang = L.enUS;
+            document.documentElement.lang = "en";
             break;
         default:
             lang = L.enUS;
+            localStorage.locale = "en-US";
 
     }
     React.render(<Root {...lang}/>, $("div#content")[0]);

@@ -56,8 +56,14 @@ module.exports = function (options) {
     };
     if (options.minimize) {
         plugins.push(
-            new webpack.optimize.UglifyJsPlugin(),
-            new webpack.optimize.OccurenceOrderPlugin()
+            new webpack.optimize.DedupePlugin(),
+            new webpack.optimize.UglifyJsPlugin({
+                compressor: {
+					warnings: false
+				}
+            }),
+            new webpack.optimize.OccurenceOrderPlugin(),
+            new webpack.NoErrorsPlugin()
         );
         htmlOption.minify = {collapseWhitespace: true};
     }
