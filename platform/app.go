@@ -5,6 +5,7 @@ import (
 
 	"github.com/chonglou/itpkg/base"
 	_ "github.com/chonglou/itpkg/cms"
+	_ "github.com/chonglou/itpkg/email"
 	_ "github.com/chonglou/itpkg/forum"
 	_ "github.com/chonglou/itpkg/shop"
 	_ "github.com/chonglou/itpkg/teamwork"

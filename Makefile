@@ -8,6 +8,7 @@ format:
 	go fmt forum/*.go
 	go fmt shop/*.go
 	go fmt teamwork/*.go
+	go fmt email/*.go
 
 
 

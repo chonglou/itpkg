@@ -1,15 +1,9 @@
+target=build
 
-build:
-	mkdir -pv release
-	gulp clean
-	gulp build
-	go build -o itpkg -ldflags "-s" app.go
-	mv public itpkg release/
-	cp -r locales release/
-
-
-watch:
-	webpack --progress --colors --watch
+release:
+	npm run release
+	go build -o $(target)/itpkg -ldflags "-s" app.go
+	cp -r locales $(target)
 
 
 clean:
