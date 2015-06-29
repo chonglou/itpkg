@@ -118,7 +118,7 @@ func Bits2obj(data []byte, obj interface{}) error {
 	return nil
 }
 
-func Ojb2str(o interface{}) (string, error) {
+func Obj2str(o interface{}) (string, error) {
 	b, e := json.Marshal(o)
 	return string(b), e
 }

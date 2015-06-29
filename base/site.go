@@ -39,8 +39,12 @@ func (p *SiteEngine) api() {
 	g.GET("/nav-bar", func(c *gin.Context) {
 		lang := LANG(c)
 
+		// links := []Link{Link{Url:"/#", Name:"Index"},Link{Url:"/#about-me", Name:"About me"}}
+		// js, _:=Obj2str(&links)
+		// p.Logger.Debug(js)
 		var links []Link
 		Str2obj(p.I18n.Get(lang, "site.nav.links"), &links)
+
 		c.JSON(
 			http.StatusOK,
 			gin.H{

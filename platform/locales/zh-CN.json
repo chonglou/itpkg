@@ -3,6 +3,7 @@
   "site.author.email": "CHANGE ME",
   "site.title": "CHANGE ME",
   "site.copyright": "&copy; 2015",
+  "site.nav.links":"[{\"url\":\"/#\",\"name\":\"本站首页\"},{\"url\":\"/#about-me\",\"name\":\"关于我们\"}]",
   "auth.log.login.success": "成功登录",
   "auth.log.login.fail": "登录失败",
   "auth.log.logout": "注销登录",

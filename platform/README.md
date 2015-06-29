@@ -26,4 +26,8 @@ IT-PACKAGE(PLATFORM)
 ## Development
     go run app.go db:create
     go run app.go db:migrate
+    go run app.go db:seed
     go run app.go server 
+    npm start
+
+
