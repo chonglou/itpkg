@@ -8,10 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CurrentUser(c *gin.Context, d *AuthDao) *User {
-	return nil
-}
-
 func JSONP(c *gin.Context, v interface{}) {
 	cb := c.DefaultQuery("callback", "")
 	if cb == "" {

@@ -29,5 +29,6 @@ IT-PACKAGE(PLATFORM)
     go run app.go db:seed
     go run app.go server 
     npm start
+    open http://localhost:8080
 
 

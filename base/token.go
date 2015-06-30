@@ -7,14 +7,17 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/garyburd/redigo/redis"
+	"github.com/gin-gonic/gin"
 	"github.com/op/go-logging"
 	"github.com/pborman/uuid"
 )
 
 type Token struct {
-	Redis  *redis.Pool     `inject:""`
-	Key    []byte          `inject:"token key"` //16 bits
-	Logger *logging.Logger `inject:""`
+	AuthDao *AuthDao        `inject:""`
+	Redis   *redis.Pool     `inject:""`
+	Key     []byte          `inject:"token key"` //16 bits
+	Logger  *logging.Logger `inject:""`
+	I18n    *LocaleDao      `inject:""`
 }
 
 func (p *Token) tid(kid string) string {
@@ -41,8 +44,29 @@ func (p *Token) New(data interface{}, dur time.Duration) (string, error) {
 	return token.SignedString(append(key, p.Key...))
 }
 
-func (p *Token) Parse(token string) (interface{}, error) {
-	tk, err := jwt.Parse(token, func(tk *jwt.Token) (interface{}, error) {
+func (p *Token) CurrentUser(c *gin.Context) (*User, error) {
+	lang := LANG(c)
+	tk, err := p.Parse(c)
+	if err != nil {
+		return nil, err
+	}
+	user := User{}
+	if p.AuthDao.UserById(tk.(UserToken).ID, &user) {
+		if user.Confirmed == nil {
+			return nil, errors.New(p.I18n.T(lang, "auth.error.unconfirmed"))
+		}
+		if user.Locked != nil {
+			return nil, errors.New(p.I18n.T(lang, "auth.error.locked"))
+		}
+		return &user, nil
+	}
+	return nil, errors.New(p.I18n.T(lang, "auth.error.invalid"))
+}
+
+//func (p *Token) Parse(token string) (interface{}, error) {
+//tk, err := jwt.Parse(token, func(tk *jwt.Token) (interface{}, error) {
+func (p *Token) Parse(c *gin.Context) (interface{}, error) {
+	tk, err := jwt.ParseFromRequest(c.Request, func(tk *jwt.Token) (interface{}, error) {
 		conn := p.Redis.Get()
 		defer conn.Close()
 		val, err := conn.Do("GET", p.tid(tk.Header["kid"].(string)))

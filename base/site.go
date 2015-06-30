@@ -29,6 +29,7 @@ type SiteEngine struct {
 	Logger  *logging.Logger `inject:""`
 	Router  *gin.Engine     `inject:""`
 	Redis   *redis.Pool     `inject:""`
+	Token   *Token          `inject:""`
 
 	Cache cache.CacheStore `inject:""`
 }
@@ -45,11 +46,12 @@ func (p *SiteEngine) api() {
 		var links []Link
 		Json2obj(p.I18n.Get(lang, "site.nav.links"), &links)
 
+		user, _ := p.Token.CurrentUser(c)
 		JSONP(
 			c,
 			gin.H{
 				"title": p.I18n.T(lang, "site.title"),
-				"user":  CurrentUser(c, p.AuthDao),
+				"user":  user,
 				"links": links,
 			})
 	})

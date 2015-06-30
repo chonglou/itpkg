@@ -2,7 +2,9 @@ package itpkg
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -85,7 +87,7 @@ func (p *AuthEngine) Info() (name string, version string, desc string) {
 func (p *AuthEngine) mail(lang, email string, act string) {
 	switch {
 	case act == "password" || act == "confirm" || act == "unlock":
-		tk, err := p.Token.New(&userToken{Email: email, Action: act}, time.Hour*24)
+		tk, err := p.Token.New(&emailToken{Email: email, Action: act}, time.Hour*24)
 		if err != nil {
 			p.Logger.Error("Error on generate user token: %s", act)
 		} else {
@@ -104,9 +106,26 @@ func (p *AuthEngine) mail(lang, email string, act string) {
 	}
 }
 
-type userToken struct {
-	Email  string
-	Action string
+type emailToken struct {
+	Email  string `json:"email"`
+	Action string `json:"action"`
+}
+
+type UserToken struct {
+	ID     uint   `json:"id"`
+	Email  string `json:"email"`
+	Name   string `json:"name"`
+	Logo   string `json:"logo"`
+	Action string `json:"action"`
+}
+
+func (p *UserToken) Avatar() string {
+	if p.Logo == "" {
+		return p.Logo
+	}
+	return fmt.Sprintf(
+		"http://www.gravatar.com/avatar/%v",
+		Md5([]byte(strings.ToLower(strings.Trim(p.Logo, " ")))))
 }
 
 //-----------------------form---------------------------------------
@@ -140,8 +159,8 @@ type User struct {
 	Token     string `sql:"size:255;index;not null"`
 	Provider  string `sql:"size:16;not null;default:'email';index"`
 	Password  []byte `sql:"size:64"`
-	Confirmed time.Time
-	Locked    time.Time
+	Confirmed *time.Time
+	Locked    *time.Time
 
 	Contact Contact
 	Logs    []Log
@@ -206,7 +225,8 @@ func (p *AuthDao) AddEmailUser(email, name, password string) (*User, error) {
 }
 
 func (p *AuthDao) ConfirmUser(id uint) {
-	p.Db.Model(User{}).Where("id = ?", id).Updates(User{Confirmed: time.Now()})
+	now := time.Now()
+	p.Db.Model(User{}).Where("id = ?", id).Updates(User{Confirmed: &now})
 }
 
 func (p *AuthDao) UserById(id uint, user *User) bool {
