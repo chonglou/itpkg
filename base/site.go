@@ -45,13 +45,10 @@ func (p *SiteEngine) api() {
 		// p.Logger.Debug(js)
 		var links []Link
 		Json2obj(p.I18n.Get(lang, "site.nav.links"), &links)
-
-		user, _ := p.Token.CurrentUser(c)
 		JSONP(
 			c,
 			gin.H{
 				"title": p.I18n.T(lang, "site.title"),
-				"user":  user,
 				"links": links,
 			})
 	})

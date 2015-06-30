@@ -1,7 +1,5 @@
 "use strict";
 
-localStorage.jid = "";
-
 require("bootstrap/dist/css/bootstrap.css");
 require("../css/base.css");
 

@@ -18,7 +18,8 @@ module.exports = function (options) {
             "react-router",
             "react-router-bootstrap",
             "react-localstorage",
-            "react-intl"
+            "react-intl",
+            "jwt-decode"
         ]
     };
 

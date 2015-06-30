@@ -28,6 +28,7 @@ IT-PACKAGE(PLATFORM)
     go run app.go db:migrate
     go run app.go db:seed
     go run app.go server 
+    npm run build
     npm start
     open http://localhost:8080
 
