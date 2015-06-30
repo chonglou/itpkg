@@ -27,7 +27,12 @@ module.exports = function (options) {
     };
 
     var loaders = [
-        {test: /\.jsx$/, loader: 'jsx-loader?insertPragma=React.DOM&harmony'},
+        //{test: /\.jsx$/, loader: 'jsx-loader?insertPragma=React.DOM&harmony'},
+        {
+            test: /\.jsx?$/,
+            exclude: /(node_modules)/,
+            loaders: options.hot ? ["react-hot-loader", "babel-loader?stage=0"] : ["babel-loader?stage=0"]
+        },
 
         //{test: /\.css$/, loader: "style-loader!css-loader?importLoaders=1"},
         {test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader")},
@@ -43,7 +48,7 @@ module.exports = function (options) {
     ];
 
     var plugins = [
-        new ExtractTextPlugin(options.render ? "[chunkhash].css" :"[name].css", {allChunks: true}),
+        new ExtractTextPlugin(options.render ? "[chunkhash].css" : "[name].css", {allChunks: true}),
         new webpack.optimize.CommonsChunkPlugin("vendor", options.render ? "[chunkhash].js" : "[name].js"),
         new webpack.PrefetchPlugin("react"),
         new webpack.PrefetchPlugin("react/lib/ReactComponentBrowserEnvironment"),
