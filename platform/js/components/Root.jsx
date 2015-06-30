@@ -8,17 +8,20 @@ var RouteHandler = Router.RouteHandler;
 var Header = require("./Header");
 var Footer = require("./Footer");
 
+
 var navPadStyle = {
     height: "50px"
 };
 
-
 var Root = React.createClass({
-    mixins: [T.IntlMixin],
+    mixins: [
+        Router.Navigation,
+        T.IntlMixin
+    ],
     render: function () {
         return (
             <div>
-                <Header />
+                <Header/>
                 <div style={navPadStyle} />
                 <div className="container">
                     <RouteHandler />

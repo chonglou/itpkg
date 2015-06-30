@@ -40,7 +40,7 @@ func (p *SiteEngine) api() {
 	g.GET("/nav-bar", func(c *gin.Context) {
 		lang := LANG(c)
 
-		// links := []Link{Link{Url:"/#", Name:"Index"},Link{Url:"/#about-me", Name:"About me"}}
+		// links := []Link{Link{Url:"/#", Name:"Index"},Link{Url:"/#about-us", Name:"About us"}}
 		// js, _:=Obj2str(&links)
 		// p.Logger.Debug(js)
 		var links []Link

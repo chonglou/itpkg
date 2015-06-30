@@ -3,7 +3,7 @@
   "site.author.email": "CHANGE ME",
   "site.title": "CHANGE ME",
   "site.copyright": "© 2015",
-  "site.nav.links":"[{\"url\":\"/#\",\"name\":\"本站首页\"},{\"url\":\"/#about-me\",\"name\":\"关于我们\"}]",
+  "site.nav.links":"[{\"url\":\"/#\",\"name\":\"本站首页\"},{\"url\":\"/#about-us\",\"name\":\"关于我们\"}]",
   "auth.error.invalid": "邮箱或密码不对.",
   "auth.error.unauthenticated": "你需要登录才能继续。",
   "auth.error.unconfirmed": "你需要进入邮箱点击激活链接才能继续。",

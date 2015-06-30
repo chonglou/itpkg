@@ -3,7 +3,7 @@
   "site.author.email": "CHANGE ME",
   "site.title": "CHANGE ME",
   "site.copyright": "© 2015",
-  "site.nav.links":"[{\"url\":\"/#\",\"name\":\"Index\"},{\"url\":\"/#about-me\",\"name\":\"About me\"}]",
+  "site.nav.links":"[{\"url\":\"/#\",\"name\":\"Index\"},{\"url\":\"/#about-us\",\"name\":\"About us\"}]",
   "auth.error.invalid": "Invalid email or password.",
   "auth.error.unauthenticated": "You need to sign in or sign up before continuing.",
   "auth.error.unconfirmed": "You have to confirm your email address before continuing.",
