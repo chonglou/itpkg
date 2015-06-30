@@ -21,6 +21,7 @@ var UserStore = require("../stores/auth");
 
 var Header = React.createClass({
     mixins: [
+        Router.Navigation,
         T.IntlMixin,
         Reflux.listenTo(UserStore, 'onSignInSuccess'),
         HttpMixin
@@ -43,6 +44,10 @@ var Header = React.createClass({
             }
         }.bind(this));
     },
+    handlePersonalBar(selectedKey) {
+        //alert('selected ' + selectedKey);
+        this.transitionTo(selectedKey);
+    },
     render: function () {
 
         var pbt, pbl;
@@ -50,11 +55,11 @@ var Header = React.createClass({
             pbt = "Welcome, " + this.state.user.name;
             pbl = [
                 {
-                    url: "#/users/profile",
+                    url: "auth.profile",
                     name: "profile"
                 },
                 {
-                    url: "#/users/sign-out",
+                    url: "auth.sign-out",
                     name: "Sign out"
                 }
             ]
@@ -62,36 +67,37 @@ var Header = React.createClass({
             pbt = "Sign In/Up";
             pbl = [
                 {
-                    url: "#/users/sign-in",
+                    url: "auth.sign-in",
                     name: "Sign in"
                 },
                 {
-                    url: "#/users/sign-up",
+                    url: "auth.sign-up",
                     name: "Sign up"
                 },
                 {
-                    url: "#/users/reset-password/1",
+                    url: "auth.reset-password.1",
                     name: "Forgot password"
                 },
                 {
-                    url: "#/users/confirm",
+                    url: "auth.confirm",
                     name: "Confirm"
                 },
                 {
-                    url: "#/users/unlock",
+                    url: "auth.unlock",
                     name: "Unlock"
                 }
             ]
         }
+
         return (
             <Navbar brand={<Link to="home"> {this.state.title} </Link>} inverse fixedTop toggleNavKey={0}>
                 <Nav right> {}
                     {this.state.links.map(function (object) {
                         return (<NavItem key={"nav-" + object.url} href={object.url}>{object.name}</NavItem>)
                     })}
-                    <DropdownButton title={pbt}>
-                        {pbl.map(function (object, i) {
-                            return (<MenuItem key={"nav-" + object.url} href={object.url}>{object.name}</MenuItem>)
+                    <DropdownButton title={pbt} onSelect={this.handlePersonalBar}>
+                        {pbl.map(function (object) {
+                            return (<MenuItem eventKey={object.url} key={"nav-" + object.url}>{object.name}</MenuItem>)
                         })}
                     </DropdownButton>
                 </Nav>
