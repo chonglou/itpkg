@@ -2,6 +2,8 @@
 
 var React = require("react");
 var T = require('react-intl');
+var Router = require("react-router");
+var RouteHandler = Router.RouteHandler;
 
 var Header = require("./Header");
 var Footer = require("./Footer");
@@ -19,8 +21,7 @@ var Root = React.createClass({
                 <Header />
                 <div style={navPadStyle} />
                 <div className="container">
-                    <h1>TEST111</h1>
-
+                    <RouteHandler />
                     <Footer />
                 </div>
             </div>

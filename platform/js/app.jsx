@@ -1,36 +1,44 @@
 "use strict";
 
+localStorage.jid = "";
+
 require("bootstrap/dist/css/bootstrap.css");
 require("../css/base.css");
 
 var $ = require("jquery");
-
 var React = require('react');
+var Router = require("react-router");
 
-var Root = require("./components/Root");
-var Footer = require("./components/Footer");
-var L = require("./components/locales");
+var Routes = require("./Routes");
 
-localStorage.jid = "";
+var zhCN = require("./i18n/zh-CN");
+var enUS = require("./i18n/en-US");
 
 $(function () {
     var lang;
     switch (localStorage.locale) {
         case "zh-CN":
-            lang = L.zhCN;
+            lang = zhCN;
             document.documentElement.lang = "zh";
             break;
         case "en-US":
-            lang = L.enUS;
+            lang = enUS;
             document.documentElement.lang = "en";
             break;
         default:
-            lang = L.enUS;
+            lang = enUS;
             localStorage.locale = "en-US";
 
     }
-    React.render(<Root {...lang}/>, $("div#content")[0]);
+
+    Router.run(Routes, function (Handler) {
+        React.render(<Handler {...lang}/>,
+            document.getElementById('content'));
+    });
+
 });
+
+
 
 
 
