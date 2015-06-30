@@ -44,47 +44,43 @@ var Header = React.createClass({
             }
         }.bind(this));
     },
-    handlePersonalBar(selectedKey) {
-        //alert('selected ' + selectedKey);
-        this.transitionTo(selectedKey);
-    },
     render: function () {
 
         var pbt, pbl;
         if (this.state.user.auth) {
-            pbt = "Welcome, " + this.state.user.name;
+            pbt = this.getIntlMessage("auth.links.welcome", this.state.user.name);
             pbl = [
                 {
                     url: "auth.profile",
-                    name: "profile"
+                    name: this.getIntlMessage("auth.links.profile")
                 },
                 {
                     url: "auth.sign-out",
-                    name: "Sign out"
+                    name: this.getIntlMessage("auth.links.sign_out")
                 }
             ]
         } else {
-            pbt = "Sign In/Up";
+            pbt = this.getIntlMessage("auth.links.sign_in_or_up");
             pbl = [
                 {
                     url: "auth.sign-in",
-                    name: "Sign in"
+                    name: this.getIntlMessage("auth.links.sign_in")
                 },
                 {
                     url: "auth.sign-up",
-                    name: "Sign up"
+                    name: this.getIntlMessage("auth.links.sign_up")
                 },
                 {
                     url: "auth.reset-password.1",
-                    name: "Forgot password"
+                    name: this.getIntlMessage("auth.links.reset_password_1")
                 },
                 {
                     url: "auth.confirm",
-                    name: "Confirm"
+                    name: this.getIntlMessage("auth.links.confirm")
                 },
                 {
                     url: "auth.unlock",
-                    name: "Unlock"
+                    name: this.getIntlMessage("auth.links.unlock")
                 }
             ]
         }
@@ -95,7 +91,7 @@ var Header = React.createClass({
                     {this.state.links.map(function (object) {
                         return (<NavItem key={"nav-" + object.url} href={object.url}>{object.name}</NavItem>)
                     })}
-                    <DropdownButton title={pbt} onSelect={this.handlePersonalBar}>
+                    <DropdownButton title={pbt} onSelect={this.transitionTo}>
                         {pbl.map(function (object) {
                             return (<MenuItem eventKey={object.url} key={"nav-" + object.url}>{object.name}</MenuItem>)
                         })}
