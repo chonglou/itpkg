@@ -22,7 +22,7 @@ module.exports = function (options) {
 
     var output = {
         // publicPath: options.render ? "/" : "http://localhost:" + port + "/",
-        filename: options.render ? "[id]-[chunkhash].js" : "[name].js",
+        filename: options.render ? "[chunkhash].js" : "[name].js",
         path: path.join(__dirname, "build", options.render ? "assets" : "public")
     };
 
@@ -32,12 +32,19 @@ module.exports = function (options) {
         //{test: /\.css$/, loader: "style-loader!css-loader?importLoaders=1"},
         {test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader")},
 
-        {test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=8192'}
+        //{test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=8192'}
+        {
+            test: /\.(jpe?g|png|gif|woff|woff2|eot|ttf|svg)$/i,
+            loaders: [
+                'file?hash=md5&digest=hex&name=[hash].[ext]',
+                'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
+            ]
+        }
     ];
 
     var plugins = [
-        new ExtractTextPlugin("[name].css", {allChunks: true}),
-        new webpack.optimize.CommonsChunkPlugin("vendor", "3rd.js"),
+        new ExtractTextPlugin("[chunkhash].css", {allChunks: true}),
+        new webpack.optimize.CommonsChunkPlugin("vendor", "[chunkhash].js"),
         new webpack.PrefetchPlugin("react"),
         new webpack.PrefetchPlugin("react/lib/ReactComponentBrowserEnvironment"),
         new StatsPlugin(path.join(__dirname, "build", "stats.json"), {

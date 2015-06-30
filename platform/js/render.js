@@ -1,5 +1,5 @@
 localStorage.debug = false;
 
-BaseUrlMixin = require("./mixins/jsonp");
+BaseUrlMixin = require("./mixins/http");
 
 require("./app");
