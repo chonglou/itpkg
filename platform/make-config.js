@@ -1,3 +1,5 @@
+"use strict";
+
 var path = require("path");
 var webpack = require("webpack");
 var StatsPlugin = require("stats-webpack-plugin");
@@ -11,7 +13,7 @@ module.exports = function (options) {
         vendor: [
             "jquery",
             "react",
-            "flux",
+            "reflux",
             "react-bootstrap",
             "react-router",
             "react-router-bootstrap",

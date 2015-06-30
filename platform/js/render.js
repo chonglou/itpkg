@@ -1,5 +1,5 @@
-localStorage.debug = false;
+"use strict";
 
-BaseUrlMixin = require("./mixins/http");
+localStorage.debug = false;
 
 require("./app");

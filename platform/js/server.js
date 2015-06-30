@@ -1,3 +1,5 @@
+"use strict";
+
 localStorage.debug = true;
 
 require("./app");
