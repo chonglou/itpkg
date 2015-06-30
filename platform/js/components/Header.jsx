@@ -18,13 +18,15 @@ var ReactRouterBootstrap = require('react-router-bootstrap');
 
 var HttpMixin = require("../mixins/http");
 var UserStore = require("../stores/auth");
+var Auth = require("../views/Auth");
 
 var Header = React.createClass({
     mixins: [
         Router.Navigation,
         T.IntlMixin,
         Reflux.listenTo(UserStore, 'onSignInSuccess'),
-        HttpMixin
+        HttpMixin,
+        Auth.SharedLinks
     ],
     onSignInSuccess: function (user) {
         this.setState({user: user});
@@ -52,38 +54,18 @@ var Header = React.createClass({
             pbl = [
                 {
                     url: "auth.profile",
-                    name: this.getIntlMessage("auth.links.profile")
+                    name: "auth.links.profile"
                 },
                 {
                     url: "auth.sign-out",
-                    name: this.getIntlMessage("auth.links.sign_out")
+                    name: "auth.links.sign_out"
                 }
             ]
         } else {
             pbt = this.getIntlMessage("auth.links.sign_in_or_up");
-            pbl = [
-                {
-                    url: "auth.sign-in",
-                    name: this.getIntlMessage("auth.links.sign_in")
-                },
-                {
-                    url: "auth.sign-up",
-                    name: this.getIntlMessage("auth.links.sign_up")
-                },
-                {
-                    url: "auth.reset-password.1",
-                    name: this.getIntlMessage("auth.links.reset_password_1")
-                },
-                {
-                    url: "auth.confirm",
-                    name: this.getIntlMessage("auth.links.confirm")
-                },
-                {
-                    url: "auth.unlock",
-                    name: this.getIntlMessage("auth.links.unlock")
-                }
-            ]
+            pbl = this.sharedLinks();
         }
+
 
         return (
             <Navbar brand={<Link to="home"> {this.state.title} </Link>} inverse fixedTop toggleNavKey={0}>

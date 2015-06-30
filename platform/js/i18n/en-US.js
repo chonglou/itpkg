@@ -24,13 +24,16 @@ module.exports = {
                 profile: "Edit Profile"
             }
         },
+        site: {
+            forms: {
+                copyright: "Copyright"
+            }
+        },
         links: {
             back_to_top: "Back to top"
         },
         forms: {
-            site: {
-                copyright: "Copyright"
-            }
+            email: "Email"
         }
     }
 

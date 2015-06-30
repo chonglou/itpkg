@@ -15,22 +15,25 @@ module.exports = {
                 profile: "个人信息"
             },
             titles: {
-                sign_in: "Sign in",
-                sign_up: "Sign up",
-                reset_password_1: "Forgot your password?",
-                reset_password_2: "Change your password",
-                confirm: "Didn't receive confirmation instructions?",
-                unlock: "Didn't receive unlock instructions?",
-                profile: "Edit Profile"
+                sign_in: "用户登录",
+                sign_up: "注册新用户",
+                reset_password_1: "忘记你的密码?",
+                reset_password_2: "更改你的密码",
+                confirm: "没有收到激活邮件?",
+                unlock: "没有收到解锁邮件?",
+                profile: "编辑个人信息"
+            }
+        },
+        site: {
+            forms: {
+                copyright: "版权信息"
             }
         },
         links: {
             back_to_top: "返回顶部"
         },
         forms: {
-            site: {
-                copyright: "版权信息"
-            }
+            email: "邮箱"
         }
     }
 
