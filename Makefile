@@ -11,6 +11,8 @@ format:
 	go fmt email/*.go
 
 
+update:
+	go get -u all
 
 
 clean:

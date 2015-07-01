@@ -3,6 +3,9 @@ module.exports = {
     locales: ["en-US"],
     messages: {
         auth: {
+            fields: {
+                username: "Username"
+            },
             links: {
                 welcome: "Welcome, %s",
                 sign_in_or_up: "Sign In/Up",
@@ -32,8 +35,14 @@ module.exports = {
         links: {
             back_to_top: "Back to top"
         },
-        forms: {
-            email: "Email"
+        fields: {
+            email: "Email",
+            password: "Password",
+            re_password: "Password confirmation"
+        },
+        buttons: {
+            submit: "Submit",
+            reset: "Reset"
         }
     }
 

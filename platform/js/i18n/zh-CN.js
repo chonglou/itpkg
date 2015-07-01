@@ -3,6 +3,9 @@ module.exports = {
     locales: ["zh-CN"],
     messages: {
         auth: {
+            fields: {
+                username: "用户名"
+            },
             links: {
                 welcome: "欢迎, %s",
                 sign_in_or_up: "登录/注册",
@@ -32,8 +35,14 @@ module.exports = {
         links: {
             back_to_top: "返回顶部"
         },
-        forms: {
-            email: "邮箱"
+        fields: {
+            email: "邮箱",
+            password: "密码",
+            re_password: "再输一遍"
+        },
+        buttons: {
+            submit: "提交",
+            reset: "重写"
         }
     }
 

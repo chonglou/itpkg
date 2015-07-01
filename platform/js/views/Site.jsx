@@ -6,14 +6,18 @@ module.exports = {
     AboutUs: React.createClass({
         render: function () {
             return (
-                <h2>About Us</h2>
+                <div className="row">
+                    <h2>About Us</h2>
+                </div>
             );
         }
     }),
     Home: React.createClass({
         render: function () {
             return (
-                <h2>Home</h2>
+                <div className="row">
+                    <h2>Home</h2>
+                </div>
             );
         }
     })

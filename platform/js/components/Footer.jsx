@@ -34,7 +34,7 @@ var Footer = React.createClass({
     },
     render: function () {
         return (
-            <div>
+            <div className="row">
                 <hr/>
                 <footer>
                     <p className="pull-right">

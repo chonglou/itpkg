@@ -10,7 +10,7 @@ var Footer = require("./Footer");
 
 
 var navPadStyle = {
-    height: "50px"
+    height: "70px"
 };
 
 var Root = React.createClass({

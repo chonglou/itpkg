@@ -8,6 +8,7 @@ var Link = ReactRouter.Link;
 
 var ReactBootstrap = require('react-bootstrap');
 var Input = ReactBootstrap.Input;
+var ButtonInput = ReactBootstrap.ButtonInput;
 
 var sharedLinks = {
     sharedLinks: function () {
@@ -49,27 +50,44 @@ var NoLoginLinks = React.createClass({
     ],
     render: function () {
         return (
-            <ul>
+            <div className="row">
+                <br/>
+                <ul>
                 {this.sharedLinks().map(function (object) {
                     return (<li key={"l-" + object.url}>
                         <Link to={object.url} >{object.title}</Link>
                     </li>)
                 })}
-            </ul>
+                </ul>
+            </div>
         );
     }
 });
 
+var W = require("../components/Widgets");
 var EmailForm = React.createClass({
     mixins: [
         T.IntlMixin
     ],
     render: function () {
         return (
-            <form>
-                <Input type="hidden" value={this.props.action}/>
-                <Input type="email" label={this.getIntlMessage("forms.email")} placeholder="your_name@gmail.com"/>
-            </form>
+            <div className="row">
+                <div className="col-md-offset-2 col-md-8">
+                    <W.Form title={this.props.title} fields={[
+                        {
+                            name: "action",
+                            type: "hidden",
+                            value: this.props.action
+                        },
+                        {
+                            name: "email",
+                            type: "email",
+                            nil: false
+                        }
+                    ]}/>
+                    <NoLoginLinks />
+                </div>
+            </div>
         );
     }
 });
@@ -82,10 +100,22 @@ module.exports = {
         ],
         render: function () {
             return (
-                <div>
-                    <h3>{this.getIntlMessage("auth.titles.sign_in")}</h3>
-                    <hr/>
-                    <NoLoginLinks />
+                <div className="row">
+                    <div className="col-md-offset-2 col-md-8">
+                        <W.Form title="auth.titles.sign_in" fields={[
+                            {
+                                name: "email",
+                                type: "email",
+                                nil: false
+                            },
+                            {
+                                name: "password",
+                                type: "password",
+                                nil: false
+                            }
+                        ]}/>
+                        <NoLoginLinks />
+                    </div>
                 </div>
             );
         }
@@ -96,10 +126,34 @@ module.exports = {
         ],
         render: function () {
             return (
-                <div>
-                    <h3>{this.getIntlMessage("auth.titles.sign_up")}</h3>
-                    <hr/>
-                    <NoLoginLinks />
+                <div className="row">
+                    <div className="col-md-offset-1 col-md-10">
+                        <W.Form title="auth.titles.sign_up" fields={[
+                            {
+                                name: "name",
+                                type: "text",
+                                label: "auth.fields.username",
+                                nil: false
+                            },
+                            {
+                                name: "email",
+                                type: "email",
+                                nil: false
+                            },
+                            {
+                                name: "password",
+                                type: "password",
+                                nil: false
+                            },
+                            {
+                                name: "re_password",
+                                label: "fields.re_password",
+                                type: "password",
+                                nil: false
+                            }
+                        ]}/>
+                        <NoLoginLinks />
+                    </div>
                 </div>
             );
         }
@@ -109,14 +163,7 @@ module.exports = {
             T.IntlMixin
         ],
         render: function () {
-            return (
-                <div>
-                    <h3>{this.getIntlMessage("auth.titles.reset_password_1")}</h3>
-                    <hr/>
-                    <EmailForm action="reset-password"/>
-                    <NoLoginLinks />
-                </div>
-            );
+            return (<EmailForm action="unlock" title="auth.links.reset_password_1"/>);
         }
     }),
     ResetPassword2: React.createClass({
@@ -125,7 +172,7 @@ module.exports = {
         ],
         render: function () {
             return (
-                <div>
+                <div className="row">
                     <h3>{this.getIntlMessage("auth.titles.reset_password_2")}</h3>
                     <hr/>
                     <NoLoginLinks />
@@ -138,14 +185,7 @@ module.exports = {
             T.IntlMixin
         ],
         render: function () {
-            return (
-                <div>
-                    <h3>{this.getIntlMessage("auth.titles.confirm")}</h3>
-                    <hr/>
-                    <EmailForm action="confirm"/>
-                    <NoLoginLinks />
-                </div>
-            );
+            return (<EmailForm action="unlock" title="auth.links.confirm"/>);
         }
     }),
     Unlock: React.createClass({
@@ -153,14 +193,7 @@ module.exports = {
             T.IntlMixin
         ],
         render: function () {
-            return (
-                <div>
-                    <h3>{this.getIntlMessage("auth.titles.unlock")}</h3>
-                    <hr/>
-                    <EmailForm action="unlock"/>
-                    <NoLoginLinks />
-                </div>
-            );
+            return (<EmailForm action="unlock" title="auth.links.unlock"/>);
         }
     }),
     Profile: React.createClass({
@@ -169,7 +202,9 @@ module.exports = {
         ],
         render: function () {
             return (
-                <h2>Unlock</h2>
+                <div  className="row">
+                    <h2>Profile</h2>
+                </div>
             );
         }
     })
