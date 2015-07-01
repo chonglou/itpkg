@@ -3,7 +3,7 @@
 var Reflux = require('reflux');
 var jwt_decode = require('jwt-decode');
 
-var Actions = require('../actions/auth');
+var Actions = require('../actions/Auth');
 
 var UserStore = Reflux.createStore({
     listenables: Actions,

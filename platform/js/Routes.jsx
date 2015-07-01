@@ -5,8 +5,8 @@ var Router = require("react-router");
 var Route = Router.Route;
 var DefaultRoute = Router.DefaultRoute;
 
-var Auth = require("./views/Auth");
-var Site = require("./views/Site");
+var Auth = require("./components/Auth");
+var Site = require("./components/Site");
 var Root = require("./components/Root");
 
 var Routes = (

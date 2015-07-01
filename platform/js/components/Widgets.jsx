@@ -62,7 +62,11 @@ var Form = React.createClass({
         });
         return (
             <fieldset>
-                <legend>{this.getIntlMessage(this.props.title)}</legend>
+                <legend>
+                    <span className="glyphicon glyphicon-list"/>
+                &nbsp;
+                    {this.getIntlMessage(this.props.title)}
+                </legend>
                 <form className="form-horizontal">
                     {fields}
                     <Buttons/>

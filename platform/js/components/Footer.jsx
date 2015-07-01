@@ -10,7 +10,7 @@ var padStyle = {
     paddingRight: "20px"
 };
 
-var HttpMixin = require("../mixins/http");
+var HttpMixin = require("../mixins/Http");
 
 var Footer = React.createClass({
     mixins: [T.IntlMixin, HttpMixin],

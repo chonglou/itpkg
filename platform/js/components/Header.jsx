@@ -16,9 +16,9 @@ var MenuItem = ReactBootstrap.MenuItem;
 
 var ReactRouterBootstrap = require('react-router-bootstrap');
 
-var HttpMixin = require("../mixins/http");
-var UserStore = require("../stores/auth");
-var Auth = require("../views/Auth");
+var HttpMixin = require("../mixins/Http");
+var UserStore = require("../stores/Auth");
+var Auth = require("./Auth");
 
 var Header = React.createClass({
     mixins: [

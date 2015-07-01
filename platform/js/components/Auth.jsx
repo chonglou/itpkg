@@ -10,6 +10,8 @@ var ReactBootstrap = require('react-bootstrap');
 var Input = ReactBootstrap.Input;
 var ButtonInput = ReactBootstrap.ButtonInput;
 
+var W = require("./Widgets");
+
 var sharedLinks = {
     sharedLinks: function () {
         return [
@@ -64,7 +66,6 @@ var NoLoginLinks = React.createClass({
     }
 });
 
-var W = require("../components/Widgets");
 var EmailForm = React.createClass({
     mixins: [
         T.IntlMixin
