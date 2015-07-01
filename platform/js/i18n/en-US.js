@@ -35,6 +35,11 @@ module.exports = {
         links: {
             back_to_top: "Back to top"
         },
+        placeholders: {
+            email: "change-me@gmail.com",
+            password: "Your password",
+            re_password: "Please re-input password to confirm."
+        },
         fields: {
             email: "Email",
             password: "Password",

@@ -95,6 +95,7 @@ var EmailForm = React.createClass({
     }
 });
 
+
 module.exports = {
     SharedLinks: sharedLinks,
     SignIn: React.createClass({
@@ -105,18 +106,20 @@ module.exports = {
             return (
                 <div className="row">
                     <div className="col-md-offset-2 col-md-8">
-                        <W.Form title="auth.titles.sign_in" fields={[
-                            {
-                                name: "email",
-                                type: "email",
-                                nil: false
-                            },
-                            {
-                                name: "password",
-                                type: "password",
-                                nil: false
-                            }
-                        ]}/>
+                        <W.Form
+                            title="auth.titles.sign_in"
+                            fields={[
+                                {
+                                    name: "email",
+                                    type: "email",
+                                    nil: false
+                                },
+                                {
+                                    name: "password",
+                                    type: "password",
+                                    nil: false
+                                }
+                            ]}/>
                         <NoLoginLinks />
                     </div>
                 </div>
@@ -152,6 +155,7 @@ module.exports = {
                                 name: "re_password",
                                 label: "fields.re_password",
                                 type: "password",
+                                placeholder: "placeholders.re_password",
                                 nil: false
                             }
                         ]}/>
@@ -166,7 +170,7 @@ module.exports = {
             T.IntlMixin
         ],
         render: function () {
-            return (<EmailForm action="unlock" title="auth.links.reset_password_1"/>);
+            return (<EmailForm action="reset-password-1" title="auth.links.reset_password_1"/>);
         }
     }),
     ResetPassword2: React.createClass({
@@ -188,7 +192,7 @@ module.exports = {
             T.IntlMixin
         ],
         render: function () {
-            return (<EmailForm action="unlock" title="auth.links.confirm"/>);
+            return (<EmailForm action="confirm" title="auth.links.confirm"/>);
         }
     }),
     Unlock: React.createClass({

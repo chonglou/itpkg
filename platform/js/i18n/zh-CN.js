@@ -35,6 +35,11 @@ module.exports = {
         links: {
             back_to_top: "返回顶部"
         },
+        placeholders: {
+            email: "change-me@gmail.com",
+            password: "你的密码",
+            re_password: "再次输入以确认"
+        },
         fields: {
             email: "邮箱",
             password: "密码",

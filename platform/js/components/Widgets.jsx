@@ -3,42 +3,79 @@
 var React = require("react");
 var T = require('react-intl');
 
+
 var Input = React.createClass({
-    mixins: [
-        T.IntlMixin
-    ],
-    render: function () {//value={this.props.value}
-        // onChange={this.props.change}
-        return (
-            <div className="form-group">
-                <label className={"col-md-3 control-label" + (this.props.nil ? "" : " required")}>
-                                {this.getIntlMessage(this.props.label)}
-                </label>
-                <div className={"col-md-" + this.props.size }>
-                    <input type={this.props.type}
-
-                        className="form-control"
-                        placeholder={this.props.placeholder}/>
-                </div>
-            </div>
-        );
-    }
-});
-
-var Buttons = React.createClass({
     mixins: [
         T.IntlMixin
     ],
     render: function () {
         return (
             <div className="form-group">
-                <div className="col-sm-offset-3 col-sm-9">
-                    <button type="submit" onClick={this.props.submit} className="btn btn-primary">{this.getIntlMessage("buttons.submit")}</button>
-                &nbsp; &nbsp;
-                    <input type="reset" className="btn btn-default" value={this.getIntlMessage("buttons.reset")}/>
+                <label className={"col-md-3 control-label" + (this.props.nil ? "" : " required")}>
+                                {this.getIntlMessage(this.props.label)}
+                </label>
+                <div className={"col-md-" + (this.props.size || 8)}>
+                    <input type={this.props.type}
+                        value={this.props.value}
+                        onChange={this.props.change}
+                        className="form-control"
+                        placeholder={this.getIntlMessage(this.props.placeholder)}/>
                 </div>
             </div>
-        );
+        )
+    }
+});
+
+var Email = React.createClass({
+    render: function () {
+        return (<Input type="email" {...this.props}/>)
+    }
+});
+
+var Text = React.createClass({
+    render: function () {
+        return (<Input type="text" {...this.props}/>)
+    }
+});
+
+var Hidden = React.createClass({
+    render: function () {
+        return (<input type="hidden" {...this.props}/>)
+    }
+});
+
+
+var Password = React.createClass({
+    render: function () {
+        return (<Input type="password" {...this.props}/>)
+    }
+});
+
+var Button = React.createClass({
+    mixins: [
+        T.IntlMixin
+    ],
+    render: function () {
+        return (
+            <button className={"btn btn-" + (this.props.style || "default")} onClick={this.props.click}>
+            {this.getIntlMessage(this.props.label || "buttons.submit")}
+            </button>
+        )
+    }
+});
+
+var Submit = React.createClass({
+    render: function () {
+        return (<Button style="primary" {...this.props}/>)
+    }
+});
+
+var Reset = React.createClass({
+    mixins: [
+        T.IntlMixin
+    ],
+    render: function () {
+        return (<input className="btn btn-default" type="reset" value={this.getIntlMessage("buttons.reset")} />)
     }
 });
 
@@ -46,58 +83,69 @@ var Form = React.createClass({
     mixins: [
         T.IntlMixin
     ],
-    getInitialState: function () {
-        var fields = {};
-        this.props.fields.map(function (object) {
-            fields[object.name] = object.value || "";
-        });
-        console.log("init form ");
-        console.log(fields);
-        return fields
-    },
     onSubmit: function (e) {
-        e.preventDefault();
-        var submit = this.props.submit;
-        if (submit) {
-            submit(e);
-        } else {
-            console.log("unlock");
-        }
+        console.log("submit");
+        console.log(this.state);
+    },
+    getInitialState: function () {
+        var obj = {};
+        this.props.fields.map(function (object) {
+            obj[object.name] = object.value || "";
+        });
+        return obj;
+    },
+    handleChange: function (field, event) {
+        var obj = {};
+        obj[field] = event.target.value;
+        this.setState(obj);
     },
     render: function () {
+        var change = this.handleChange;
         var state = this.state;
-
-        var onChange = function (event) {
-            //console.log("field "+field);
-            //console.log(event.target.value);
-            //
-            //this.setState({field: event.target.value});
-        };
         var fields = this.props.fields.map(function (object) {
             var key = "fm-f-" + object.name;
+
             switch (object.type) {
-                case "hidden":
-                    return <input key={key} type="hidden" />;
                 case "password":
-                    return <Input key={key} type="password" size={object.size || 8} nil={object.nil} label={object.label || "fields.password"} placeholder={object.placeholder || ""}/>;
+                    return (
+                        <Password
+                            key={key}
+                            size="6"
+                            label={object.label || "fields.password" }
+                            change={change.bind(null, object.name)}
+                            value={state[object.name]}
+                            placeholder={object.placeholder || "placeholders.password"}
+                        />);
                 case "email":
-                    return <Input key={key} type="email" size={object.size || 8} nil={object.nil} label={object.label || "fields.email"} placeholder={object.placeholder || "change-me@gmail.com"}/>;
+                    return (
+                        <Email
+                            key={key}
+                            size="6"
+                            label={object.label || "fields.email" }
+                            change={change.bind(null, object.name)}
+                            value={state[object.name]}
+                            placeholder={object.placeholder || "placeholders.email"}
+                        />);
+                case "hidden":
+                    return (<Hidden key={key} value={state[object.name]} />);
                 default:
-                    return <Input key={key} type="text" size={object.size || 6} nil={object.nil} label={object.label} placeholder={object.placeholder || ""}/>;
-                //return <label>{"Unknown field type " + object.type}</label>
+                    return (<div key={key}>{"Unknown field type " + object.type}</div>);
             }
         });
-
         return (
             <fieldset>
-                <legend>
-                    <span className="glyphicon glyphicon-list"/>
-                &nbsp;
-                    {this.getIntlMessage(this.props.title)}
+                <legend className="glyphicon glyphicon-list">
+                &nbsp;{this.getIntlMessage(this.props.title)}
                 </legend>
                 <form className="form-horizontal">
                     {fields}
-                    <Buttons submit={this.onSubmit}/>
+                    <div className="form-group">
+                        <div className="col-sm-offset-3 col-sm-9">
+                            <Submit click={this.onSubmit} />
+                        &nbsp; &nbsp;
+                            <Reset />
+                        </div>
+                    </div>
                 </form>
             </fieldset>
         );
@@ -105,7 +153,5 @@ var Form = React.createClass({
 });
 
 module.exports = {
-    Input: Input,
-    Buttons: Buttons,
     Form: Form
 };
