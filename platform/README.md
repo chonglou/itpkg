@@ -6,7 +6,6 @@ IT-PACKAGE(PLATFORM)
     npm update -g
     npm install -g webpack
     npm install
-    bower install
     make clean
     make
 

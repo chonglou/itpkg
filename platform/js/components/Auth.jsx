@@ -74,18 +74,20 @@ var EmailForm = React.createClass({
         return (
             <div className="row">
                 <div className="col-md-offset-2 col-md-8">
-                    <W.Form title={this.props.title} fields={[
-                        {
-                            name: "action",
-                            type: "hidden",
-                            value: this.props.action
-                        },
-                        {
-                            name: "email",
-                            type: "email",
-                            nil: false
-                        }
-                    ]}/>
+                    <W.Form
+                        title={this.props.title}
+                        fields={[
+                            {
+                                name: "action",
+                                type: "hidden",
+                                value: this.props.action
+                            },
+                            {
+                                name: "email",
+                                type: "email",
+                                nil: false
+                            }
+                        ]}/>
                     <NoLoginLinks />
                 </div>
             </div>
@@ -194,7 +196,7 @@ module.exports = {
             T.IntlMixin
         ],
         render: function () {
-            return (<EmailForm action="unlock" title="auth.links.unlock"/>);
+            return (<EmailForm  action="unlock" title="auth.links.unlock"/>);
         }
     }),
     Profile: React.createClass({
