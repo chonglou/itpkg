@@ -84,8 +84,8 @@ var Form = React.createClass({
         T.IntlMixin
     ],
     onSubmit: function (e) {
-        console.log("submit");
-        console.log(this.state);
+        e.preventDefault();
+        this.props.submit(this.state, e);
     },
     getInitialState: function () {
         var obj = {};

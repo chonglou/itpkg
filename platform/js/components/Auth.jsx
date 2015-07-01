@@ -70,11 +70,16 @@ var EmailForm = React.createClass({
     mixins: [
         T.IntlMixin
     ],
+    onSubmit: function (data, e) {
+        console.log("submit");
+        console.log(data);
+    },
     render: function () {
         return (
             <div className="row">
                 <div className="col-md-offset-2 col-md-8">
                     <W.Form
+                        submit={this.onSubmit}
                         title={this.props.title}
                         fields={[
                             {
@@ -102,11 +107,16 @@ module.exports = {
         mixins: [
             T.IntlMixin
         ],
+        onSubmit: function (data, e) {
+            console.log("submit");
+            console.log(data);
+        },
         render: function () {
             return (
                 <div className="row">
                     <div className="col-md-offset-2 col-md-8">
                         <W.Form
+                            submit={this.onSubmit}
                             title="auth.titles.sign_in"
                             fields={[
                                 {
@@ -130,35 +140,42 @@ module.exports = {
         mixins: [
             T.IntlMixin
         ],
+        onSubmit: function (data, e) {
+            console.log("submit");
+            console.log(data);
+        },
         render: function () {
             return (
                 <div className="row">
                     <div className="col-md-offset-1 col-md-10">
-                        <W.Form title="auth.titles.sign_up" fields={[
-                            {
-                                name: "name",
-                                type: "text",
-                                label: "auth.fields.username",
-                                nil: false
-                            },
-                            {
-                                name: "email",
-                                type: "email",
-                                nil: false
-                            },
-                            {
-                                name: "password",
-                                type: "password",
-                                nil: false
-                            },
-                            {
-                                name: "re_password",
-                                label: "fields.re_password",
-                                type: "password",
-                                placeholder: "placeholders.re_password",
-                                nil: false
-                            }
-                        ]}/>
+                        <W.Form
+                            submit={this.onSubmit}
+                            title="auth.titles.sign_up"
+                            fields={[
+                                {
+                                    name: "name",
+                                    type: "text",
+                                    label: "auth.fields.username",
+                                    nil: false
+                                },
+                                {
+                                    name: "email",
+                                    type: "email",
+                                    nil: false
+                                },
+                                {
+                                    name: "password",
+                                    type: "password",
+                                    nil: false
+                                },
+                                {
+                                    name: "re_password",
+                                    label: "fields.re_password",
+                                    type: "password",
+                                    placeholder: "placeholders.re_password",
+                                    nil: false
+                                }
+                            ]}/>
                         <NoLoginLinks />
                     </div>
                 </div>

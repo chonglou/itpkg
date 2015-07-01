@@ -44,6 +44,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --config webpack-development.config.js --progress --colors",
+    "server": "go run app.go s",
     "build": "webpack --config webpack-development.config.js --progress --profile --colors",
     "release": "webpack --config webpack-production.config.js --progress --profile --colors"
   },
