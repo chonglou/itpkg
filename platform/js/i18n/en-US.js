@@ -6,6 +6,9 @@ module.exports = {
             fields: {
                 username: "Username"
             },
+            placeholders: {
+                username: "First-name Middle-name Last-name"
+            },
             links: {
                 welcome: "Welcome, %s",
                 sign_in_or_up: "Sign In/Up",
@@ -38,7 +41,12 @@ module.exports = {
         placeholders: {
             email: "change-me@gmail.com",
             password: "Your password",
-            re_password: "Please re-input password to confirm."
+            re_password: "Please re-input password to confirm.",
+            empty_text: ""
+        },
+        messages: {
+            success: "Success!",
+            fail: "Failed!"
         },
         fields: {
             email: "Email",
@@ -47,7 +55,8 @@ module.exports = {
         },
         buttons: {
             submit: "Submit",
-            reset: "Reset"
+            reset: "Reset",
+            close: "Close"
         }
     }
 

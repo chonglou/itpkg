@@ -29,7 +29,7 @@ type AuthEngine struct {
 
 func (p *AuthEngine) Mount() {
 
-	p.Router.POST("/users/register", func(c *gin.Context) {
+	p.Router.POST("/users/sign_up", func(c *gin.Context) {
 		lang := LANG(c)
 
 		var fm UserRegisterFm
@@ -58,7 +58,10 @@ func (p *AuthEngine) Mount() {
 
 	p.Router.POST("/users/login", func(c *gin.Context) {})
 
-	p.Router.POST("/users/unlock", func(c *gin.Context) {})
+	p.Router.POST("/users/unlock", func(c *gin.Context) {
+		res := NewResponse(true)
+		c.JSON(http.StatusOK, res)
+		})
 	p.Router.GET("/users/unlock", func(c *gin.Context) {})
 
 	p.Router.POST("/users/password/1", func(c *gin.Context) {})

@@ -1,6 +1,7 @@
 "use strict";
 
 var React = require('react');
+var Router = require('react-router');
 var T = require('react-intl');
 
 var ReactRouter = require('react-router');
@@ -11,6 +12,7 @@ var Input = ReactBootstrap.Input;
 var ButtonInput = ReactBootstrap.ButtonInput;
 
 var W = require("./Widgets");
+var HttpMixin = require("../mixins/Http");
 
 var sharedLinks = {
     sharedLinks: function () {
@@ -68,17 +70,20 @@ var NoLoginLinks = React.createClass({
 
 var EmailForm = React.createClass({
     mixins: [
+        Router.Navigation,
         T.IntlMixin
     ],
-    onSubmit: function (data, e) {
-        console.log("submit");
-        console.log(data);
+    onSubmit: function (rs) {
+        if (rs.ok) {
+            this.transitionTo("auth.sign-in");
+        }
     },
-    render: function () {
+    render: function () {//todo
         return (
             <div className="row">
                 <div className="col-md-offset-2 col-md-8">
                     <W.Form
+                        action={this.props.url}
                         submit={this.onSubmit}
                         title={this.props.title}
                         fields={[
@@ -103,7 +108,7 @@ var EmailForm = React.createClass({
 
 module.exports = {
     SharedLinks: sharedLinks,
-    SignIn: React.createClass({
+    SignIn: React.createClass({//todo
         mixins: [
             T.IntlMixin
         ],
@@ -138,23 +143,30 @@ module.exports = {
     }),
     SignUp: React.createClass({
         mixins: [
-            T.IntlMixin
+            Router.Navigation,
+            T.IntlMixin,
+            HttpMixin
         ],
-        onSubmit: function (data, e) {
-            console.log("submit");
-            console.log(data);
+        onSubmit: function (rs) {
+            if (rs.ok) {
+                this.transitionTo("auth.sign-in");
+            }
         },
         render: function () {
             return (
                 <div className="row">
                     <div className="col-md-offset-1 col-md-10">
+                        <div id="dialog"/>
                         <W.Form
+                            action="/users/sign_up"
                             submit={this.onSubmit}
                             title="auth.titles.sign_up"
                             fields={[
                                 {
                                     name: "name",
                                     type: "text",
+                                    size: 4,
+                                    placeholder: "auth.placeholders.username",
                                     label: "auth.fields.username",
                                     nil: false
                                 },
@@ -187,10 +199,13 @@ module.exports = {
             T.IntlMixin
         ],
         render: function () {
-            return (<EmailForm action="reset-password-1" title="auth.links.reset_password_1"/>);
+            return (<EmailForm
+                url="/users/reset_password/1"
+                action="reset-password-1"
+                title="auth.links.reset_password_1"/>);
         }
     }),
-    ResetPassword2: React.createClass({
+    ResetPassword2: React.createClass({//todo
         mixins: [
             T.IntlMixin
         ],
@@ -209,7 +224,7 @@ module.exports = {
             T.IntlMixin
         ],
         render: function () {
-            return (<EmailForm action="confirm" title="auth.links.confirm"/>);
+            return (<EmailForm url="/users/confirm"  action="confirm" title="auth.links.confirm"/>);
         }
     }),
     Unlock: React.createClass({
@@ -217,10 +232,10 @@ module.exports = {
             T.IntlMixin
         ],
         render: function () {
-            return (<EmailForm  action="unlock" title="auth.links.unlock"/>);
+            return (<EmailForm url="/users/unlock" action="unlock" title="auth.links.unlock"/>);
         }
     }),
-    Profile: React.createClass({
+    Profile: React.createClass({//todo
         mixins: [
             T.IntlMixin
         ],

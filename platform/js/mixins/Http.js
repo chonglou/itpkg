@@ -13,7 +13,7 @@ var Http = {
     get: function (url, success) {
         $.ajax({
             url: this.url(url),
-            success: success,
+            success: success.bind(this),
             type: "GET",
             dataType: "json"
         });
@@ -21,7 +21,7 @@ var Http = {
     post: function (url, data, success) {
         $.ajax({
             url: this.url(url),
-            success: success,
+            success: success.bind(this),
             data: data,
             type: "POST",
             dataType: "json"

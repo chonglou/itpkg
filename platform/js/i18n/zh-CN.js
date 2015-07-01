@@ -6,6 +6,9 @@ module.exports = {
             fields: {
                 username: "用户名"
             },
+            placeholders: {
+                username: "姓名"
+            },
             links: {
                 welcome: "欢迎, %s",
                 sign_in_or_up: "登录/注册",
@@ -38,7 +41,12 @@ module.exports = {
         placeholders: {
             email: "change-me@gmail.com",
             password: "你的密码",
-            re_password: "再次输入以确认"
+            re_password: "再次输入以确认",
+            empty_text: ""
+        },
+        messages: {
+            success: "操作成功!",
+            fail: "发生错误!"
         },
         fields: {
             email: "邮箱",
@@ -47,7 +55,8 @@ module.exports = {
         },
         buttons: {
             submit: "提交",
-            reset: "重写"
+            reset: "重写",
+            close: "关闭"
         }
     }
 
