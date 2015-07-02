@@ -92,21 +92,27 @@ var Form = React.createClass({
         e.preventDefault();
 
         this.post(this.props.action, this.state.form, function (rs) {
-            var msg = rs.ok ? rs.data : rs.errors;
-            this.setState({
-                result: rs,
-                modal: {
-                    show: true,
-                    style: rs.ok ? "success" : "danger",
-                    title: this.getIntlMessage(rs.ok ? "messages.success" : "messages.fail"),
-                    body: msg ? msg.join("<br/>") : ""
+            var msg = rs.ok ? rs.messages : rs.errors;
+            if (msg) {
+                this.setState({
+                    result: rs,
+                    modal: {
+                        show: true,
+                        style: rs.ok ? "success" : "danger",
+                        title: this.getIntlMessage(rs.ok ? "messages.success" : "messages.fail"),
+                        body: msg
+                    }
+                });
+            } else {
+                if (this.props.submit) {
+                    this.props.submit(rs);
                 }
-            });
+            }
         });
     },
     getInitialState: function () {
         var obj = {
-            modal: {show: false},
+            modal: {show: false, body: []},
             form: {}
         };
         this.props.fields.map(function (object) {
@@ -120,7 +126,7 @@ var Form = React.createClass({
         this.setState({form: form});
     },
     close: function () {
-        this.setState({modal: {show: false}}, function () {
+        this.setState({modal: {show: false, body: []}}, function () {
             if (this.props.submit) {
                 this.props.submit(this.state.result);
             }
@@ -181,7 +187,11 @@ var Form = React.createClass({
                         </ReactBootstrap.Modal.Title>
                     </ReactBootstrap.Modal.Header>
                     <ReactBootstrap.Modal.Body>
-                        {this.state.modal.body}
+                        <ul>
+                        {this.state.modal.body.map(function (object, i) {
+                            return (<li key={"m-" + i}>{object}</li>);
+                        })}
+                        </ul>
                     </ReactBootstrap.Modal.Body>
                     <ReactBootstrap.Modal.Footer>
                         <ReactBootstrap.Button onClick={this.close}>

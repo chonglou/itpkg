@@ -34,17 +34,18 @@ func (p *AuthEngine) Mount() {
 
 		var fm UserRegisterFm
 		c.Bind(&fm)
+		p.Logger.Debug("========== Form: %v", fm)
 		err := p.Validate.Struct(fm)
 		res := NewResponse(true)
 		if err == nil {
 			if fm.Password != fm.RePassword {
-				res.Invalid(errors.New("passwords not match"))
+				res.Invalid(errors.New(p.I18n.T(lang, "auth.error.passwords_not_match")))
 			} else {
 				user, err := p.AuthDao.AddEmailUser(fm.Email, fm.Name, fm.Password)
 				if err == nil {
-					p.AuthDao.Log(user.ID, p.I18n.T(lang, "auth.log.register"), "")
+					p.AuthDao.Log(user.ID, p.I18n.T(lang, "auth.log.sign_up"), "")
 					go p.mail(lang, user.Email, "confirm")
-					res.Add("send a email to confirm")
+					res.Message(p.I18n.T(lang, "auth.message.sign_up.success"))
 				} else {
 					res.Invalid(err)
 				}
@@ -61,7 +62,7 @@ func (p *AuthEngine) Mount() {
 	p.Router.POST("/users/unlock", func(c *gin.Context) {
 		res := NewResponse(true)
 		c.JSON(http.StatusOK, res)
-		})
+	})
 	p.Router.GET("/users/unlock", func(c *gin.Context) {})
 
 	p.Router.POST("/users/password/1", func(c *gin.Context) {})
@@ -96,6 +97,7 @@ func (p *AuthEngine) mail(lang, email string, act string) {
 		} else {
 			url := p.Cfg.Url(lang, "/users/"+act)
 			url += "&token=" + tk
+			p.Logger.Debug("Url: %s", url)
 			p.Mailer.Html(
 				p.Cfg.From("no-reply"),
 				p.Cfg.Smtp.Bcc,
@@ -133,10 +135,10 @@ func (p *UserToken) Avatar() string {
 
 //-----------------------form---------------------------------------
 type UserRegisterFm struct {
-	Name       string `validate:"required" json:"name"`
-	Email      string `validate:"email,required" json:"email"`
-	Password   string `validate:"required,min=6,max=64" json:"password"`
-	RePassword string `validate:"required" json:"re_password"`
+	Name       string `validate:"required" form:"name" binding:"required"`
+	Email      string `validate:"email,required" form:"email" binding:"required"`
+	Password   string `validate:"required,min=6,max=64" form:"password" binding:"required"`
+	RePassword string `validate:"required" form:"re_password" binding:"required"`
 }
 
 type UserLoginFm struct {

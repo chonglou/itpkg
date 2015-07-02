@@ -20,8 +20,11 @@ func JSONP(c *gin.Context, v interface{}) {
 }
 
 func LANG(c *gin.Context) string {
-	return c.Request.Header.Get("Accept-Language")
-	//return c.DefaultQuery("locale", "en-US")
+	lang := c.DefaultQuery("locale", "")
+	if lang == "" {
+		lang = c.Request.Header.Get("Accept-Language")
+	}
+	return lang
 }
 
 type Link struct {
@@ -31,14 +34,19 @@ type Link struct {
 }
 
 type Response struct {
-	Ok      bool          `json:"ok"`
-	Errors  []string      `json:"errors"`
-	Data    []interface{} `json:"data"`
-	Created time.Time     `json:"created"`
+	Ok       bool          `json:"ok"`
+	Errors   []string      `json:"errors"`
+	Messages []string      `json:"messages"`
+	Data     []interface{} `json:"data"`
+	Created  time.Time     `json:"created"`
 }
 
 func (p *Response) Add(items ...interface{}) {
 	p.Data = append(p.Data, items...)
+}
+
+func (p *Response) Message(items ...string) {
+	p.Messages = append(p.Messages, items...)
 }
 
 func (p *Response) Error(errs ...string) {
