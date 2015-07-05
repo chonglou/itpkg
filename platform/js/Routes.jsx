@@ -8,6 +8,7 @@ var DefaultRoute = Router.DefaultRoute;
 var Auth = require("./components/Auth");
 var Site = require("./components/Site");
 var Root = require("./components/Root");
+var Teamwork = require("./components/Teamwork");
 
 var Routes = (
     <Route handler={Root}>
@@ -21,6 +22,9 @@ var Routes = (
         <Route name="auth.confirm" path="/users/confirm" handler={ Auth.Confirm } />
         <Route name="auth.unlock" path="/users/unlock" handler={ Auth.Unlock } />
         <Route name="auth.profile" path="/users/profile" handler={ Auth.Profile } />
+
+        <Route name="teamwork.projects" path="/teamwork/projects" handler={ Teamwork.ProjectList } />
+        <Route name="teamwork.projects.table" path="/teamwork/projects/table" handler={ Teamwork.ProjectTable } />
 
     </Route>
 );

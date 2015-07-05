@@ -219,6 +219,51 @@ var Form = React.createClass({
     }
 });
 
+var Table = React.createClass({
+  getInitialState: function () {
+    return {
+      klass: this.props.klass,
+      columns: this.props.columns,
+      rows: this.props.rows
+    };
+  },
+
+  render: function () {
+    var klass = "table " + this.state.klass,
+      thead,
+      tbody = [],
+      column_titles = [],
+      columns = this.state.columns,
+      rows = this.state.rows;
+
+    for (var i = 0, l = columns.length; i < l; i++) {
+      column_titles.push(
+        <th>{columns[i]}</th>
+      );
+    }
+
+    thead = <tr>{column_titles}</tr>;
+
+    for (var j = 0, k = rows.length; j < k; j++) {
+      tbody.push(
+        <tr>
+          <td>{rows[j].id}</td>
+          <td>{rows[j].name}</td>
+        </tr>
+      );
+    }
+
+    return (
+      <div>
+        <table className={klass}>
+          <thead>{thead}</thead>
+          <tbody>{tbody}</tbody>
+        </table>
+      </div>
+    );
+  }
+});
+
 //
 //var Dialog = React.createClass({
 //    getInitialState() {
@@ -250,5 +295,6 @@ var Form = React.createClass({
 
 
 module.exports = {
-    Form: Form
+  Form: Form,
+  Table: Table
 };
