@@ -41,6 +41,10 @@ case $1 in
 		docker version
 		docker info
 		;;
+	clean)
+		docker rm $(docker ps -a -q)
+		docker rmi $(docker images -q --filter "dangling=true")
+		;;
 	*)
 		echo "Usage: run.sh (info|build|stop|commit|push|start) NAME"
 esac
