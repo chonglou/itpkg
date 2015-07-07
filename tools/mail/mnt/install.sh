@@ -43,37 +43,40 @@ expect eof
 ")
  
 cd /mnt
-echo "CREATE DATABASE mail;\nCREATE USER 'mail'@'localhost' IDENTIFIED BY '$mail_mysql_passwd';\nGRANT ALL ON mail.* TO 'mail'@'localhost';\n" > init.sql
 
 cat >> init.sql <<EOF
+CREATE DATABASE mail;
+CREATE USER 'mail'@'localhost' IDENTIFIED BY '$mail_mysql_passwd';
+GRANT ALL ON mail.* TO 'mail'@'localhost';
+
 USE mail;
-CREATE TABLE `virtual_domains` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`)
+CREATE TABLE \`virtual_domains\` (
+  \`id\` int(11) NOT NULL auto_increment,
+  \`name\` varchar(50) NOT NULL,
+  PRIMARY KEY (\`id\`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-CREATE TABLE `virtual_users` (
-  `id` int(11) NOT NULL auto_increment,
-  `domain_id` int(11) NOT NULL,
-  `password` varchar(106) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
+CREATE TABLE \`virtual_users\` (
+  \`id\` int(11) NOT NULL auto_increment,
+  \`domain_id\` int(11) NOT NULL,
+  \`password\` varchar(106) NOT NULL,
+  \`email\` varchar(100) NOT NULL,
+  PRIMARY KEY (\`id\`),
+  UNIQUE KEY \`email\` (\`email\`),
   FOREIGN KEY (domain_id) REFERENCES virtual_domains(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-CREATE TABLE `virtual_aliases` (
-  `id` int(11) NOT NULL auto_increment,
-  `domain_id` int(11) NOT NULL,
-  `source` varchar(100) NOT NULL,
-  `destination` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`),
+CREATE TABLE \`virtual_aliases\` (
+  \`id\` int(11) NOT NULL auto_increment,
+  \`domain_id\` int(11) NOT NULL,
+  \`source\` varchar(100) NOT NULL,
+  \`destination\` varchar(100) NOT NULL,
+  PRIMARY KEY (\`id\`),
   FOREIGN KEY (domain_id) REFERENCES virtual_domains(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `virtual_domains` (`id`, `name`) VALUES ('1', 'test.com')
-INSERT INTO `virtual_users` (`domain_id`, `password` , `email`) VALUES ('1', ENCRYPT('changeme', CONCAT('$6$', SUBSTRING(SHA(RAND()), -16))), 'user1@test.com'), ('1', ENCRYPT('changeme', CONCAT('$6$', SUBSTRING(SHA(RAND()), -16))), 'user2@test.com');
-INSERT INTO `virtual_aliases` (`domain_id`, `source`, `destination`) VALUES ( '1', 'alias1@test.com', 'user1@test.com');
+INSERT INTO \`virtual_domains\` (\`id\`, \`name\`) VALUES ('1', 'test.com');
+INSERT INTO \`virtual_users\` (\`domain_id\`, \`password\` , \`email\`) VALUES ('1', ENCRYPT('changeme', CONCAT('\$6$', SUBSTRING(SHA(RAND()), -16))), 'user1@test.com'), ('1', ENCRYPT('changeme', CONCAT('\$6$', SUBSTRING(SHA(RAND()), -16))), 'user2@test.com');
+INSERT INTO \`virtual_aliases\` (\`domain_id\`, \`source\`, \`destination\`) VALUES ( '1', 'alias1@test.com', 'user1@test.com');
 
 EOF
 
@@ -91,12 +94,14 @@ echo "Setup postfix"
 
 cd /etc/postfix
 cat > main.cf <<EOF
-smtpd_banner = $myhostname ESMTP $mail_name (Linux)
+compatibility_level=2
+
+smtpd_banner = \$myhostname ESMTP \$mail_name (Linux)
 biff = no
 append_dot_mydomain = no
 readme_directory = no
 
-relay_domains = $mydestination
+relay_domains = \$mydestination
 virtual_alias_maps = proxy:mysql:/etc/postfix/virtual_alias_maps.cf
 virtual_mailbox_domains = proxy:mysql:/etc/postfix/virtual_mailbox_domains.cf
 virtual_mailbox_maps = proxy:mysql:/etc/postfix/virtual_mailbox_maps.cf
@@ -107,7 +112,7 @@ virtual_transport = virtual
 virtual_uid_maps = static:5000
 virtual_gid_maps = static:5000
 local_transport = virtual
-local_recipient_maps = $virtual_mailbox_maps
+local_recipient_maps = \$virtual_mailbox_maps
 transport_maps = hash:/etc/postfix/transport
 
 smtpd_sasl_auth_enable = yes
@@ -116,14 +121,14 @@ smtpd_sasl_path = private/auth
 smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination
 smtpd_relay_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination
 smtpd_sasl_security_options = noanonymous
-smtpd_sasl_tls_security_options = $smtpd_sasl_security_options
+smtpd_sasl_tls_security_options = \$smtpd_sasl_security_options
 smtpd_use_tls = yes
 smtpd_tls_security_level = may
 smtpd_tls_auth_only = yes
 smtpd_tls_received_header = yes
 smtpd_tls_cert_file = /etc/ssl/private/vmail.crt
 smtpd_tls_key_file = /etc/ssl/private/vmail.key
-smtpd_sasl_local_domain = $mydomain
+smtpd_sasl_local_domain = \$mydomain
 broken_sasl_auth_clients = yes
 smtpd_tls_loglevel = 1
 
@@ -158,6 +163,7 @@ EOF
 
 cat > virtual_alias_maps.cf << EOF
 user = mail
+password = $mail_mysql_passwd
 hosts = localhost
 dbname = mail
 query = SELECT destination FROM virtual_aliases WHERE source='%s'
@@ -165,6 +171,7 @@ EOF
 
 cat > virtual_mailbox_domains.cf << EOF
 user = mail
+password = $mail_mysql_passwd
 hosts = localhost
 dbname = mail
 query = SELECT 1 FROM virtual_domains WHERE name='%s'
@@ -172,15 +179,14 @@ EOF
 
 cat > virtual_mailbox_maps.cf << EOF
 user = mail
+password = $mail_mysql_passwd
 hosts = localhost
 dbname = mail
 query = SELECT 1 FROM virtual_users WHERE email='%s'
 EOF
 
-for s in virtual_alias_maps virtual_mailbox_domains virtual_mailbox_maps 
-do
-	echo "password = $mail_mysql_passwd" >> $s.cf
-done
+
+echo "smtps 465/tcp" >> /etc/services
 
 postmap /etc/postfix/transport
 
@@ -252,12 +258,12 @@ EOF
 
 cat > dovecot-sql.conf <<EOF
 driver = mysql
+connect = host=localhost dbname=mail user=mail password=$mail_mysql_passwd
 default_pass_scheme = SHA512-CRYPT
 user_query = SELECT '/home/vmail/%d/%n' as home, 'maildir:/home/vmail/%d/%n' as mail, 5000 AS uid, 5000 AS gid, concat('dirsize:storage=',  quota) AS quota FROM users WHERE email = '%u'
 password_query = SELECT email as user, password FROM virtual_users WHERE email='%u';
 #password_query = SELECT email as user, password FROM virtual_users WHERE email=(SELECT destination FROM virtual_aliases WHERE source = '%u');
 EOF
-echo "connect = host=localhost dbname=mail user=mail password=$mail_mysql_passwd" >> dovecot-sql.conf
 
 chown -R vmail:dovecot /etc/dovecot
 
@@ -267,18 +273,19 @@ postmap -q test.com mysql:/etc/postfix/virtual_mailbox_domains.cf
 postmap -q user1@test.com mysql:/etc/postfix/virtual_mailbox_maps.cf
 postmap -q alias1@test.com mysql:/etc/postfix/virtual_alias_maps.cf
 
+postfix check
 dovecot --build-options
 
 #--------------help------------------
 echo "Install completed!!!"
 
-echo "If you get similar errors,  use journalctl -xn --unit postfix.service to find out more. "
 echo "Add email domain: INSERT INTO \`virtual_domains\`(\`id\`, \`name\`) VALUES('1234', 'example.com')"
 echo "Add email user: INSERT INTO \`virtual_users\`(\`domain_id\`, \`password\` , \`email\`) VALUES('1234', ENCRYPT('password', CONCAT('\$6$', SUBSTRING(SHA(RAND()), -16))), 'user1@example.com')"
 echo "Add email alias: INSERT INTO \`virtual_aliases\`(\`domain_id\`, \`source\`, \`destination\`) VALUES('1234', 'alias1@example.com', 'user1@example.com')"
 echo "Remember to remove test users from database"
 
 
+echo "If you get similar errors,  use journalctl -f to find out more. "
 
 
 
