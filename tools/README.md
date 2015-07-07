@@ -6,5 +6,3 @@
  * docker info
  * docker ps
 
-## mail
- * dovecot --build-options
