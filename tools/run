@@ -1,0 +1,40 @@
+#!/bin/sh
+
+
+case $1 in
+	build)
+		read -p "Do you wish to rebuild all steps?(y/n)" yn
+		case $yn in
+			y)
+				ARGS=--no-cache
+				;;
+			*)
+				ARGS=
+				;;
+		esac
+
+		if [ ! -d $2 ]
+		then
+			echo "$2 not exists!"
+			exit -1
+		fi
+
+		docker build $ARGS -t chonglou/$2 $2
+		;;
+	commit)
+		docker commit -m="$2" $1 chonglou/$1:latest
+		;;
+	push)
+		docker push chonglou/$1
+		;;
+	start)
+		#docker run --name $2 -p 2222:22 -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro chonglou/$2:latest /sbin/init
+		docker run --name $2 -p 2222:22 -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro chonglou/$2:latest 
+		;;
+	info)
+		docker version
+		docker info
+		;;
+	*)
+		echo "Usage: run.sh (info|build NAME|commit|push|start) "
+esac
