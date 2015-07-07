@@ -275,6 +275,9 @@ postmap -q alias1@test.com mysql:/etc/postfix/virtual_alias_maps.cf
 
 postfix check
 dovecot --build-options
+systemctl restart postfix
+systemctl restart dovecot
+
 
 #--------------help------------------
 echo "Install completed!!!"
