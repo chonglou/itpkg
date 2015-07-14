@@ -1,5 +1,0 @@
-config/*.yml
-.idea
-node_modules
-build
-*.log
