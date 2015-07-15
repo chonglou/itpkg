@@ -1,5 +1,7 @@
 package com.itpkg.core.models;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -26,6 +28,7 @@ public class Setting implements Serializable {
     private String val;
 
     @Column(length = 16)
+    @JsonIgnore
     private byte[] iv;
 
     public int getId() {

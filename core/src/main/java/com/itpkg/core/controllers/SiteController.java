@@ -4,9 +4,9 @@ import com.itpkg.core.services.SettingService;
 import com.itpkg.core.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -14,7 +14,7 @@ import javax.annotation.Resource;
  * Created by flamen on 15-7-14.
  */
 
-@Controller
+@RestController
 public class SiteController {
     private final Logger logger = LoggerFactory.getLogger(SiteController.class);
 

@@ -1,5 +1,7 @@
 package com.itpkg.core.models;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ public class User implements Serializable {
     private String username;
     @Column(nullable = false)
     private Provider provider;
+    @JsonIgnore
     private String password;
 
     private Date confirmed;
@@ -48,9 +51,11 @@ public class User implements Serializable {
     private Contact contact;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Log> logs;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Role> roles;
 
     public User() {

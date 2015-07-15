@@ -3,6 +3,7 @@ package com.itpkg.core.services;
 import com.itpkg.core.dao.SettingDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,7 +28,7 @@ public class SettingService {
         // todo
     }
 
-    @Resource
+    @Autowired
     private SettingDao settingDao;
 
     public void setSettingDao(SettingDao settingDao) {

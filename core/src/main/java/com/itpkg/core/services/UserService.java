@@ -4,6 +4,7 @@ import com.itpkg.core.dao.UserDao;
 import com.itpkg.core.models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -23,7 +24,7 @@ public class UserService {
 
     }
 
-    @Resource
+    @Autowired
     private UserDao userDao;
 
     public void setUserDao(UserDao userDao) {

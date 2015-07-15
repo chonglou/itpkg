@@ -47,7 +47,7 @@
             <tx:method name="add*" propagation="REQUIRED"/>
             <tx:method name="set*" propagation="REQUIRED"/>
             <tx:method name="del*" propagation="REQUIRED"/>
-            <tx:method name="*" propagation="SUPPORTS" read-only="true" />
+            <tx:method name="*" propagation="SUPPORTS" read-only="true"/>
         </tx:attributes>
     </tx:advice>
 

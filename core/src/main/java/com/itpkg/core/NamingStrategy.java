@@ -9,17 +9,17 @@ public class NamingStrategy extends ImprovedNamingStrategy {
 
     @Override
     public String classToTableName(String className) {
-        return this.getClass().getPackage().getName().split(".")[0]+"_"+className.toLowerCase();
+        return this.getClass().getPackage().getName().split(".")[0] + "_" + className.toLowerCase();
     }
 
     @Override
     public String propertyToColumnName(String propertyName) {
-        return "_"+propertyName;
+        return "_" + propertyName;
     }
 
     @Override
     public String foreignKeyColumnName(String propertyName, String propertyEntityName, String propertyTableName, String referencedColumnName) {
-        return propertyName+"_id";
+        return propertyName + "_id";
         //return super.foreignKeyColumnName(propertyName, propertyEntityName, propertyTableName, referencedColumnName);
     }
 }

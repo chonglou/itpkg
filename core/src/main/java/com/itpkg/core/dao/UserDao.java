@@ -2,12 +2,14 @@ package com.itpkg.core.dao;
 
 
 import com.itpkg.core.models.User;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
 
 /**
  * Created by flamen on 15-7-14.
  */
 
-public interface UserDao extends CrudRepository<User, Long> {
-    User findByEmail(String email);
+public interface UserDao extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
 }
