@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-
 /**
  * Created by flamen on 15-7-14.
  */
@@ -25,7 +23,7 @@ public class SiteController {
         switch (name) {
             case "title":
             case "copyright":
-                return i18n.t("site."+name, "en-US");
+                return i18n.t("site." + name, "en-US");
             default:
                 return name;
         }

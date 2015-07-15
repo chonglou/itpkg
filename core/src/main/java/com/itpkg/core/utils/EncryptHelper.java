@@ -3,17 +3,40 @@ package com.itpkg.core.utils;
 import org.jasypt.util.password.PasswordEncryptor;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.jasypt.util.text.StrongTextEncryptor;
+import org.jose4j.jwe.ContentEncryptionAlgorithmIdentifiers;
+import org.jose4j.jwe.JsonWebEncryption;
+import org.jose4j.jwe.KeyManagementAlgorithmIdentifiers;
+import org.jose4j.keys.AesKey;
+import org.jose4j.lang.JoseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Formatter;
+import java.io.IOException;
+import java.security.Key;
 
 /**
  * Created by flamen on 15-7-15.
  */
 @Component
 public class EncryptHelper {
+
+    public <T> T token2payload(String token, Class<T> clazz) throws JoseException, IOException {
+        JsonWebEncryption jwe = new JsonWebEncryption();
+        jwe.setKey(tokenKey);
+        jwe.setCompactSerialization(token);
+        return jsonHelper.json2object(jwe.getPayload(), clazz);
+    }
+
+    public String payload2token(Object payload) throws JoseException, IOException {
+        JsonWebEncryption jwe = new JsonWebEncryption();
+        jwe.setPayload(jsonHelper.object2json(payload));
+        jwe.setAlgorithmHeaderValue(KeyManagementAlgorithmIdentifiers.PBES2_HS512_A256KW);
+        jwe.setEncryptionMethodHeaderParameter(ContentEncryptionAlgorithmIdentifiers.AES_256_CBC_HMAC_SHA_512);
+        jwe.setKey(tokenKey);
+        return jwe.getCompactSerialization();
+    }
 
     public String encrypt(String plain) {
         return textEncryptor.encrypt(plain);
@@ -36,24 +59,32 @@ public class EncryptHelper {
     void init() {
         passwordEncryptor = new StrongPasswordEncryptor();
         textEncryptor = new StrongTextEncryptor();
-        textEncryptor.setPassword(key);
+        textEncryptor.setPassword(encryptorKey);
+
+        tokenKey = new AesKey(tokenKeyS.getBytes());
     }
 
-    private String hex(byte[] bytes) {
-        Formatter formatter = new Formatter();
-        for (byte b : bytes) {
-            formatter.format("%02x", b);
-        }
-        return formatter.toString();
-    }
+    @Value("${secret.encryptor}")
+    private String encryptorKey;
+    @Value("${secret.token}")
+    private String tokenKeyS;
+    @Autowired
+    private JsonHelper jsonHelper;
 
-    @Value("${site.secret}")
-    private String key;
 
     private PasswordEncryptor passwordEncryptor;
     private StrongTextEncryptor textEncryptor;
+    private Key tokenKey;
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setJsonHelper(JsonHelper jsonHelper) {
+        this.jsonHelper = jsonHelper;
+    }
+
+    public void setEncryptorKey(String encryptorKey) {
+        this.encryptorKey = encryptorKey;
+    }
+
+    public void setTokenKeyS(String tokenKeyS) {
+        this.tokenKeyS = tokenKeyS;
     }
 }

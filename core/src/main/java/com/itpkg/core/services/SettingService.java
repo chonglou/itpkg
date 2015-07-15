@@ -3,14 +3,12 @@ package com.itpkg.core.services;
 import com.itpkg.core.dao.SettingDao;
 import com.itpkg.core.models.Setting;
 import com.itpkg.core.utils.EncryptHelper;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
+import com.itpkg.core.utils.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.Date;
 
@@ -27,7 +25,7 @@ public class SettingService {
 
     public void set(String key, Object val, boolean encode) throws IOException {
         //String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(val);
-        String json = objectMapper.writeValueAsString(val);
+        String json = jsonHelper.object2json(val);
 
         settingDao.findByKey(key).map((s) -> {
             if (encode) {
@@ -57,27 +55,26 @@ public class SettingService {
 
     }
 
-    public <T> T get(String key, String val, final Class<T> clazz) throws IOException {
+    public <T> T get(String key, Class<T> clazz) throws IOException {
 
         String json = settingDao.findByKey(key)
                 .map((s) -> s.isEncode() ? encryptHelper.decrypt(s.getVal()) : s.getVal())
                 .orElse(null);
 
-        return json == null ? null : objectMapper.readValue(json, clazz);
+        return jsonHelper.json2object(json, clazz);
     }
 
-
-    @PostConstruct
-    void init() {
-        objectMapper = new ObjectMapper();
-        objectMapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
-    }
 
     @Autowired
     private SettingDao settingDao;
     @Autowired
     private EncryptHelper encryptHelper;
-    private ObjectMapper objectMapper;
+    @Autowired
+    private JsonHelper jsonHelper;
+
+    public void setJsonHelper(JsonHelper jsonHelper) {
+        this.jsonHelper = jsonHelper;
+    }
 
     public void setEncryptHelper(EncryptHelper encryptHelper) {
         this.encryptHelper = encryptHelper;
