@@ -1,23 +1,53 @@
 package com.itpkg.core.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by flamen on 15-7-14.
  */
 @Entity
 @Table(name = "roles")
-public class Role extends IdEntity {
+public class Role implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
     @Column(nullable = false)
+    private Date created;
+    @Column(nullable = false)
+    private Date updated;
     @ManyToOne
+    @JoinColumn
     private User user;
     @Column(nullable = false)
     private String name;
     private String rType;
     private Integer rId;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
 
     public User getUser() {
         return user;

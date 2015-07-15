@@ -1,9 +1,8 @@
 package com.itpkg.core.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by flamen on 15-7-14.
@@ -11,8 +10,15 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "settings")
-public class Setting extends IdEntity {
-    @Column(nullable = false, unique = true)
+public class Setting implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+    @Column(nullable = false)
+    private Date created;
+    @Column(nullable = false)
+    private Date updated;
+    @Column(nullable = false, unique = true, name = "key_")
     private String key;
 
     @Column(nullable = false)
@@ -22,6 +28,29 @@ public class Setting extends IdEntity {
     @Column(length = 16)
     private byte[] iv;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
 
     public String getKey() {
         return key;

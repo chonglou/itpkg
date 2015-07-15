@@ -17,8 +17,8 @@ public class Log implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @Column(nullable = false)
     @ManyToOne
+    @JoinColumn
     private User user;
     @Column(nullable = false)
     private String message;

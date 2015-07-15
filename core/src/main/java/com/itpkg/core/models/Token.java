@@ -1,8 +1,8 @@
 package com.itpkg.core.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by flamen on 15-7-14.
@@ -10,13 +10,44 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tokens")
-public class Token extends IdEntity {
+public class Token implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+    @Column(nullable = false)
+    private Date created;
+    @Column(nullable = false)
+    private Date updated;
 
     @Column(nullable = false)
     private String body;
 
-    @Column(length = 16)
+    @Column(length = 16, name = "key_")
     private byte[] key;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
 
     public String getBody() {
         return body;

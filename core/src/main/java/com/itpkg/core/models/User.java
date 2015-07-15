@@ -1,9 +1,7 @@
 package com.itpkg.core.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,11 +12,18 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User extends IdEntity {
+public class User implements Serializable {
     public enum Provider {
         EMAIL, QQ, GMAIL
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+    @Column(nullable = false)
+    private Date created;
+    @Column(nullable = false)
+    private Date updated;
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)
@@ -30,15 +35,51 @@ public class User extends IdEntity {
     private Date confirmed;
     private Date locked;
 
-    @OneToMany
+
+    public Contact getContact() {
+        return contact;
+    }
+
+    public void setContact(Contact contact) {
+        this.contact = contact;
+    }
+
+    @OneToOne(mappedBy = "user")
+    private Contact contact;
+
+    @OneToMany(mappedBy = "user")
     private List<Log> logs;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private List<Role> roles;
 
     public User() {
         this.logs = new ArrayList<>();
         this.roles = new ArrayList<>();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
     }
 
     public List<Role> getRoles() {

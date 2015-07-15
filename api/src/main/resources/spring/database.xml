@@ -4,7 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:property-placeholder location="classpath:config.properties" />
+    <context:property-placeholder location="classpath:config.properties"/>
 
     <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
         <property name="driverClass" value="${database.driver}"/>
@@ -16,5 +16,25 @@
         <property name="partitionCount" value="3"/>
         <property name="acquireIncrement" value="5"/>
         <property name="statementsCacheSize" value="100"/>
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="com.itpkg.**.models"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">${database.mode}</prop>
+                <prop key="hibernate.dialect">${database.dialect}</prop>
+                <!--<prop key="hibernate.ejb.naming_strategy">com.itpkg.core.NamingStrategy</prop>-->
+                <prop key="hibernate.show_sql">${database.show_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 </beans>
