@@ -7,11 +7,13 @@ repositories {
 
 dependencies {
 
-    compile "org.slf4j:slf4j-api:${slf4jVersion}"
-    compile "org.hibernate:hibernate-core:${hibernateVersion}"
-    compile "javax.servlet:javax.servlet-api:${javaxServletVersion}"
+    compile 'org.slf4j:slf4j-api:1.7.12'
+    compile 'org.hibernate:hibernate-core:4.3.10.Final'
+    compile 'javax.servlet:javax.servlet-api:3.1.0'
 
     compile "org.springframework:spring-webmvc:${springVersion}"
+    compile "org.springframework:spring-orm:${springVersion}"
+    compile 'org.springframework.data:spring-data-jpa:1.8.1.RELEASE'
 
     testCompile('junit:junit')
 
@@ -19,5 +21,5 @@ dependencies {
 
 
 jar{
-    baseName = 'itpkg-core'
+    baseName = "${appName}-core"
 }

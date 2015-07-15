@@ -1,9 +1,12 @@
 package com.itpkg.core.services;
 
+import com.itpkg.core.dao.UserDao;
 import com.itpkg.core.models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * Created by flamen on 15-7-14.
@@ -18,5 +21,12 @@ public class UserService {
 
     public void Create(User.Provider provider, String username, String email) {
 
+    }
+
+    @Resource
+    private UserDao userDao;
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
     }
 }
