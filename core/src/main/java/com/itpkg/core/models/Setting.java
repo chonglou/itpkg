@@ -1,7 +1,5 @@
 package com.itpkg.core.models;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -13,6 +11,7 @@ import java.util.Date;
 @Entity
 @Table(name = "settings")
 public class Setting implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -27,9 +26,7 @@ public class Setting implements Serializable {
     @Lob
     private String val;
 
-    @Column(length = 16)
-    @JsonIgnore
-    private byte[] iv;
+    private boolean encode;
 
     public int getId() {
         return id;
@@ -71,12 +68,11 @@ public class Setting implements Serializable {
         this.val = val;
     }
 
-    public byte[] getIv() {
-        return iv;
+    public boolean isEncode() {
+        return encode;
     }
 
-    public void setIv(byte[] iv) {
-        this.iv = iv;
+    public void setEncode(boolean encode) {
+        this.encode = encode;
     }
-
 }

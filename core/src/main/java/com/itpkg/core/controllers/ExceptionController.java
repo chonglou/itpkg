@@ -1,6 +1,8 @@
 package com.itpkg.core.controllers;
 
 import com.itpkg.core.UserNotFoundException;
+import com.itpkg.core.services.I18nService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.VndErrors;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,4 +22,5 @@ public class ExceptionController {
     VndErrors userNotFoundExceptionHandler(UserNotFoundException ex) {
         return new VndErrors("error", ex.getMessage());
     }
+
 }
