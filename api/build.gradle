@@ -1,8 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
-apply plugin: "war"
-apply plugin: "com.bmuschko.tomcat"
+apply plugin: 'war'
+apply plugin: 'jetty'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -25,6 +25,18 @@ repositories {
 }
 
 dependencies {
+    def bonecpVersion = '0.8.0.RELEASE'
+    compile "com.jolbox:bonecp:${bonecpVersion}"
+    compile "com.jolbox:bonecp-spring:${bonecpVersion}"
+
+    compile 'mysql:mysql-connector-java:5.1.36'
+    compile 'org.postgresql:postgresql:9.4-1201-jdbc41'
+
+
+    compile 'org.apache.derby:derby:10.11.1.1'
+
+    //compile 'ch.qos.logback:logback-classic:1.1.3'
+
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-security')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
@@ -33,16 +45,10 @@ dependencies {
     compile('org.springframework.plugin:spring-plugin-core')
     compile('org.springframework.hateoas:spring-hateoas')
 
-    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 
     testCompile('junit:junit')
-    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile('org.springframework.boot:spring-boot-starter-test')
 
-
-    def tomcatVersion = '7.0.59'
-    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
-            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
-            "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
 }
 
 
@@ -50,6 +56,12 @@ war{
     baseName = 'itpkg'
 }
 
-tomcat{
+jettyRun{
     contextPath = '/'
+    httpPort = 8080
+}
+
+jettyRunWar{
+    contextPath = '/'
+    httpPort = 8088
 }

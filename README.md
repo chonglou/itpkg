@@ -8,5 +8,5 @@ IT-PACKAGE
 
 ## Development
     cd api
-    gradle tomcatRun 
+    gradle jettyRun
 
