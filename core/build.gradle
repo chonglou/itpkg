@@ -1,0 +1,32 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+version = '20150714'
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+    }
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //compile('org.springframework.hateoas:spring-hateoas')
+
+    testCompile('junit:junit')
+
+}
+
+
+jar{
+    baseName = 'itpkg-core'
+}

@@ -1,0 +1,55 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+apply plugin: "war"
+apply plugin: "com.bmuschko.tomcat"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+version = '20150714'
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath('org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE')
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.2.2'
+    }
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-security')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+
+    compile('org.springframework.security.oauth:spring-security-oauth2:2.0.7.RELEASE')
+    compile('org.springframework.plugin:spring-plugin-core')
+    compile('org.springframework.hateoas:spring-hateoas')
+
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+
+    testCompile('junit:junit')
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+
+
+    def tomcatVersion = '7.0.59'
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
+}
+
+
+war{
+    baseName = 'itpkg'
+}
+
+tomcat{
+    contextPath = '/'
+}
