@@ -18,7 +18,7 @@ public class AutoSignUpHandler implements ConnectionSignUp {
     public String execute(Connection<?> c) {
         User user = userService.create(c.fetchUserProfile(), c.getKey(), c.createData());
         userService.log(user, i18n.T("log.user.sign_up.success"), Log.Type.INFO);
-        return null;
+        return user.getId();
     }
 
     @Autowired

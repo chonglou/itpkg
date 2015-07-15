@@ -31,6 +31,7 @@ dependencies {
     compile "org.springframework:spring-orm:${springVersion}"
     compile 'org.springframework.data:spring-data-jpa:1.8.1.RELEASE'
     compile 'org.springframework.social:spring-social-facebook:2.0.1.RELEASE'
+    compile 'org.springframework.social:spring-social-security:1.1.2.RELEASE'
     compile 'org.springframework.security:spring-security-core:4.0.1.RELEASE'
 
 

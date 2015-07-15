@@ -15,36 +15,51 @@ import java.util.Date;
  */
 @Service
 public class RoleService {
-    public void set(long user, String name) {
-        set(user, name, null, null, min(), max());
+
+    public boolean check(String user, String name) {
+        return check(user, name, null, null);
     }
 
-    public void set(long user, String name, String rType) {
-        set(user, name, rType, null, min(), max());
+    public boolean check(String user, String name, String rType) {
+        return check(user, name, rType, null);
     }
 
-    public void set(long user, String name, String rType, int rId) {
-        set(user, name, rType, rId, min(), max());
+    public boolean check(String user, String name, String rType, Integer rId) {
+        return roleDao.find(user, name, rType, rId).map((r) -> {
+            Date now = new Date();
+            return now.after(r.getStartUp()) && now.before(r.getShutDown());
+        }).orElse(false);
     }
 
-    public void delete(long user) {
+    public void delete(String user) {
         roleDao.delete(user);
     }
 
-    public void delete(long user, String name) {
+    public void delete(String user, String name) {
         roleDao.delete(user, name);
     }
 
-    public void delete(long user, String name, String rType) {
+    public void delete(String user, String name, String rType) {
         roleDao.delete(user, name, rType);
     }
 
-    public void delete(int user, String name, String rType, Integer rId) {
+    public void delete(String user, String name, String rType, Integer rId) {
         roleDao.delete(user, name, rType, rId);
     }
 
+    public void set(String user, String name) {
+        set(user, name, null, null, min(), max());
+    }
 
-    public void set(long user, String name, String rType, Integer rId, Date startUp, Date shutDown) {
+    public void set(String user, String name, String rType) {
+        set(user, name, rType, null, min(), max());
+    }
+
+    public void set(String user, String name, String rType, int rId) {
+        set(user, name, rType, rId, min(), max());
+    }
+
+    public void set(String user, String name, String rType, Integer rId, Date startUp, Date shutDown) {
         roleDao.find(user, name, rType, rId).map((r) -> {
             r.setStartUp(startUp);
             r.setShutDown(shutDown);

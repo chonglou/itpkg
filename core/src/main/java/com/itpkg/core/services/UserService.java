@@ -24,6 +24,17 @@ import java.util.UUID;
 public class UserService {
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
+    public User findById(String id){
+        return userDao.findOne(id);
+    }
+
+    public void setAccessToken(String user, String accessToken){
+        User u = userDao.findOne(user);
+        u.setAccessToken(accessToken);
+        u.setUpdated(new Date());
+        userDao.save(u);
+    }
+
     public User create(String username, String email, String password) {
         User u = new User();
         u.setUsername(username);

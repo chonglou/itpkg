@@ -1,6 +1,7 @@
 package com.itpkg.core.models;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,8 +19,8 @@ public class User implements Serializable {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @GeneratedValue(generator = "uuid")
+    private String id;
     @Column(nullable = false)
     private Date created;
     @Column(nullable = false)
@@ -64,11 +65,11 @@ public class User implements Serializable {
         this.roles = new ArrayList<>();
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
