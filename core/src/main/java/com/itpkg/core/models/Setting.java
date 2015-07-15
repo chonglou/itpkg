@@ -13,7 +13,7 @@ import java.util.Date;
 public class Setting implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private long id;
     @Column(nullable = false)
     private Date created;

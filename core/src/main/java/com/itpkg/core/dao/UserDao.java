@@ -10,6 +10,6 @@ import java.util.Optional;
  * Created by flamen on 15-7-14.
  */
 
-public interface UserDao extends JpaRepository<User, String> {
+public interface UserDao extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 }

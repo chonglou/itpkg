@@ -12,7 +12,7 @@ import java.util.Date;
 @Table(name = "templates")
 public class Template implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private long id;
     @Column(nullable = false)
     private Date created;

@@ -24,12 +24,12 @@ import java.util.UUID;
 public class UserService {
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    public User findById(String id){
+    public User findById(long id) {
         return userDao.findOne(id);
     }
 
-    public void setAccessToken(String user, String accessToken){
-        User u = userDao.findOne(user);
+    public void setAccessToken(long id, String accessToken) {
+        User u = userDao.findOne(id);
         u.setAccessToken(accessToken);
         u.setUpdated(new Date());
         userDao.save(u);

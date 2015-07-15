@@ -12,27 +12,27 @@ import java.util.Optional;
  */
 public interface RoleDao extends JpaRepository<Role, Long> {
     @Query(value = "select r from Role r where r.user.id=:userId and r.name=:name and r.rType=:rType and r.rId=:rId")
-    Optional<Role> find(@Param("userId") String userId,
+    Optional<Role> find(@Param("userId") long userId,
                         @Param("name") String name,
                         @Param("rType") String rType,
                         @Param("rId") Integer rId);
 
     @Query(value = "delete from Role r where r.user.id=:userId and r.name=:name and r.rType=:rType and r.rId=:rId")
-    void delete(@Param("userId") String userId,
+    void delete(@Param("userId") long userId,
                 @Param("name") String name,
                 @Param("rType") String rType,
                 @Param("rId") Integer rId);
 
     @Query(value = "delete from Role r where r.user.id=:userId and r.name=:name and r.rType=:rType")
-    void delete(@Param("userId") String userId,
+    void delete(@Param("userId") long userId,
                 @Param("name") String name,
                 @Param("rType") String rType);
 
     @Query(value = "delete from Role r where r.user.id=:userId and r.name=:name")
-    void delete(@Param("userId") String userId,
+    void delete(@Param("userId") long userId,
                 @Param("name") String name);
 
     @Query(value = "delete from Role r where r.user.id=:userId")
-    void delete(@Param("userId") String userId);
+    void delete(@Param("userId") long userId);
 
 }

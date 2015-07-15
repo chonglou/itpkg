@@ -15,7 +15,7 @@ public class Log implements Serializable {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private long id;
     @ManyToOne
     @JoinColumn

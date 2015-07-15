@@ -1,7 +1,6 @@
 package com.itpkg.core.models;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,11 +15,12 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
-
-
     @Id
-    @GeneratedValue(generator = "uuid")
-    private String id;
+    @GeneratedValue
+//    @GeneratedValue(generator = "uuid")
+//    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @Column(length = 36)
+    private long id;
     @Column(nullable = false)
     private Date created;
     @Column(nullable = false)
@@ -60,16 +60,20 @@ public class User implements Serializable {
     @JsonIgnore
     private List<Role> roles;
 
+    public String getIds() {
+        return Long.toString(id, 6);
+    }
+
     public User() {
         this.logs = new ArrayList<>();
         this.roles = new ArrayList<>();
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -11,7 +11,7 @@ import java.util.Date;
 @Table(name = "roles")
 public class Role implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private long id;
     @Column(nullable = false)
     private Date created;
