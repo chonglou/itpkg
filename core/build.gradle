@@ -10,8 +10,13 @@ dependencies {
     compile 'org.jasypt:jasypt:1.9.2'
 
     compile 'org.slf4j:slf4j-api:1.7.12'
-    compile 'org.hibernate:hibernate-core:4.3.10.Final'
+
     compile 'javax.servlet:javax.servlet-api:3.1.0'
+
+    compile 'org.hibernate:hibernate-core:4.3.10.Final'
+    def bonecpVersion = '0.8.0.RELEASE'
+    compile "com.jolbox:bonecp:${bonecpVersion}"
+    compile "com.jolbox:bonecp-spring:${bonecpVersion}"
 
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.4'
 
@@ -29,4 +34,8 @@ dependencies {
 
 jar{
     baseName = "${appName}-core"
+}
+
+processResources{
+    exclude 'config.properties'
 }

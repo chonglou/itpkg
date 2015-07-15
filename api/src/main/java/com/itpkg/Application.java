@@ -24,7 +24,6 @@ import java.util.Arrays;
 
 @Configuration
 @ComponentScan
-@PropertySource("classpath:config.properties")
 @ImportResource("classpath:spring/*.xml")
 @EnableAutoConfiguration
 public class Application {

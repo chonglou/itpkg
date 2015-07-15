@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class I18nService {
-    public String t(String key, String lang, Object... args) {
-        return templateDao.findByKeyAndLang(key, lang)
+    public String t(String name, String lang, Object... args) {
+        return templateDao.findByNameAndLang(name, lang)
                 .map((t) -> String.format(t.getBody(), args))
-                .orElse(String.format("Translation %s.%s not exists!", key, lang));
+                .orElse(String.format("Translation %s.%s not exists!", name, lang));
     }
 
     @Autowired

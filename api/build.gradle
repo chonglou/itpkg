@@ -17,10 +17,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.hibernate:hibernate-core:4.3.10.Final'
-    def bonecpVersion = '0.8.0.RELEASE'
-    compile "com.jolbox:bonecp:${bonecpVersion}"
-    compile "com.jolbox:bonecp-spring:${bonecpVersion}"
+
 
     compile 'mysql:mysql-connector-java:5.1.36'
     compile 'org.postgresql:postgresql:9.4-1201-jdbc41'
@@ -42,4 +39,10 @@ dependencies {
 
 jar {
     baseName = appName
+}
+
+
+processResources{
+    exclude 'config.properties'
+    exclude 'logback.xml'
 }
