@@ -12,7 +12,7 @@ import java.util.Date;
 public class Role implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
     @Column(nullable = false)
     private Date created;
     @Column(nullable = false)
@@ -24,12 +24,18 @@ public class Role implements Serializable {
     private String name;
     private String rType;
     private Integer rId;
+    @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
+    private Date startUp;
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
+    private Date shutDown;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -79,5 +85,21 @@ public class Role implements Serializable {
 
     public void setrId(Integer rId) {
         this.rId = rId;
+    }
+
+    public Date getStartUp() {
+        return startUp;
+    }
+
+    public void setStartUp(Date startUp) {
+        this.startUp = startUp;
+    }
+
+    public Date getShutDown() {
+        return shutDown;
+    }
+
+    public void setShutDown(Date shutDown) {
+        this.shutDown = shutDown;
     }
 }

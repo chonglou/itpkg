@@ -15,13 +15,11 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
-    public enum Provider {
-        EMAIL, QQ, GMAIL
-    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
     @Column(nullable = false)
     private Date created;
     @Column(nullable = false)
@@ -31,7 +29,10 @@ public class User implements Serializable {
     @Column(nullable = false)
     private String username;
     @Column(nullable = false)
-    private Provider provider;
+    private String providerId;
+    @Column(nullable = false)
+    private String providerUserId;
+    private String accessToken;
     @JsonIgnore
     private String password;
 
@@ -63,11 +64,11 @@ public class User implements Serializable {
         this.roles = new ArrayList<>();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -143,13 +144,27 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    public Provider getProvider() {
-        return provider;
+    public String getProviderId() {
+        return providerId;
     }
 
-    public void setProvider(Provider provider) {
-        this.provider = provider;
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 
+    public String getProviderUserId() {
+        return providerUserId;
+    }
 
+    public void setProviderUserId(String providerUserId) {
+        this.providerUserId = providerUserId;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
 }

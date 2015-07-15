@@ -14,7 +14,7 @@ public class Setting implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
     @Column(nullable = false)
     private Date created;
     @Column(nullable = false)
@@ -28,11 +28,11 @@ public class Setting implements Serializable {
 
     private boolean encode;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

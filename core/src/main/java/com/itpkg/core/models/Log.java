@@ -16,7 +16,7 @@ public class Log implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
     @ManyToOne
     @JoinColumn
     private User user;
@@ -43,12 +43,11 @@ public class Log implements Serializable {
         this.type = type;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

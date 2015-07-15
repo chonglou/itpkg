@@ -23,30 +23,20 @@ public class SiteController {
         switch (name) {
             case "title":
             case "copyright":
-                return i18n.t("site." + name, "en-US");
+                return i18n.T("site." + name);
             default:
                 return name;
         }
     }
 
     @Autowired
-    private UserService userService;
+    UserService userService;
 
     @Autowired
-    private I18nService i18n;
+    I18nService i18n;
 
     @Autowired
-    private SettingService settingService;
+    SettingService settingService;
 
-    public void setI18n(I18nService i18n) {
-        this.i18n = i18n;
-    }
 
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
-    public void setSettingService(SettingService settingService) {
-        this.settingService = settingService;
-    }
 }

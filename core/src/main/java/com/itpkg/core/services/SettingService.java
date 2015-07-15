@@ -66,21 +66,10 @@ public class SettingService {
 
 
     @Autowired
-    private SettingDao settingDao;
+    SettingDao settingDao;
     @Autowired
-    private EncryptHelper encryptHelper;
+    EncryptHelper encryptHelper;
     @Autowired
-    private JsonHelper jsonHelper;
+    JsonHelper jsonHelper;
 
-    public void setJsonHelper(JsonHelper jsonHelper) {
-        this.jsonHelper = jsonHelper;
-    }
-
-    public void setEncryptHelper(EncryptHelper encryptHelper) {
-        this.encryptHelper = encryptHelper;
-    }
-
-    public void setSettingDao(SettingDao settingDao) {
-        this.settingDao = settingDao;
-    }
 }

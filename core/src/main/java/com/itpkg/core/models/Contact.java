@@ -12,7 +12,7 @@ import java.util.Date;
 public class Contact implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
     @Column(nullable = false)
     private Date created;
     @Column(nullable = false)
@@ -34,11 +34,11 @@ public class Contact implements Serializable {
     @Lob
     private String details;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

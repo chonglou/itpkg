@@ -65,17 +65,16 @@ public class Application {
 //        });
 //    }
 
-    @Bean
-    CommandLineRunner init(UserService userService,
-                           SettingService settingService) {
-        logger.info("Start application");
-        return (evt) -> Arrays.asList(
-                "root,admin".split(","))
-                .forEach(
-                        a -> {
-
-                        });
-    }
+//    @Bean
+//    CommandLineRunner init(UserService userService,
+//                           SettingService settingService) {
+//        return (evt) -> Arrays.asList(
+//                "root,admin".split(","))
+//                .forEach(
+//                        a -> {
+//
+//                        });
+//    }
 
 
     public static void main(String[] args) {

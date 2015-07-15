@@ -65,26 +65,15 @@ public class EncryptHelper {
     }
 
     @Value("${secret.encryptor}")
-    private String encryptorKey;
+    String encryptorKey;
     @Value("${secret.token}")
-    private String tokenKeyS;
+    String tokenKeyS;
     @Autowired
-    private JsonHelper jsonHelper;
+    JsonHelper jsonHelper;
 
 
     private PasswordEncryptor passwordEncryptor;
     private StrongTextEncryptor textEncryptor;
     private Key tokenKey;
 
-    public void setJsonHelper(JsonHelper jsonHelper) {
-        this.jsonHelper = jsonHelper;
-    }
-
-    public void setEncryptorKey(String encryptorKey) {
-        this.encryptorKey = encryptorKey;
-    }
-
-    public void setTokenKeyS(String tokenKeyS) {
-        this.tokenKeyS = tokenKeyS;
-    }
 }
