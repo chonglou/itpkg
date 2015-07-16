@@ -1,22 +1,14 @@
 package com.itpkg.core.models;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Created by flamen on 15-7-14.
  */
 @Entity
 @Table(name = "contacts")
-public class Contact implements Serializable {
-    @Id
-    @GeneratedValue
-    private long id;
-    @Column(nullable = false)
-    private Date created;
-    @Column(nullable = false)
-    private Date updated;
+public class Contact extends IdEntity {
+
     @OneToOne
     @JoinColumn
     private User user;
@@ -34,29 +26,6 @@ public class Contact implements Serializable {
     @Lob
     private String details;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public Date getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(Date updated) {
-        this.updated = updated;
-    }
 
     public User getUser() {
         return user;

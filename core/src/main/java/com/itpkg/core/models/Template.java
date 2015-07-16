@@ -1,8 +1,9 @@
 package com.itpkg.core.models;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.Table;
 
 /**
  * Created by flamen on 15-7-14.
@@ -10,14 +11,8 @@ import java.util.Date;
 
 @Entity
 @Table(name = "templates")
-public class Template implements Serializable {
-    @Id
-    @GeneratedValue
-    private long id;
-    @Column(nullable = false)
-    private Date created;
-    @Column(nullable = false)
-    private Date updated;
+public class Template extends IdEntity {
+
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
@@ -25,31 +20,6 @@ public class Template implements Serializable {
     private String body;
     @Column(nullable = false, length = 5)
     private String lang;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public Date getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(Date updated) {
-        this.updated = updated;
-    }
-
 
     public String getName() {
         return name;

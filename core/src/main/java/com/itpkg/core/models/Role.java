@@ -1,7 +1,6 @@
 package com.itpkg.core.models;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,14 +8,8 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "roles")
-public class Role implements Serializable {
-    @Id
-    @GeneratedValue
-    private long id;
-    @Column(nullable = false)
-    private Date created;
-    @Column(nullable = false)
-    private Date updated;
+public class Role extends IdEntity {
+
     @ManyToOne
     @JoinColumn
     private User user;
@@ -30,30 +23,6 @@ public class Role implements Serializable {
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date shutDown;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public Date getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(Date updated) {
-        this.updated = updated;
-    }
 
     public User getUser() {
         return user;

@@ -3,7 +3,6 @@ package com.itpkg.core.models;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,17 +13,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
-    @Id
-    @GeneratedValue
-//    @GeneratedValue(generator = "uuid")
-//    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @Column(length = 36)
-    private long id;
-    @Column(nullable = false)
-    private Date created;
-    @Column(nullable = false)
-    private Date updated;
+public class User extends IdEntity {
+
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)
@@ -61,7 +51,7 @@ public class User implements Serializable {
     private List<Role> roles;
 
     public String getIds() {
-        return Long.toString(id, 6);
+        return Long.toString(this.getId(), 6);
     }
 
     public User() {
@@ -69,29 +59,6 @@ public class User implements Serializable {
         this.roles = new ArrayList<>();
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public Date getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(Date updated) {
-        this.updated = updated;
-    }
 
     public List<Role> getRoles() {
         return roles;
