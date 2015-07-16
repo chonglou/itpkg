@@ -1,10 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <!--<context:component-scan base-package="com.itpkg"/>-->
-    <!--<mvc:annotation-driven/>-->
-    <!--<context:annotation-config/>-->
-    <!--<context:property-placeholder location="classpath:config.properties"/>-->
+
+    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="mediaTypes">
+            <map>
+                <entry key="json" value="application/json;charset=UTF-8"/>
+                <entry key="js" value="application/javascript;charset=UTF-8"/>
+                <entry key="xml" value="application/xml;charset=UTF-8"/>
+                <entry key="html" value="text/html;charset=UTF-8"/>
+                <entry key="txt" value="text/plain;charset=UTF-8"/>
+            </map>
+        </property>
+        <property name="defaultContentType" value="application/html;charset=UTF-8" />
+
+        <!--/item.json-->
+        <property name="favorPathExtension" value="true"/>
+        <!--/item?format=json-->
+        <property name="favorParameter" value="true"/>
+        <property name="parameterName" value="format"/>
+
+        <property name="ignoreAcceptHeader" value="true"/>
+
+    </bean>
+
+    <bean id="contentNegotiatingViewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="order" value="1"/>
+
+        <property name="contentNegotiationManager" ref="contentNegotiationManager"/>
+        <property name="viewResolvers">
+            <list>
+
+            </list>
+        </property>
+        <property name="defaultViews">
+            <list>
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+                <bean class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+        <property name="order" value="1"/>
+    </bean>
+
+    <mvc:annotation-driven content-negotiation-manager= "contentNegotiationManager"/>
 </beans>

@@ -27,7 +27,7 @@ dependencies {
     compile "com.jolbox:bonecp:${bonecpVersion}"
     compile "com.jolbox:bonecp-spring:${bonecpVersion}"
 
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.4'
+    compile "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
 
     compile 'org.springframework.security.oauth:spring-security-oauth2:2.0.7.RELEASE'
     compile 'org.springframework.hateoas:spring-hateoas:0.17.0.RELEASE'
