@@ -15,6 +15,9 @@ dependencies {
 
     def undertowVersion = '1.2.8.Final'
     compile "io.undertow:undertow-core:${undertowVersion}"
+    compile "org.eclipse.jetty:jetty-server:${jettyVersion}"
+    compile "org.eclipse.jetty:jetty-servlet:${jettyVersion}"
+    //compile "org.eclipse.jetty:jetty-webapp:#{jettyVersion}"
 
 
 

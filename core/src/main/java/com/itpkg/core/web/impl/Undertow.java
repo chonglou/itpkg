@@ -1,33 +1,22 @@
-package com.itpkg.core;
+package com.itpkg.core.web.impl;
 
-import io.undertow.Undertow;
+import com.itpkg.core.web.Server;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
 /**
  * Created by flamen on 15-7-16.
  */
-@Component
-public class Server {
-    private static final Logger logger = LoggerFactory.getLogger(Server.class);
+public class Undertow extends Server {
+    private static final Logger logger = LoggerFactory.getLogger(Undertow.class);
 
-    @PreDestroy
-    void destroy() {
-        undertow.stop();
-        logger.info("Stop application!!!");
-    }
-
-    @PostConstruct
-    void init() {
+    @Override
+    public void start() {
         logger.info("Start application....");
-        undertow = Undertow.builder().addHttpListener(8080, "localhost").setHandler(new HttpHandler() {
+        undertow = io.undertow.Undertow.builder().addHttpListener(port, host).setHandler(new HttpHandler() {
             @Override
             public void handleRequest(HttpServerExchange exchange) throws Exception {
                 exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
@@ -37,5 +26,13 @@ public class Server {
         undertow.start();
     }
 
-    private Undertow undertow;
+    @Override
+    public void stop() {
+        undertow.stop();
+        logger.info("Stop application!!!");
+    }
+
+    private io.undertow.Undertow undertow;
+
+
 }

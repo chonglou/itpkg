@@ -1,6 +1,6 @@
 package com.itpkg.core.controllers;
 
-import com.itpkg.core.UserNotFoundException;
+import com.itpkg.core.errors.UserNotFoundException;
 import org.springframework.hateoas.VndErrors;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

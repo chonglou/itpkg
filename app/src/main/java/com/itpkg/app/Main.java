@@ -1,5 +1,7 @@
 package com.itpkg.app;
 
+import com.itpkg.core.web.Server;
+import com.itpkg.core.web.impl.Jetty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -12,9 +14,10 @@ public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
-        // AnnotationConfigApplicationContext(Application.class);
-        AbstractApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:spring/*.xml");
-        ctx.registerShutdownHook();
+        Server server = new Jetty();
+        server.init();
+
+            server.start();
 
     }
 }
