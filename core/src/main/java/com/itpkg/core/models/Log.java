@@ -1,6 +1,11 @@
 package com.itpkg.core.models;
 
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -9,6 +14,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "logs")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Log implements Serializable {
     public enum Type {
         INFO

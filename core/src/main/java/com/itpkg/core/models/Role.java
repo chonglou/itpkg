@@ -1,6 +1,11 @@
 package com.itpkg.core.models;
 
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -8,6 +13,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "roles")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Role extends IdEntity {
 
     @ManyToOne

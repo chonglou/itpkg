@@ -1,5 +1,8 @@
 package com.itpkg.core.models;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
@@ -11,6 +14,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "settings")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Setting extends IdEntity {
 
 

@@ -1,8 +1,12 @@
 package com.itpkg.core.models;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +17,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User extends IdEntity {
 
     @Column(nullable = false)

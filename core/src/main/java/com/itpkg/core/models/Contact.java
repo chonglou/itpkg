@@ -1,12 +1,18 @@
 package com.itpkg.core.models;
 
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * Created by flamen on 15-7-14.
  */
 @Entity
 @Table(name = "contacts")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Contact extends IdEntity {
 
     @OneToOne
