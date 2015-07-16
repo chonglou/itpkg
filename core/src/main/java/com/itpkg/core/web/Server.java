@@ -1,38 +1,28 @@
 package com.itpkg.core.web;
 
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.web.context.WebApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 /**
  * Created by flamen on 15-7-16.
  */
 public abstract class Server {
+    private static final Logger logger = LoggerFactory.getLogger(Server.class);
 
-    public abstract void start();
-    public abstract void stop() ;
+    public abstract void start(String host, int port) throws Exception;
 
-    public void init(){
-//        context = new AnnotationConfigWebApplicationContext();
-//        context.setConfigLocation();
-//        ClassPathXmlc
-//                ((AbstractApplicationContext) context).registerShutdownHook();
-        //protected WebApplicationContext context;
+    public abstract void stop() throws Exception;
+
+    public void init(String env) {
+        context = new AnnotationConfigWebApplicationContext();
+        context.setConfigLocation("com.itpkg.core.web.config");
+        context.getEnvironment().setDefaultProfiles(env);
+        context.registerShutdownHook();
     }
-    protected String host;
-    protected int port;
+
     protected final String CONTEXT_PATH = "/";
     protected final String MAPPING_URL = "/*";
-    protected final String DISPATCHER_NAME="dispatcher";
-
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
+    protected AnnotationConfigWebApplicationContext context;
 
 }

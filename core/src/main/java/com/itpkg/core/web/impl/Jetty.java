@@ -7,7 +7,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
 /**
@@ -15,39 +14,26 @@ import org.springframework.web.servlet.DispatcherServlet;
  */
 public class Jetty extends com.itpkg.core.web.Server {
     private static final Logger logger = LoggerFactory.getLogger(Jetty.class);
+
     @Override
-    public void start(){
-        ServletHolder holder = new ServletHolder(DISPATCHER_NAME, new DispatcherServlet());
-        holder.setInitParameter("contextConfigLocation", "classpath*:spring/*.xml");
+    public void start(String host, int port) throws Exception {
 
         ServletContextHandler handler = new ServletContextHandler();
         handler.setContextPath(CONTEXT_PATH);
-        handler.addServlet(holder, MAPPING_URL);
-        
-        //handler.addEventListener();
+        handler.addServlet(new ServletHolder(new DispatcherServlet(context)), MAPPING_URL);
+        handler.addEventListener(new ContextLoaderListener(context));
 
         server = new Server(port);
         server.setHandler(handler);
-        try {
-            server.start();
-            server.join();
-        }
-        catch (InterruptedException e){
-            logger.info("Exit...");
-        }
-        catch (Exception e){
-            logger.error("Start jetty failed!", e);
-        }
+
+        server.start();
+        server.join();
+
     }
 
     @Override
-    public void stop(){
-        try{
-            server.stop();
-        }
-        catch (Exception e){
-            logger.error("Stop jetty failed!", e);
-        }
+    public void stop() throws Exception {
+        server.stop();
     }
 
     private Server server;

@@ -14,7 +14,7 @@ public class Undertow extends Server {
     private static final Logger logger = LoggerFactory.getLogger(Undertow.class);
 
     @Override
-    public void start() {
+    public void start(String host, int port) {
         logger.info("Start application....");
         undertow = io.undertow.Undertow.builder().addHttpListener(port, host).setHandler(new HttpHandler() {
             @Override
