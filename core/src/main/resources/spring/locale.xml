@@ -8,6 +8,7 @@
                 <value>classpath:locales/log</value>
                 <value>classpath:locales/email</value>
                 <value>classpath:locales/error</value>
+                <value>classpath:locales/message</value>
             </list>
         </property>
         <property name="defaultEncoding" value="UTF-8"/>
@@ -21,7 +22,7 @@
     </bean>
 
     <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-        <property name="paramName" value="lang"/>
+        <property name="paramName" value="locale"/>
     </bean>
 
     <mvc:interceptors>

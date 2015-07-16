@@ -33,6 +33,8 @@ dependencies {
     compile 'org.springframework.social:spring-social-facebook:2.0.1.RELEASE'
     compile 'org.springframework.social:spring-social-security:1.1.2.RELEASE'
     compile 'org.springframework.security:spring-security-core:4.0.1.RELEASE'
+    compile 'org.springframework.security:spring-security-jwt:1.0.3.RELEASE'
+
 
 
 
