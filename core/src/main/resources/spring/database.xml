@@ -1,41 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
-    <context:property-placeholder location="classpath:config.properties"/>
+    <jpa:repositories base-package="com.itpkg.*.dao"/>
 
     <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
         <property name="driverClass" value="${database.driver}"/>
         <property name="jdbcUrl" value="${database.url}"/>
         <property name="username" value="${database.username}"/>
         <property name="password" value="${database.password}"/>
-        <property name="maxConnectionsPerPartition" value="30"/>
-        <property name="minConnectionsPerPartition" value="10"/>
+        <property name="maxConnectionsPerPartition" value="${database.poll.max:30}"/>
+        <property name="minConnectionsPerPartition" value="${database.poll.min:10}"/>
         <property name="partitionCount" value="3"/>
         <property name="acquireIncrement" value="5"/>
         <property name="statementsCacheSize" value="100"/>
     </bean>
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    <!-- ====================== for jap ====================== -->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="packagesToScan" value="com.itpkg.**.models"/>
-        <property name="hibernateProperties">
-            <value>
-                hibernate.dialect=${database.dialect}
-                hibernate.hbm2ddl.auto=${database.mode}
-                hibernate.show_sql=${database.show_sql}
-            </value>
+        <property name="packagesToScan" value="com.itpkg.*.models"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">${database.dialect}</prop>
+                <prop key="hibernate.hbm2ddl.auto">${database.mode}</prop>
+                <prop key="hibernate.show_sql">${database.show_sql}</prop>
+            </props>
         </property>
     </bean>
-
-
-    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
+    <!-- ===================== for session factory================== -->
+    <!--<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">-->
+    <!--<property name="dataSource" ref="dataSource"/>-->
+    <!--<property name="packagesToScan" value="com.itpkg.**.models"/>-->
+    <!--<property name="hibernateProperties">-->
+    <!--<value>-->
+    <!--hibernate.dialect=${database.dialect}-->
+    <!--hibernate.hbm2ddl.auto=${database.mode}-->
+    <!--hibernate.show_sql=${database.show_sql}-->
+    <!--</value>-->
+    <!--</property>-->
+    <!--</bean>-->
+    <!--<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">-->
+    <!--<property name="sessionFactory" ref="sessionFactory"/>-->
+    <!--</bean>-->
+
+    <!-- ========================== translation ===================== -->
     <aop:config>
         <aop:pointcut id="serviceMethods" expression="execution(* com.itpkg.*.services.*(..))"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>
