@@ -6,6 +6,7 @@ mainClassName = 'com.itpkg.app.Main'
 
 repositories {
     mavenCentral()
+    maven { url "http://repository.pentaho.org/artifactory/repo/" }
 }
 
 dependencies {

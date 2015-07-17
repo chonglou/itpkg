@@ -3,6 +3,7 @@ apply plugin: 'idea'
 
 repositories {
     mavenCentral()
+    maven { url "http://repository.pentaho.org/artifactory/repo/" }
 }
 
 dependencies {
@@ -22,15 +23,23 @@ dependencies {
 
     compile "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
 
-    compile 'org.springframework.security.oauth:spring-security-oauth2:2.0.7.RELEASE'
+    compile 'net.sf.jasperreports:jasperreports:6.1.0'
+    compile 'com.lowagie:itext:4.2.2'
+    compile 'org.olap4j:olap4j:1.2.0'
+
     compile 'org.springframework.hateoas:spring-hateoas:0.17.0.RELEASE'
 
 
     def springVersion = '4.1.7.RELEASE'
+    compile "org.springframework:spring-web:${springVersion}"
     compile "org.springframework:spring-webmvc:${springVersion}"
     compile "org.springframework:spring-orm:${springVersion}"
     compile 'org.springframework.data:spring-data-jpa:1.8.1.RELEASE'
+
+    compile 'org.springframework.social:spring-social-core:1.1.2.RELEASE'
     compile 'org.springframework.social:spring-social-facebook:2.0.1.RELEASE'
+
+    compile 'org.springframework.security.oauth:spring-security-oauth2:2.0.7.RELEASE'
     compile 'org.springframework.social:spring-social-security:1.1.2.RELEASE'
     compile 'org.springframework.security:spring-security-core:4.0.1.RELEASE'
     compile 'org.springframework.security:spring-security-jwt:1.0.3.RELEASE'

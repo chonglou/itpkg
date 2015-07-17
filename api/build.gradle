@@ -15,6 +15,7 @@ apply plugin: 'com.bmuschko.cargo'
 
 repositories {
     mavenCentral()
+    maven { url "http://repository.pentaho.org/artifactory/repo/" }
 }
 
 dependencies {

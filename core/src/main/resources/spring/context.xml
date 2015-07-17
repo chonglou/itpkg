@@ -12,8 +12,13 @@
                 <entry key="xml" value="application/xml"/>
                 <entry key="html" value="text/html"/>
                 <entry key="txt" value="text/plain"/>
+
                 <entry key="fm" value="text/html"/>
                 <entry key="dlg" value="text/html"/>
+
+                <entry key="pdf" value="application/pdf"/>
+                <entry key="xls" value="application/vnd.ms-excel"/>
+                <entry key="csv" value="text/csv"/>
             </map>
         </property>
         <property name="defaultContentType" value="application/html"/>
@@ -35,7 +40,7 @@
         <property name="contentNegotiationManager" ref="contentNegotiationManager"/>
         <property name="viewResolvers">
             <list>
-
+                <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
             </list>
         </property>
         <property name="defaultViews">
@@ -46,13 +51,13 @@
                 <bean class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView">
                     <property name="disableCaching" value="false"/>
                 </bean>
+                <bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsCsvView"/>
+                <bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"/>
+                <bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsXlsView"/>
             </list>
         </property>
     </bean>
 
-    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
-        <property name="order" value="1"/>
-    </bean>
 
     <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager"/>
 </beans>

@@ -55,14 +55,14 @@ import java.util.*;
  * {@link java.util.Properties} instances as its custom data structure for messages, loading them
  * via a {@link org.springframework.util.PropertiesPersister} strategy: The default strategy is
  * capable of loading properties files with a specific character encoding, if desired.
- *
+ * <p>
  * <p>In contrast to {@link ResourceBundleMessageSource}, this class supports reloading of
  * properties files through the {@link #setCacheSeconds "cacheSeconds"} setting, and also through
  * programmatically clearing the properties cache. Since application servers typically cache all
  * files loaded from the classpath, it is necessary to store resources somewhere else (for example,
  * in the "WEB-INF" directory of a web app). Otherwise changes of files in the classpath will
  * <i>not</i> be reflected in the application.
- *
+ * <p>
  * <p>Note that the base names set as {@link #setBasenames "basenames"} property are treated in a
  * slightly different fashion than the "basenames" property of
  * {@link ResourceBundleMessageSource}. It follows the basic ResourceBundle rule of not specifying
@@ -70,22 +70,22 @@ import java.util.*;
  * restricted to classpath resources). With a "classpath:" prefix, resources can still be loaded
  * from the classpath, but "cacheSeconds" values other than "-1" (caching forever) will not work in
  * this case.
- *
+ * <p>
  * <p>This MessageSource implementation is usually slightly faster than
  * {@link ResourceBundleMessageSource}, which builds on {@link java.util.ResourceBundle} - in the
  * default mode, i.e. when caching forever. With "cacheSeconds" set to 1, message lookup takes about
  * twice as long - with the benefit that changes in individual properties files are detected with a
  * maximum delay of 1 second. Higher "cacheSeconds" values usually <i>do not</i> make a significant
  * difference.
- *
+ * <p>
  * <p>This MessageSource can easily be used outside of an
  * {@link org.springframework.context.ApplicationContext}: It will use a
  * {@link org.springframework.core.io.DefaultResourceLoader} as default, simply getting overridden
  * with the ApplicationContext's resource loader if running in a context. It does not have any other
  * specific dependencies.
- *
+ * <p>
  * <p>Thanks to Thomas Achleitner for providing the initial implementation of this message source!
- *
+ * <p>
  * <p>The changes introduced by Lucio Benfante for the Parancoe Team are for supporting a
  * {@link ResourcePatternResolver} as ResourceLoader. This class support classpath*: patterns.
  *
@@ -194,8 +194,8 @@ public class ReloadableResourceBundleMessageSource extends AbstractMessageSource
      * properties files, not to XML files.
      *
      * @param fileEncodings Properties with filenames as keys and charset names as values. Filenames
-     * have to match the basename syntax, with optional locale-specific appendices: e.g.
-     * "WEB-INF/messages" or "WEB-INF/messages_en".
+     *                      have to match the basename syntax, with optional locale-specific appendices: e.g.
+     *                      "WEB-INF/messages" or "WEB-INF/messages_en".
      * @see #setBasenames
      * @see org.springframework.util.PropertiesPersister#load
      */
@@ -354,7 +354,7 @@ public class ReloadableResourceBundleMessageSource extends AbstractMessageSource
      * for the given Locale, the system Locale (if applicable), and the default file.
      *
      * @param basename the basename of the bundle
-     * @param locale the locale
+     * @param locale   the locale
      * @return the List of filenames to check
      * @see #setFallbackToSystemLocale
      * @see #calculateFilenamesForLocale
@@ -398,7 +398,7 @@ public class ReloadableResourceBundleMessageSource extends AbstractMessageSource
      * "messages_de_AT_OO", "messages_de_AT", "messages_de". <p>Follows the rules defined by {@link java.util.Locale#toString()}.
      *
      * @param basename the basename of the bundle
-     * @param locale the locale
+     * @param locale   the locale
      * @return the List of filenames to check
      */
     protected List<String> calculateFilenamesForLocale(String basename, Locale locale) {
@@ -452,7 +452,7 @@ public class ReloadableResourceBundleMessageSource extends AbstractMessageSource
      * <code>null</code> if not cached before, or a timed-out cache entry (potentially getting
      * re-validated against the current last-modified timestamp).
      *
-     * @param filename the bundle filename (basename + Locale)
+     * @param filename   the bundle filename (basename + Locale)
      * @param propHolder the current PropertiesHolder for the bundle
      */
     protected ReloadableResourceBundleMessageSource.PropertiesHolder refreshProperties(
