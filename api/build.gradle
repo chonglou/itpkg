@@ -38,7 +38,9 @@ war {
     baseName = appName
 }
 
-//jetty {
-//    contextPath: '/'
-//    httpPort: 8080
-//}
+jettyRun {
+    contextPath= ''
+    httpPort = 8080
+    reload = 'automatic'
+    scanIntervalSeconds = 1
+}
