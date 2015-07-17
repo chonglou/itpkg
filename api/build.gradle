@@ -36,6 +36,13 @@ dependencies {
     runtime "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
 
     compile project(':core')
+    compile project(':cms')
+    compile project(':email')
+    compile project(':forum')
+    compile project(':ops')
+    compile project(':shop')
+    compile project(':teamwork')
+    compile project(':wiki')
 
     //======================= test =============================
     testCompile('junit:junit')
