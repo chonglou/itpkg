@@ -1,7 +1,6 @@
 package com.itpkg.app;
 
-import com.itpkg.core.web.Server;
-import com.itpkg.core.web.impl.Jetty;
+import com.itpkg.app.impl.Jetty;
 
 /**
  * Created by flamen on 15-7-16.

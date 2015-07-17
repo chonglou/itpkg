@@ -1,4 +1,4 @@
-package com.itpkg.core.web.config;
+package com.itpkg.core.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

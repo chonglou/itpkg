@@ -7,14 +7,16 @@
     <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
         <property name="mediaTypes">
             <map>
-                <entry key="json" value="application/json;charset=UTF-8"/>
-                <entry key="js" value="application/javascript;charset=UTF-8"/>
-                <entry key="xml" value="application/xml;charset=UTF-8"/>
-                <entry key="html" value="text/html;charset=UTF-8"/>
-                <entry key="txt" value="text/plain;charset=UTF-8"/>
+                <entry key="json" value="application/json"/>
+                <entry key="js" value="application/javascript"/>
+                <entry key="xml" value="application/xml"/>
+                <entry key="html" value="text/html"/>
+                <entry key="txt" value="text/plain"/>
+                <entry key="fm" value="text/html"/>
+                <entry key="dlg" value="text/html"/>
             </map>
         </property>
-        <property name="defaultContentType" value="application/html;charset=UTF-8" />
+        <property name="defaultContentType" value="application/html"/>
 
         <!--/item.json-->
         <property name="favorPathExtension" value="true"/>
@@ -26,7 +28,8 @@
 
     </bean>
 
-    <bean id="contentNegotiatingViewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+    <bean id="contentNegotiatingViewResolver"
+          class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
         <property name="order" value="1"/>
 
         <property name="contentNegotiationManager" ref="contentNegotiationManager"/>
@@ -37,8 +40,12 @@
         </property>
         <property name="defaultViews">
             <list>
-                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
-                <bean class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView"/>
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+                    <property name="disableCaching" value="false"/>
+                </bean>
+                <bean class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView">
+                    <property name="disableCaching" value="false"/>
+                </bean>
             </list>
         </property>
     </bean>
@@ -47,5 +54,5 @@
         <property name="order" value="1"/>
     </bean>
 
-    <mvc:annotation-driven content-negotiation-manager= "contentNegotiationManager"/>
+    <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager"/>
 </beans>

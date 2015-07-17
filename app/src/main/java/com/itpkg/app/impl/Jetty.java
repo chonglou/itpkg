@@ -1,4 +1,4 @@
-package com.itpkg.core.web.impl;
+package com.itpkg.app.impl;
 
 
 import org.eclipse.jetty.server.Server;
@@ -12,7 +12,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 /**
  * Created by flamen on 15-7-16.
  */
-public class Jetty extends com.itpkg.core.web.Server {
+public class Jetty extends com.itpkg.app.Server {
     private static final Logger logger = LoggerFactory.getLogger(Jetty.class);
 
     @Override

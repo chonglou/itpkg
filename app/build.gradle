@@ -10,6 +10,12 @@ repositories {
 
 dependencies {
 
+    def undertowVersion = '1.2.8.Final'
+    compile "io.undertow:undertow-core:${undertowVersion}"
+    def jettyVersion='9.3.0.M2'
+    compile "org.eclipse.jetty:jetty-server:${jettyVersion}"
+    compile "org.eclipse.jetty:jetty-servlet:${jettyVersion}"
+
     runtime 'mysql:mysql-connector-java:5.1.36'
     runtime 'org.postgresql:postgresql:9.4-1201-jdbc41'
     runtime 'org.apache.derby:derby:10.11.1.1'

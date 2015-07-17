@@ -1,6 +1,6 @@
-package com.itpkg.core.web.impl;
+package com.itpkg.app.impl;
 
-import com.itpkg.core.web.Server;
+import com.itpkg.app.Server;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;

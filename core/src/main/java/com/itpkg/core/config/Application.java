@@ -1,13 +1,8 @@
-package com.itpkg.core.web.config;
+package com.itpkg.core.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
-import org.springframework.web.filter.CharacterEncodingFilter;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterRegistration;
 
 /**
  * Created by flamen on 15-7-16.
@@ -16,5 +11,12 @@ import javax.servlet.FilterRegistration;
 @ComponentScan(basePackages = "com.itpkg")
 @ImportResource("classpath*:spring/*.xml")
 public class Application {
+//    @Bean
+//    Filter encodingFilter(){
+//        CharacterEncodingFilter f = new CharacterEncodingFilter();
+//        f.setEncoding("UTF-8");
+//        f.setForceEncoding(true);
+//        return f;
+//    }
 
 }

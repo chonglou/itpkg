@@ -1,4 +1,4 @@
-package com.itpkg.core.web;
+package com.itpkg.app;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ public abstract class Server {
 
     public void init(String env) {
         context = new AnnotationConfigWebApplicationContext();
-        context.setConfigLocation("com.itpkg.core.web.config");
+        context.setConfigLocation("com.itpkg.core.config");
         context.getEnvironment().setDefaultProfiles(env);
         context.registerShutdownHook();
     }
