@@ -1,16 +1,7 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath('org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE')
-    }
-}
-
 apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'jetty'
 apply plugin: 'idea'
-apply plugin: 'spring-boot'
-
 
 repositories {
     mavenCentral()
@@ -18,30 +9,36 @@ repositories {
 
 dependencies {
 
+    //============ runtime============================================
+    runtime 'mysql:mysql-connector-java:5.1.36'
+    runtime 'org.postgresql:postgresql:9.4-1201-jdbc41'
+    runtime 'org.apache.derby:derby:10.11.1.1'
 
-    compile 'mysql:mysql-connector-java:5.1.36'
-    compile 'org.postgresql:postgresql:9.4-1201-jdbc41'
-    compile 'org.apache.derby:derby:10.11.1.1'
-    compile 'org.xerial:sqlite-jdbc:3.8.10.1'
+    def ehcacheVersion = '2.6.11'
+    runtime "net.sf.ehcache:ehcache-core:${ehcacheVersion}"
 
-    compile 'ch.qos.logback:logback-classic:1.1.3'
+    runtime "org.hibernate:hibernate-entitymanager:${hibernateVersion}"
+    runtime "org.hibernate:hibernate-ehcache:${hibernateVersion}"
 
-    compile('org.springframework.boot:spring-boot-autoconfigure')
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.springframework.boot:spring-boot-starter-data-rest')
-    compile('org.springframework.boot:spring-boot-starter-data-jpa')
-    compile('org.springframework.boot:spring-boot-starter-security')
-    compile('org.springframework.boot:spring-boot-starter-social-facebook')
+    runtime 'ch.qos.logback:logback-classic:1.1.3'
+    runtime 'org.aspectj:aspectjweaver:1.8.6'
+
+    runtime "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
 
     compile project(':core')
+
+    //======================= test =============================
 
     testCompile('junit:junit')
 
 }
 
 
-jar {
+war {
     baseName = appName
-    exclude 'config.properties'
-    exclude 'logback.xml'
 }
+
+//jetty {
+//    contextPath: '/'
+//    httpPort: 8080
+//}
