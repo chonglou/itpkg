@@ -19,7 +19,7 @@ dependencies {
 
     //============ runtime============================================
     runtime "mysql:mysql-connector-java:${mysqlVersion}"
-    runtime 'org.postgresql:postgresql:9.4-1201-jdbc41'
+    runtime "org.postgresql:postgresql:${postgresqlVersion}"
     runtime 'org.apache.derby:derby:10.11.1.1'
 
     def ehcacheVersion = '2.6.11'

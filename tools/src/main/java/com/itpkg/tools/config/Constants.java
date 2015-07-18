@@ -9,4 +9,6 @@ public final class Constants {
 
     public final static String APP_NAME = "itpkg";
     public final static String APP_TITLE = "IT-PACKAGE";
+    public final static String SUCCESS = "done!";
+    public final static String FAILED = "failed...";
 }

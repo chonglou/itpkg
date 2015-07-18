@@ -11,13 +11,17 @@ repositories {
 
 dependencies {
 
-    runtime "mysql:mysql-connector-java:${mysqlVersion}"
-    runtime "ch.qos.logback:logback-classic:${logbackVersion}"
+    compile "com.jolbox:bonecp:${bonecpVersion}"
+
+    compile "mysql:mysql-connector-java:${mysqlVersion}"
+    compile "org.postgresql:postgresql:${postgresqlVersion}"
 
     compile "org.springframework:spring-jdbc:${springVersion}"
     compile 'org.springframework.shell:spring-shell:1.1.0.RELEASE'
 
     compile "org.slf4j:slf4j-api:${slf4jVersion}"
+
+    runtime "ch.qos.logback:logback-classic:${logbackVersion}"
 
     testCompile('junit:junit')
 }
