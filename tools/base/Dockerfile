@@ -5,11 +5,12 @@ RUN pacman-key --populate archlinux
 RUN pacman-key --refresh-keys
 RUN pacman -Syu --noconfirm
 RUN pacman-db-upgrade
-RUN pacman -S --needed --noconfirm openssh percona-server percona-server-clients postfix dovecot net-tools pwgen expect vim
+RUN pacman -S --needed --noconfirm openssh net-tools vim nginx
 RUN pacman -Scc --noconfirm
 RUN cp /usr/share/vim/vim74/vimrc_example.vim ~/.vimrc
-RUN for s in sshd mysqld postfix dovecot; do systemctl enable $s; done
-#RUN sed -i "s/#PermitRootLogin/PermitRootLogin/g" /etc/ssh/sshd_config 
+RUN systemctl enable sshd
+RUN for s in sshd nginx;do systemctl enable $s;done
+
 RUN echo 'root:changeme' | chpasswd
 
 ADD mnt /mnt

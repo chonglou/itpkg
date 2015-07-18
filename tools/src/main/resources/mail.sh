@@ -1,11 +1,18 @@
 #!/bin/sh
 
+pacman -S --needed --noconfirm percona-server percona-server-clients postfix dovecot net-tools pwgen expect
+
+for s in mysqld postfix dovecot
+do 
+	systemctl enable $s
+	systemctl start $s
+done
+
 groupadd -g 5000 vmail
 useradd -u 5000 -g vmail -s /usr/bin/nologin -d /home/vmail -m vmail
 
 #------------- mysql ---------------------
-#root_mysql_passwd=`pwgen 32 1`
-root_mysql_passwd=123456
+root_mysql_passwd=`pwgen 32 1`
 mail_mysql_passwd=`pwgen 32 1`
 
 echo "Setup database"
