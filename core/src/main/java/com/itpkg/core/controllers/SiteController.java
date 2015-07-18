@@ -26,7 +26,7 @@ public class SiteController {
     @ResponseBody
     Map<String, String> info() {
         Map<String, String> map = new HashMap<>();
-        for (String s : new String[]{"title", "copyright"}) {
+        for (String s : new String[]{"title", "description", "keywords", "copyright"}) {
             map.put(s, i18n.T("site." + s));
         }
         return map;

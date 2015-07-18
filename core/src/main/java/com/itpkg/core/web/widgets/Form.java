@@ -1,4 +1,4 @@
-package com.itpkg.core.web;
+package com.itpkg.core.web.widgets;
 
 import java.io.Serializable;
 import java.util.ArrayList;

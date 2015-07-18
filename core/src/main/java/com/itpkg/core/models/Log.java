@@ -15,7 +15,7 @@ import java.util.Date;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Log implements Serializable {
     public enum Type {
-        INFO
+        INFO, ERROR
     }
 
     @Id

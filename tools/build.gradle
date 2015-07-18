@@ -1,0 +1,47 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    runtime "mysql:mysql-connector-java:${mysqlVersion}"
+    runtime "ch.qos.logback:logback-classic:${logbackVersion}"
+
+    compile "org.springframework:spring-jdbc:${springVersion}"
+    compile "org.slf4j:slf4j-api:${slf4jVersion}"
+
+    testCompile('junit:junit')
+}
+
+jar {
+    baseName = appName+""
+    exclude 'config.properties'
+    exclude 'logback.xml'
+    exclude 'ehcache.*'
+    manifest {
+        attributes 'Implementation-Title': 'IT-PACKAGE',
+                'Implementation-Version': version,
+                'Main-Class': 'com.itpkg.tools.Main',
+                'Class-Path': 'config/ ' + configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
+    }
+}
+
+
+
+task copyToLib(type: Copy) {
+    into "$buildDir/libs/lib"
+    from configurations.runtime
+}
+
+task copyToConfig(type: Copy) {
+    into "$buildDir/libs/config"
+    from 'src/main/resources'
+}
+
+build.dependsOn copyToLib
+build.dependsOn copyToConfig

@@ -14,12 +14,4 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @ComponentScan(basePackages = "com.itpkg")
 @ImportResource("classpath*:spring/*.xml")
 public class WebMvc extends WebMvcConfigurerAdapter {
-//    @Override
-//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-//       // converters.add(textConverter);
-//        super.configureMessageConverters(converters);
-//    }
-//
-//    @Autowired
-//    TextConverter textConverter;
 }

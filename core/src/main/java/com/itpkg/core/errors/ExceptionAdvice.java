@@ -1,6 +1,5 @@
-package com.itpkg.core.controllers;
+package com.itpkg.core.errors;
 
-import com.itpkg.core.errors.UserNotFoundException;
 import org.springframework.hateoas.VndErrors;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 
 @ControllerAdvice
-public class ExceptionController {
+public class ExceptionAdvice {
     @ResponseBody
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
