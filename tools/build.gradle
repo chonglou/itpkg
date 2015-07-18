@@ -9,12 +9,6 @@ repositories {
 }
 
 dependencies {
-
-    compile "com.jolbox:bonecp:${bonecpVersion}"
-
-    compile "mysql:mysql-connector-java:${mysqlVersion}"
-    compile "org.postgresql:postgresql:${postgresqlVersion}"
-
     compile "org.springframework:spring-jdbc:${springVersion}"
     compile 'org.springframework.shell:spring-shell:1.1.0.RELEASE'
 
@@ -35,6 +29,7 @@ task wrapper(type: Wrapper) {
 }
 
 startScripts {
+    classpath += files('src/dist/lib/config')
     applicationName = appName
     mainClassName = 'org.springframework.shell.Bootstrap'
 }
