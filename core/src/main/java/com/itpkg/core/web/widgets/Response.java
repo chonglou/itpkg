@@ -17,6 +17,10 @@ public class Response implements Serializable {
         created = new Date();
     }
 
+    public Response(boolean ok){
+        this.ok = ok;
+    }
+
     public Response(BindingResult result) {
         if (result.hasErrors()) {
             result.getAllErrors().forEach((e) -> errors.add(e.toString()));

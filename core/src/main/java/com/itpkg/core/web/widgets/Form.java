@@ -3,11 +3,12 @@ package com.itpkg.core.web.widgets;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by flamen on 15-7-17.
  */
-public class Form implements Serializable {
+public class Form extends Response {
     public Form(String id, String name, String action) {
         this.id = id;
         this.name = name;
@@ -31,6 +32,10 @@ public class Form implements Serializable {
         btn.setName(name);
         btn.setStyle(style);
         buttons.add(btn);
+    }
+
+    public <T> void addField(Field field){
+        fields.add(field);
     }
 
     public void addEmailField(String id, String name) {

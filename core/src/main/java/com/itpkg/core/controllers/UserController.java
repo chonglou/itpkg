@@ -78,6 +78,7 @@ public class UserController {
         fm.addPasswordField("password", i18n.T("form.fields.password"));
         fm.addSubmit(i18n.T("form.user.sign_in.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
+        fm.setOk(true);
         return fm;
     }
 
@@ -113,6 +114,7 @@ public class UserController {
         fm.addPasswordField("password_confirm", i18n.T("form.fields.password_confirm"));
         fm.addSubmit(i18n.T("form.user.sign_up.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
+        fm.setOk(true);
         return fm;
     }
 
@@ -155,6 +157,7 @@ public class UserController {
         fm.addEmailField("email", i18n.T("form.fields.email"));
         fm.addSubmit(i18n.T("form.user.forgot_password.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
+        fm.setOk(true);
         return fm;
     }
 
@@ -186,6 +189,7 @@ public class UserController {
         fm.addEmailField("email", i18n.T("form.fields.email"));
         fm.addSubmit(i18n.T("form.user.change_password.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
+        fm.setOk(true);
         return fm;
     }
 
@@ -203,6 +207,7 @@ public class UserController {
         fm.addEmailField("email", i18n.T("form.fields.email"));
         fm.addSubmit(i18n.T("form.user.confirm.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
+        fm.setOk(true);
         return fm;
     }
 
@@ -221,6 +226,7 @@ public class UserController {
         fm.addEmailField("email", i18n.T("form.fields.email"));
         fm.addSubmit(i18n.T("form.user.unlock.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
+        fm.setOk(true);
         return fm;
     }
 

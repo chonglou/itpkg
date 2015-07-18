@@ -5,6 +5,7 @@ apply plugin: 'idea'
 
 repositories {
     mavenCentral()
+    maven { url "http://repository.pentaho.org/artifactory/repo/" }
 }
 
 dependencies {
@@ -14,5 +15,5 @@ dependencies {
 }
 
 jar {
-    baseName = appName+"-email"
+    baseName = appName + "-email"
 }
