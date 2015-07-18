@@ -1,3 +1,7 @@
+## build
+    gradle wrapper
+    gradlew installApp
+
 ## docker
 
  * docker rmi IMAGE_NAME 

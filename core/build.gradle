@@ -30,7 +30,6 @@ dependencies {
     compile 'org.springframework.hateoas:spring-hateoas:0.17.0.RELEASE'
 
 
-    def springVersion = '4.1.7.RELEASE'
     compile "org.springframework:spring-web:${springVersion}"
     compile "org.springframework:spring-webmvc:${springVersion}"
     compile "org.springframework:spring-orm:${springVersion}"
