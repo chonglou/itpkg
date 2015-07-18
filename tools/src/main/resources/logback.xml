@@ -24,17 +24,8 @@
     </appender>
 
 
-    <!--<logger name="org.springframework" level="WARN"/>-->
-    <!--<logger name="org.springframework.jdbc.core" level="WARN"/>-->
-    <!--<logger name="com.opensymphony" level="WARN"/>-->
-    <!--<logger name="org.apache" level="WARN"/>-->
-    <!--<logger name="com.jolbox.bonecp" level="WARN"/>-->
-    <!--<logger name="org.quartz" level="WARN"/>-->
-    <!--<logger name="org.hibernate.engine.jdbc" level="WARN"/>-->
-
-
     <!--CHANGE TO INFO WHEN RUN ON PRODUCTION ENV-->
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="stdout"/>
         <appender-ref ref="file"/>
     </root>

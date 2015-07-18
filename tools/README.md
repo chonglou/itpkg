@@ -1,6 +1,8 @@
 ## build
     gradle wrapper
-    gradlew installApp
+    ./gradlew installDist
+    cd build/install/tools
+    ./bin/tools
 
 ## docker
 

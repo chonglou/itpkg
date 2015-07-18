@@ -1,4 +1,4 @@
-package com.itpkg.tools;
+package com.itpkg.tools.commands;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
  * Created by flamen on 15-7-17.
  */
 @Component
-public class MailCommands implements CommandMarker {
-    private static final Logger logger = LoggerFactory.getLogger(MailCommands.class);
+public class Mail implements CommandMarker {
+    private static final Logger logger = LoggerFactory.getLogger(Mail.class);
 
     @CliAvailabilityIndicator({"mail add", "mail del", "mail list"})
     public boolean isMailAvailable() {
