@@ -49,28 +49,33 @@ dependencies {
 
 
 jar {
-    baseName = appName
+    baseName = appName+"-app"
     exclude 'development.properties'
     exclude 'logback.xml'
     exclude 'ehcache.*'
     manifest {
         attributes 'Implementation-Title': 'IT-PACKAGE',
-                'Implementation-Version': version,
-                'Main-Class': mainClassName,
-                'Class-Path': 'config/ ' + configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
+                'Implementation-Version': version
+//                'Main-Class': mainClassName,
+//                'Class-Path': 'config/ ' + configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
     }
 
 }
+//
+//task copyToLib(type: Copy) {
+//    into "$buildDir/libs/lib"
+//    from configurations.runtime
+//}
+//
+//task copyToConfig(type: Copy) {
+//    into "$buildDir/libs/config"
+//    from 'src/main/resources'
+//}
+//
+//build.dependsOn copyToLib
+//build.dependsOn copyToConfig
 
-task copyToLib(type: Copy) {
-    into "$buildDir/libs/lib"
-    from configurations.runtime
+
+task wrapper(type: Wrapper) {
+
 }
-
-task copyToConfig(type: Copy) {
-    into "$buildDir/libs/config"
-    from 'src/main/resources'
-}
-
-build.dependsOn copyToLib
-build.dependsOn copyToConfig

@@ -27,7 +27,7 @@ dependencies {
 }
 
 jar {
-    baseName = appName
+    baseName = appName+"-tool"
 }
 
 
