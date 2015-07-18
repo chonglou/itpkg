@@ -2,7 +2,6 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'idea'
 
-mainClassName='com.itpkg.app.Main'
 
 repositories {
     mavenCentral()
@@ -50,32 +49,22 @@ dependencies {
 
 jar {
     baseName = appName+"-app"
-    exclude 'development.properties'
-    exclude 'logback.xml'
-    exclude 'ehcache.*'
     manifest {
         attributes 'Implementation-Title': 'IT-PACKAGE',
                 'Implementation-Version': version
-//                'Main-Class': mainClassName,
-//                'Class-Path': 'config/ ' + configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
     }
 
 }
-//
-//task copyToLib(type: Copy) {
-//    into "$buildDir/libs/lib"
-//    from configurations.runtime
-//}
-//
-//task copyToConfig(type: Copy) {
-//    into "$buildDir/libs/config"
-//    from 'src/main/resources'
-//}
-//
-//build.dependsOn copyToLib
-//build.dependsOn copyToConfig
 
 
 task wrapper(type: Wrapper) {
 
 }
+
+startScripts {
+    classpath += files('src/dist/lib/config')
+    applicationName = appName
+    mainClassName='com.itpkg.app.Main'
+}
+
+
