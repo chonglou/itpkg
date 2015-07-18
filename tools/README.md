@@ -2,7 +2,7 @@
     gradle wrapper
     ./gradlew installDist
     cd build/install/tools
-    ./bin/tools
+    ./bin/itpkg
 
 ## docker
 

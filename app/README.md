@@ -5,7 +5,7 @@ IT-PACKAGE(executable jar package)
     gradle wrapper
     ./gradlew installDist
     cd build/install/app
-    ./bin/app
+    ./bin/itpkg
 
 
 
