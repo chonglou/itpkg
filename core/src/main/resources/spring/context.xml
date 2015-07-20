@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <bean id="yamlProperties" class="org.springframework.beans.factory.config.YamlPropertiesFactoryBean">
         <property name="resources" value="classpath*:environments.yml"/>
@@ -10,57 +10,57 @@
     <context:property-placeholder properties-ref="yamlProperties"/>
 
     <!--<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">-->
-        <!--<property name="mediaTypes">-->
-            <!--<map>-->
-                <!--<entry key="json" value="application/json"/>-->
-                <!--<entry key="js" value="application/javascript"/>-->
-                <!--<entry key="xml" value="application/xml"/>-->
-                <!--<entry key="html" value="text/html"/>-->
-                <!--<entry key="txt" value="text/plain"/>-->
+    <!--<property name="mediaTypes">-->
+    <!--<map>-->
+    <!--<entry key="json" value="application/json"/>-->
+    <!--<entry key="js" value="application/javascript"/>-->
+    <!--<entry key="xml" value="application/xml"/>-->
+    <!--<entry key="html" value="text/html"/>-->
+    <!--<entry key="txt" value="text/plain"/>-->
 
-                <!--<entry key="fm" value="text/html"/>-->
-                <!--<entry key="dlg" value="text/html"/>-->
+    <!--<entry key="fm" value="text/html"/>-->
+    <!--<entry key="dlg" value="text/html"/>-->
 
-                <!--<entry key="pdf" value="application/pdf"/>-->
-                <!--<entry key="xls" value="application/vnd.ms-excel"/>-->
-                <!--<entry key="csv" value="text/csv"/>-->
-            <!--</map>-->
-        <!--</property>-->
-        <!--<property name="defaultContentType" value="application/html"/>-->
+    <!--<entry key="pdf" value="application/pdf"/>-->
+    <!--<entry key="xls" value="application/vnd.ms-excel"/>-->
+    <!--<entry key="csv" value="text/csv"/>-->
+    <!--</map>-->
+    <!--</property>-->
+    <!--<property name="defaultContentType" value="application/html"/>-->
 
-        <!--&lt;!&ndash;/item.json&ndash;&gt;-->
-        <!--<property name="favorPathExtension" value="true"/>-->
-        <!--&lt;!&ndash;/item?format=json&ndash;&gt;-->
-        <!--<property name="favorParameter" value="true"/>-->
-        <!--<property name="parameterName" value="format"/>-->
+    <!--&lt;!&ndash;/item.json&ndash;&gt;-->
+    <!--<property name="favorPathExtension" value="true"/>-->
+    <!--&lt;!&ndash;/item?format=json&ndash;&gt;-->
+    <!--<property name="favorParameter" value="true"/>-->
+    <!--<property name="parameterName" value="format"/>-->
 
-        <!--<property name="ignoreAcceptHeader" value="true"/>-->
+    <!--<property name="ignoreAcceptHeader" value="true"/>-->
 
     <!--</bean>-->
 
     <!--<bean id="contentNegotiatingViewResolver"-->
-          <!--class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">-->
-        <!--<property name="order" value="1"/>-->
+    <!--class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">-->
+    <!--<property name="order" value="1"/>-->
 
-        <!--<property name="contentNegotiationManager" ref="contentNegotiationManager"/>-->
-        <!--<property name="viewResolvers">-->
-            <!--<list>-->
-                <!--<bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>-->
-            <!--</list>-->
-        <!--</property>-->
-        <!--<property name="defaultViews">-->
-            <!--<list>-->
-                <!--<bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">-->
-                    <!--<property name="disableCaching" value="false"/>-->
-                <!--</bean>-->
-                <!--<bean class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView">-->
-                    <!--<property name="disableCaching" value="false"/>-->
-                <!--</bean>-->
-                <!--<bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsCsvView"/>-->
-                <!--<bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"/>-->
-                <!--<bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsXlsView"/>-->
-            <!--</list>-->
-        <!--</property>-->
+    <!--<property name="contentNegotiationManager" ref="contentNegotiationManager"/>-->
+    <!--<property name="viewResolvers">-->
+    <!--<list>-->
+    <!--<bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>-->
+    <!--</list>-->
+    <!--</property>-->
+    <!--<property name="defaultViews">-->
+    <!--<list>-->
+    <!--<bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">-->
+    <!--<property name="disableCaching" value="false"/>-->
+    <!--</bean>-->
+    <!--<bean class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView">-->
+    <!--<property name="disableCaching" value="false"/>-->
+    <!--</bean>-->
+    <!--<bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsCsvView"/>-->
+    <!--<bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"/>-->
+    <!--<bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsXlsView"/>-->
+    <!--</list>-->
+    <!--</property>-->
     <!--</bean>-->
 
 

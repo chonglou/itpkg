@@ -4,12 +4,14 @@ import com.itpkg.core.models.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 /**
  * Created by flamen on 15-7-15.
  */
+@Repository("core.dao.role")
 public interface RoleDao extends JpaRepository<Role, Long> {
     @Query(value = "select r from Role r where r.user.id=:userId and r.name=:name and r.rType=:rType and r.rId=:rId")
     Optional<Role> find(@Param("userId") long userId,

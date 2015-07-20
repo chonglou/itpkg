@@ -2,8 +2,8 @@ package com.itpkg.email.services;
 
 import com.itpkg.core.web.widgets.SelectField;
 import com.itpkg.email.dao.EmailAliasDao;
-import com.itpkg.email.dao.EmailDomainDao;
-import com.itpkg.email.dao.EmailUserDao;
+import com.itpkg.email.dao.DomainDao;
+import com.itpkg.email.dao.UserDao;
 import com.itpkg.email.models.Alias;
 import com.itpkg.email.models.Domain;
 import com.itpkg.email.models.User;
@@ -133,9 +133,9 @@ public class EmailService {
     }
 
     @Autowired
-    EmailUserDao userDao;
+    UserDao userDao;
     @Autowired
-    EmailDomainDao domainDao;
+    DomainDao domainDao;
     @Autowired
     EmailAliasDao aliasDao;
 
