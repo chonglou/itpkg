@@ -7,6 +7,5 @@ include 'shop'
 include 'teamwork'
 include 'wiki'
 include 'tools'
-include 'api'
 include 'app'
 

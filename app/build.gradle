@@ -1,8 +1,9 @@
 apply plugin: 'java'
 apply plugin: 'application'
-apply plugin: 'war'
 apply plugin: 'spring-boot'
+apply plugin: 'war'
 apply plugin: 'idea'
+apply plugin: 'com.bmuschko.cargo'
 
 def configDir = 'src/dist/lib/config'
 
@@ -11,6 +12,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+        classpath 'com.bmuschko:gradle-cargo-plugin:2.1.1'
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
@@ -26,13 +28,14 @@ configurations {
 }
 
 dependencies {
-    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 
-    //============ runtime============================================
     compile 'org.springframework.boot:spring-boot-starter-web'
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     compile 'org.springframework.boot:spring-boot-starter-security'
     compile "org.springframework.security.oauth:spring-security-oauth2:${springOauth2SecurityVersion}"
+
+    //============ runtime============================================
 
     runtime "mysql:mysql-connector-java:${mysqlVersion}"
     runtime "org.postgresql:postgresql:${postgresqlVersion}"
@@ -74,6 +77,7 @@ jar {
 
 war {
     baseName = appName
+    classpath += files(configDir)
     manifest {
         attributes 'Implementation-Title': appTitle,
                 'Implementation-Version': version
@@ -96,3 +100,24 @@ run {
     classpath += files(configDir)
 }
 
+
+cargo {
+    def tomcatVersion = '8.0.24'
+    containerId = 'tomcat8x'
+    port = 8080
+
+    deployable {
+        context = '/'
+    }
+
+    local {
+        outputFile = file("$buildDir/output.log")
+        timeout = 60000
+
+        installer {
+            installUrl = "http://mirror.cc.columbia.edu/pub/software/apache/tomcat/tomcat-8/v${tomcatVersion}/bin/apache-tomcat-${tomcatVersion}.zip"
+            downloadDir = file("$projectDir/tmp")
+            extractDir = file("$projectDir/tmp")
+        }
+    }
+}
