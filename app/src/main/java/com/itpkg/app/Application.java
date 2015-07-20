@@ -14,8 +14,8 @@ import org.springframework.context.annotation.ImportResource;
 @ComponentScan(basePackages = "com.itpkg")
 @ImportResource("classpath*:spring/*.xml")
 @EnableAutoConfiguration
-public class Main {
+public class Application {
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(Main.class, args);
+        SpringApplication.run(Application.class, args);
     }
 }

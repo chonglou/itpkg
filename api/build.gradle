@@ -1,5 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'war'
+apply plugin: 'spring-boot'
 apply plugin: 'idea'
 
 buildscript {
@@ -9,6 +10,7 @@ buildscript {
 
     dependencies {
         classpath 'com.bmuschko:gradle-cargo-plugin:2.1.1'
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
 apply plugin: 'com.bmuschko.cargo'
@@ -19,31 +21,34 @@ repositories {
 }
 
 dependencies {
-
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     //============ runtime============================================
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile 'org.springframework.boot:spring-boot-starter-security'
+    compile "org.springframework.security.oauth:spring-security-oauth2:${springOauth2SecurityVersion}"
+
     runtime "mysql:mysql-connector-java:${mysqlVersion}"
     runtime "org.postgresql:postgresql:${postgresqlVersion}"
     runtime 'org.apache.derby:derby:10.11.1.1'
 
-    def ehcacheVersion = '2.6.11'
     runtime "net.sf.ehcache:ehcache-core:${ehcacheVersion}"
 
     runtime "org.hibernate:hibernate-entitymanager:${hibernateVersion}"
     runtime "org.hibernate:hibernate-ehcache:${hibernateVersion}"
 
     runtime "ch.qos.logback:logback-classic:${logbackVersion}"
-    runtime 'org.aspectj:aspectjweaver:1.8.6'
 
     runtime "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
 
     compile project(':core')
-    compile project(':cms')
+//    compile project(':cms')
     compile project(':email')
-    compile project(':forum')
-    compile project(':ops')
-    compile project(':shop')
-    compile project(':teamwork')
-    compile project(':wiki')
+//    compile project(':forum')
+//    compile project(':ops')
+//    compile project(':shop')
+//    compile project(':teamwork')
+//    compile project(':wiki')
 
     //======================= test =============================
     testCompile('junit:junit')
@@ -75,3 +80,4 @@ cargo {
         }
     }
 }
+
