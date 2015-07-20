@@ -165,7 +165,7 @@ public class UserController {
     @ResponseBody
     Response postForgotPassword(@RequestBody SignUpFm fm, BindingResult result) {
         Response res = new Response(result);
-        if(res.isOk()){
+        if (res.isOk()) {
             User u = userService.findByEmail(fm.email);
             if (u == null) {
                 res.addError(i18n.T("form.user.email_not_exists"));

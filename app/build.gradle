@@ -1,22 +1,30 @@
 apply plugin: 'java'
 apply plugin: 'application'
+apply plugin: 'spring-boot'
 apply plugin: 'idea'
 
+def configDir = 'src/dist/lib/config'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath('org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE')
+    }
+}
 
 repositories {
     mavenCentral()
-    maven { url "http://repository.pentaho.org/artifactory/repo/" }
+    maven { url 'http://repository.pentaho.org/artifactory/repo/' }
 }
 
 dependencies {
 
-    def undertowVersion = '1.2.8.Final'
-    compile "io.undertow:undertow-core:${undertowVersion}"
-    def jettyVersion = '9.3.0.M2'
-    compile "org.eclipse.jetty:jetty-server:${jettyVersion}"
-    compile "org.eclipse.jetty:jetty-servlet:${jettyVersion}"
+    compile('org.springframework.boot:spring-boot-starter-web')
 
     //============ runtime============================================
+
     runtime "mysql:mysql-connector-java:${mysqlVersion}"
     runtime "org.postgresql:postgresql:${postgresqlVersion}"
     runtime 'org.apache.derby:derby:10.11.1.1'
@@ -33,13 +41,13 @@ dependencies {
     runtime "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
 
     compile project(':core')
-    compile project(':cms')
-    compile project(':email')
-    compile project(':forum')
-    compile project(':ops')
-    compile project(':shop')
-    compile project(':teamwork')
-    compile project(':wiki')
+//    compile project(':cms')
+//    compile project(':email')
+//    compile project(':forum')
+//    compile project(':ops')
+//    compile project(':shop')
+//    compile project(':teamwork')
+//    compile project(':wiki')
 
     //======================= test =============================
     testCompile('junit:junit')
@@ -48,7 +56,7 @@ dependencies {
 
 
 jar {
-    baseName = appName+"-app"
+    baseName = appName + "-app"
     manifest {
         attributes 'Implementation-Title': 'IT-PACKAGE',
                 'Implementation-Version': version
@@ -62,9 +70,13 @@ task wrapper(type: Wrapper) {
 }
 
 startScripts {
-    classpath += files('src/dist/lib/config')
+    classpath += files(configDir)
     applicationName = appName
-    mainClassName='com.itpkg.app.Main'
+    mainClassName = 'com.itpkg.app.Main'
 }
 
+run {
+    classpath += files(configDir)
+
+}
 

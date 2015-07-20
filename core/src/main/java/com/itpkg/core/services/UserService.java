@@ -41,7 +41,7 @@ public class UserService {
     }
 
     public User findByEmail(String email) {
-        return userDao.findByEmail(email).map((u)->u).orElse(null);
+        return userDao.findByEmail(email).map((u) -> u).orElse(null);
     }
 
 
@@ -51,7 +51,6 @@ public class UserService {
         u.setUpdated(new Date());
         userDao.save(u);
     }
-
 
 
     public User create(String username, String email, String password) {

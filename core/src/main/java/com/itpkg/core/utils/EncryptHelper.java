@@ -7,7 +7,6 @@ import org.jose4j.jwe.KeyManagementAlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.InvalidJwtException;
-import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.keys.AesKey;
 import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,9 +94,9 @@ public class EncryptHelper {
         tokenKey = new AesKey(tokenKeyS.getBytes());
     }
 
-    @Value("${secret.encryptor}")
+    @Value("${secrets.encryptor}")
     String encryptorKey;
-    @Value("${secret.token}")
+    @Value("${secrets.token}")
     String tokenKeyS;
     @Autowired
     JsonHelper jsonHelper;

@@ -11,9 +11,11 @@ public class SelectField<T> extends Field {
         super(id, "select");
         options = new HashMap<>();
     }
-    public void addOption(T key, String name){
+
+    public void addOption(T key, String name) {
         options.put(key, name);
     }
+
     private Map<T, String> options;
     private T value;
     private String name;

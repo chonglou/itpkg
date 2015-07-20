@@ -17,7 +17,7 @@ public class Response implements Serializable {
         created = new Date();
     }
 
-    public Response(boolean ok){
+    public Response(boolean ok) {
         this.ok = ok;
     }
 

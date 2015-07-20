@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface AliasDao extends JpaRepository<Alias, Long> {
     Optional<Alias> findBySource(String source);
 
-    @Query("delete from Alias a where a.Domain.id = :domainId")
+    @Query("delete from EmailAlias a where a.Domain.id = :domainId")
     void deleteByDomain(@Param("domainId") long domainId);
 
     void deleteByDestination(String destination);

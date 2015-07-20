@@ -16,6 +16,7 @@ public interface UserDao extends JpaRepository<User, Long> {
 
     List<User> findByDomainId(long domainId);
 
-    @Query("delete from User u where u.Domain.id = :domainId")
-    void deleteByDomain(@Param("domainId") long domainId);
+  //  @Query("delete from EmailUser u where u.Domain.id = :domainId")
+   void deleteByDomainId(@Param("domainId") long domainId);
+
 }

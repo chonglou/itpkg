@@ -10,7 +10,7 @@ import javax.persistence.*;
  * Created by flamen on 15-7-18.
  */
 
-@Entity
+@Entity(name = "EmailUser")
 @Table(name = "email_users")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User extends IdEntity {

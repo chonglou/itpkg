@@ -15,7 +15,7 @@ import java.util.List;
  * Created by flamen on 15-7-18.
  */
 
-@Entity
+@Entity(name = "EmailDomain")
 @Table(name = "email_domains")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Domain extends IdEntity {

@@ -1,9 +1,7 @@
 package com.itpkg.core.web.widgets;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by flamen on 15-7-17.
@@ -34,7 +32,7 @@ public class Form extends Response {
         buttons.add(btn);
     }
 
-    public <T> void addField(Field field){
+    public <T> void addField(Field field) {
         fields.add(field);
     }
 

@@ -9,7 +9,7 @@ import javax.persistence.*;
 /**
  * Created by flamen on 15-7-18.
  */
-@Entity
+@Entity(name = "EmailAlias")
 @Table(name = "email_aliases")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Alias extends IdEntity {

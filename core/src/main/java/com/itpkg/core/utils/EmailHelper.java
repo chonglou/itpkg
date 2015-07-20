@@ -10,8 +10,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailHelper {
     private final Logger logger = LoggerFactory.getLogger(EmailHelper.class);
-    public void send(String to, String subject, String body){
+
+    public void send(String to, String subject, String body) {
         //todo
-        logger.debug("MAIL-TO: "+to+"\n"+subject+"\n"+body);
+        logger.debug("MAIL-TO: " + to + "\n" + subject + "\n" + body);
     }
 }

@@ -1,14 +1,21 @@
 package com.itpkg.app;
 
-import com.itpkg.app.impl.Jetty;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 
 /**
- * Created by flamen on 15-7-16.
+ * Created by flamen on 15-7-20.
  */
+
+@Configuration
+@ComponentScan(basePackages = "com.itpkg")
+@ImportResource("classpath*:spring/*.xml")
+@EnableAutoConfiguration
 public class Main {
     public static void main(String[] args) throws Exception {
-        Server server = new Jetty();
-        server.init("development");
-        server.start("localhost", 8080);
+        SpringApplication.run(Main.class, args);
     }
 }

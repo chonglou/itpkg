@@ -60,7 +60,7 @@ public class EmailService {
         Domain d = domainDao.findOne(domain);
         if (d != null) {
             aliasDao.deleteByDomain(domain);
-            userDao.deleteByDomain(domain);
+            userDao.deleteByDomainId(domain);
             domainDao.delete(domain);
             logger.info("del email domain " + d.getName());
         }

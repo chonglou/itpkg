@@ -1,0 +1,53 @@
+root:
+  email: root@localhost
+cache:
+  expire: 1
+secrets:
+  encryptor: Iengoe6uingo1mae8iyooquiem7Foopigheif7cotiiV7bos1Tubei0eceiThaagh4kaetheeW3gae2eith4ichu5ihie9aeVo1Ephoo0ot6ahf4pheisu6OxaeDahki
+  token: zereeDucohv8ohXeefieh5Vai2rai7Ja
+database:
+  mode: update
+  show_sql: true
+
+  driver: org.postgresql.Driver
+  url: jdbc:postgresql://localhost:5432/itpkg
+  username: postgres
+  password:
+  dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  #driver: com.mysql.jdbc.Driver
+  #url: jdbc:mysql://localhost:3306/itpkg
+  #username: root
+  #password:
+  #dialect: org.hibernate.dialect.MySQL5Dialect
+
+  #driver: org.apache.derby.jdbc.EmbeddedDriver
+  ##url: jdbc:derby:tmp/db;create: true
+  #url: jdbc:derby:tmp/db
+  #username:
+  #password:
+  #dialect: org.hibernate.dialect.DerbyDialect
+
+---
+
+spring:
+    profiles: development
+
+---
+
+spring:
+    profiles: test
+
+---
+
+spring:
+    profiles: production
+secrets:
+  encryptor: CHANGE_ME
+  token: CHANGE_ME
+http:
+  cache:
+    expire: -1
+  database:
+    show_sql: false
+    password: CHANGE ME
