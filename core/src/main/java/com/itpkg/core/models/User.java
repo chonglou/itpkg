@@ -1,6 +1,5 @@
 package com.itpkg.core.models;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -27,7 +26,6 @@ public class User extends IdEntity {
     @Column(nullable = false)
     private String providerUserId;
     private String accessToken;
-    @JsonIgnore
     private String password;
 
     private Date confirmed;
@@ -46,11 +44,9 @@ public class User extends IdEntity {
     private Contact contact;
 
     @OneToMany(mappedBy = "user")
-    @JsonIgnore
     private List<Log> logs;
 
     @OneToMany(mappedBy = "user")
-    @JsonIgnore
     private List<Role> roles;
 
     public String getIds() {

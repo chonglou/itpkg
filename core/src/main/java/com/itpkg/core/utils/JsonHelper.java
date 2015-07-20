@@ -1,7 +1,6 @@
 package com.itpkg.core.utils;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -25,7 +24,7 @@ public class JsonHelper {
     @PostConstruct
     void init() {
         objectMapper = new ObjectMapper();
-        objectMapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
+        //objectMapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
     }
 
     private ObjectMapper objectMapper;

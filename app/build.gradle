@@ -32,8 +32,6 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compile 'org.springframework.boot:spring-boot-starter-security'
-    compile "org.springframework.security.oauth:spring-security-oauth2:${springOauth2SecurityVersion}"
 
     //============ runtime============================================
 
