@@ -18,7 +18,7 @@ import java.util.Map;
  * Created by flamen on 15-7-14.
  */
 
-@Controller
+@Controller("core.controllers.site")
 public class SiteController {
     private final Logger logger = LoggerFactory.getLogger(SiteController.class);
 

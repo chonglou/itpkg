@@ -1,9 +1,9 @@
 package com.itpkg.email.services;
 
 import com.itpkg.core.web.widgets.SelectField;
-import com.itpkg.email.dao.AliasDao;
-import com.itpkg.email.dao.DomainDao;
-import com.itpkg.email.dao.UserDao;
+import com.itpkg.email.dao.EmailAliasDao;
+import com.itpkg.email.dao.EmailDomainDao;
+import com.itpkg.email.dao.EmailUserDao;
 import com.itpkg.email.models.Alias;
 import com.itpkg.email.models.Domain;
 import com.itpkg.email.models.User;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by flamen on 15-7-18.
  */
-@Service
+@Service("email.service")
 public class EmailService {
     private final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
@@ -59,7 +59,7 @@ public class EmailService {
     public void removeDomain(long domain) {
         Domain d = domainDao.findOne(domain);
         if (d != null) {
-            aliasDao.deleteByDomain(domain);
+            aliasDao.deleteByDomainId(domain);
             userDao.deleteByDomainId(domain);
             domainDao.delete(domain);
             logger.info("del email domain " + d.getName());
@@ -133,10 +133,10 @@ public class EmailService {
     }
 
     @Autowired
-    UserDao userDao;
+    EmailUserDao userDao;
     @Autowired
-    DomainDao domainDao;
+    EmailDomainDao domainDao;
     @Autowired
-    AliasDao aliasDao;
+    EmailAliasDao aliasDao;
 
 }

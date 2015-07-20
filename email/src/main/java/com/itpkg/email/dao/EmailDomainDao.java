@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * Created by flamen on 15-7-18.
  */
-public interface DomainDao extends JpaRepository<Domain, Long> {
+public interface EmailDomainDao extends JpaRepository<Domain, Long> {
     Optional<Domain> findByName(String name);
 
 }

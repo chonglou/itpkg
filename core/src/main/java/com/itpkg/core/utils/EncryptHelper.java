@@ -20,7 +20,7 @@ import java.security.Key;
 /**
  * Created by flamen on 15-7-15.
  */
-@Component
+@Component("core.utils.encrypt")
 public class EncryptHelper {
 
     private final String TOKEN_ISSUER = "itpkg";

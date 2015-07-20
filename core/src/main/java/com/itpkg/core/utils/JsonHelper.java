@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * Created by flamen on 15-7-15.
  */
-@Component
+@Component("core.utils.json")
 public class JsonHelper {
 
     public String object2json(Object obj) throws IOException {

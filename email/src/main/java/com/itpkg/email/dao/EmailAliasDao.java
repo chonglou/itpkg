@@ -10,11 +10,12 @@ import java.util.Optional;
 /**
  * Created by flamen on 15-7-18.
  */
-public interface AliasDao extends JpaRepository<Alias, Long> {
+public interface EmailAliasDao extends JpaRepository<Alias, Long> {
     Optional<Alias> findBySource(String source);
 
-    @Query("delete from EmailAlias a where a.Domain.id = :domainId")
-    void deleteByDomain(@Param("domainId") long domainId);
+    //@Query("delete from EmailAlias a where a.Domain.id = :domainId")
+    //void deleteByDomainId(@Param("domainId") long domainId);
+    void deleteByDomainId(long domainId);
 
     void deleteByDestination(String destination);
 }

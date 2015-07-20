@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * Created by flamen on 15-7-17.
  */
-@Component
+@Component("core.utils.email")
 public class EmailHelper {
     private final Logger logger = LoggerFactory.getLogger(EmailHelper.class);
 

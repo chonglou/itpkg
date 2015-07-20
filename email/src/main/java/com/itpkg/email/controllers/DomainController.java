@@ -17,7 +17,8 @@ import java.util.List;
 /**
  * Created by flamen on 15-7-18.
  */
-@Controller(value = "/email/domains")
+@Controller("email.controllers.domains")
+@RequestMapping("/email/domains")
 public class DomainController {
 
     class DomainFm {

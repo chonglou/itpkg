@@ -11,12 +11,13 @@ import java.util.Optional;
 /**
  * Created by flamen on 15-7-18.
  */
-public interface UserDao extends JpaRepository<User, Long> {
+public interface EmailUserDao extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     List<User> findByDomainId(long domainId);
 
   //  @Query("delete from EmailUser u where u.Domain.id = :domainId")
-   void deleteByDomainId(@Param("domainId") long domainId);
+   //void deleteByDomainId(@Param("domainId") long domainId);
+  void deleteByDomainId( long domainId);
 
 }

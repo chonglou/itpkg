@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Created by flamen on 15-7-18.
  */
-@Controller("/email/aliases")
+@Controller("email.controllers.aliases")
+@RequestMapping("/email/aliases")
 public class AliasController {
 
     class AliasFm {
@@ -72,7 +73,7 @@ public class AliasController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    Response show(@PathVariable long id) {
+    Response destroy(@PathVariable long id) {
         emailService.removeAlias(id);
         return new Response(true);
     }

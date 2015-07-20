@@ -29,7 +29,7 @@ import java.io.IOException;
  */
 
 
-@Controller
+@Controller("core.controllers.users")
 public class UserController {
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 

@@ -18,7 +18,8 @@ import javax.validation.constraints.AssertTrue;
 /**
  * Created by flamen on 15-7-18.
  */
-@Controller("/email/users")
+@Controller("email.controllers.users")
+@RequestMapping("/email/users")
 public class UserController {
 
     class UserFm {
@@ -76,7 +77,7 @@ public class UserController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    Response show(@PathVariable long id) {
+    Response destroy(@PathVariable long id) {
         emailService.removeUser(id);
         return new Response(true);
     }

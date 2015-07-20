@@ -42,7 +42,7 @@ dependencies {
 
     compile project(':core')
 //    compile project(':cms')
-//    compile project(':email')
+    compile project(':email')
 //    compile project(':forum')
 //    compile project(':ops')
 //    compile project(':shop')
