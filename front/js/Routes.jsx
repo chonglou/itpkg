@@ -10,15 +10,16 @@ var Root = require("./components/Root");
 var Routes = (
     <Route handler={Root}>
         <DefaultRoute name="home" handler={ Site.Home }/>
-        <Route name="about-us" path="/about-us" handler={ Site.AboutUs }/>
 
-        <Route name="auth.sign-in" path="/users/sign-in" handler={ Auth.SignIn }/>
-        <Route name="auth.sign-up" path="/users/sign-up" handler={ Auth.SignUp }/>
-        <Route name="auth.forgot-password" path="/users/forgot-password" handler={ Auth.ForgotPassword }/>
-        <Route name="auth.change-password" path="/users/change-password" handler={ Auth.ChangePassword }/>
-        <Route name="auth.confirm" path="/users/confirm" handler={ Auth.Confirm }/>
-        <Route name="auth.unlock" path="/users/unlock" handler={ Auth.Unlock }/>
-        <Route name="auth.profile" path="/users/profile" handler={ Auth.Profile }/>
+        <Route name="about_us" path="/about_us" handler={ Site.AboutUs }/>
+
+        <Route name="users.sign_in" path="/users/sign_in" handler={ Auth.SignIn }/>
+        <Route name="users.sign_up" path="/users/sign_up" handler={ Auth.SignUp }/>
+        <Route name="users.forgot_password" path="/users/forgot_password" handler={ Auth.ForgotPassword }/>
+        <Route name="users.change_password" path="/users/change_password" handler={ Auth.ChangePassword }/>
+        <Route name="users.confirm" path="/users/confirm" handler={ Auth.Confirm }/>
+        <Route name="users.unlock" path="/users/unlock" handler={ Auth.Unlock }/>
+        <Route name="users.profile" path="/users/profile" handler={ Auth.Profile }/>
 
     </Route>
 );

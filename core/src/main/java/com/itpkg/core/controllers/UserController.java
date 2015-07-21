@@ -1,16 +1,12 @@
 package com.itpkg.core.controllers;
 
-import com.itpkg.core.auth.CurrentUser;
 import com.itpkg.core.models.User;
 import com.itpkg.core.services.I18nService;
 import com.itpkg.core.services.UserService;
 import com.itpkg.core.utils.EmailHelper;
 import com.itpkg.core.utils.EncryptHelper;
-import com.itpkg.core.utils.EngineHelper;
 import com.itpkg.core.web.widgets.Form;
-import com.itpkg.core.web.widgets.Link;
 import com.itpkg.core.web.widgets.Response;
-import com.itpkg.core.web.widgets.TopNavBar;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;

@@ -6,23 +6,23 @@ var Actions = require('../actions/Site');
 
 var navBarStore = Reflux.createStore({
     listenables: [Actions],
-    navBar:{},
-    init: function(){
+    navBar: {},
+    init: function () {
         this.fetchNavBar();
     },
-    fetchNavBar: function(){
+    fetchNavBar: function () {
         $.ajax({
-            url:"/nav_bar",
-            context:this,
-            success:function(result){
+            url: "/nav_bar",
+            context: this,
+            success: function (result) {
                 this.navBar = result;
                 this.trigger(this.navBar);
             },
-            dataType:"json"
+            dataType: "json"
         });
     }
 });
 
 module.exports = {
-    NavBar:navBarStore
+    NavBar: navBarStore
 };

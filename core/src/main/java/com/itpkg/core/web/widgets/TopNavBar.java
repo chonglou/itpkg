@@ -22,18 +22,10 @@ public class TopNavBar implements Serializable {
     }
 
     private String title;
-    private Link home;
     private List<Link> hot;
     private String barName;
     private List<Link> barLinks;
 
-    public Link getHome() {
-        return home;
-    }
-
-    public void setHome(Link home) {
-        this.home = home;
-    }
 
     public String getTitle() {
         return title;
