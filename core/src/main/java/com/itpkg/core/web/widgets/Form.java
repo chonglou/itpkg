@@ -56,6 +56,7 @@ public class Form extends Response {
     public void addTextField(String id, String name, boolean required) {
         addTextField(id, name, null, 0, required, null);
     }
+
     public void addTextField(String id, String name, boolean required, String placeholder) {
         addTextField(id, name, null, 0, required, placeholder);
     }
@@ -72,6 +73,7 @@ public class Form extends Response {
     public void addPasswordField(String id, String name, boolean required) {
         addPasswordField(id, name, 0, required, null);
     }
+
     public void addPasswordField(String id, String name, boolean required, String placeholder) {
         addPasswordField(id, name, 0, required, placeholder);
     }

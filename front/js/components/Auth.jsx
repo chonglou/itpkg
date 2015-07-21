@@ -29,9 +29,9 @@ var sharedLinks = {
 
             },
             {
-                url: "auth.reset-password.1",
-                title: this.getIntlMessage("auth.titles.reset_password_1"),
-                name: this.getIntlMessage("auth.links.reset_password_1")
+                url: "auth.forgot-password",
+                title: this.getIntlMessage("auth.titles.forgot_password"),
+                name: this.getIntlMessage("auth.links.forgot_password")
             },
             {
                 url: "auth.confirm",
@@ -47,7 +47,7 @@ var sharedLinks = {
     }
 };
 
-var NoLoginLinks = React.createClass({
+var NoSignInForm = React.createClass({
     mixins: [
         T.IntlMixin,
         sharedLinks
@@ -55,50 +55,19 @@ var NoLoginLinks = React.createClass({
     render: function () {
         return (
             <div className="row">
-                <br/>
-                <ul>
-                {this.sharedLinks().map(function (object) {
-                    return (<li key={"l-" + object.url}>
-                        <Link to={object.url} >{object.title}</Link>
-                    </li>)
-                })}
-                </ul>
-            </div>
-        );
-    }
-});
-
-var EmailForm = React.createClass({
-    mixins: [
-        Router.Navigation,
-        T.IntlMixin
-    ],
-    onSubmit: function (rs) {
-        if (rs.ok) {
-            this.transitionTo("auth.sign-in");
-        }
-    },
-    render: function () {//todo
-        return (
-            <div className="row">
                 <div className="col-md-offset-2 col-md-8">
-                    <W.Form
-                        action={this.props.url}
-                        submit={this.onSubmit}
-                        title={this.props.title}
-                        fields={[
-                            {
-                                name: "action",
-                                type: "hidden",
-                                value: this.props.action
-                            },
-                            {
-                                name: "email",
-                                type: "email",
-                                nil: false
-                            }
-                        ]}/>
-                    <NoLoginLinks />
+                    <W.Form source={this.props.source}/>
+
+                    <div className="row">
+                        <br/>
+                        <ul>
+                            {this.sharedLinks().map(function (object) {
+                                return (<li key={"l-" + object.url}>
+                                    <Link to={object.url}>{object.title}</Link>
+                                </li>)
+                            })}
+                        </ul>
+                    </div>
                 </div>
             </div>
         );
@@ -118,35 +87,11 @@ module.exports = {
         },
         render: function () {
             return (
-                <div className="row">
-                    <div className="col-md-offset-2 col-md-8">
-                        <W.Form
-                            submit={this.onSubmit}
-                            title="auth.titles.sign_in"
-                            fields={[
-                                {
-                                    name: "email",
-                                    type: "email",
-                                    nil: false
-                                },
-                                {
-                                    name: "password",
-                                    type: "password",
-                                    nil: false
-                                }
-                            ]}/>
-                        <NoLoginLinks />
-                    </div>
-                </div>
+                <NoSignInForm source="/users/sign_in"/>
             );
         }
     }),
     SignUp: React.createClass({
-        render:function(){
-            return (<W.AjaxForm source="/users/sign_up"/>)
-        }
-    }),
-    SignUp1: React.createClass({
         mixins: [
             Router.Navigation,
             T.IntlMixin,
@@ -159,68 +104,27 @@ module.exports = {
         },
         render: function () {
             return (
-                <div className="row">
-                    <div className="col-md-offset-1 col-md-10">
-                        <div id="dialog"/>
-                        <W.Form
-                            action="/users/sign_up"
-                            submit={this.onSubmit}
-                            title="auth.titles.sign_up"
-                            fields={[
-                                {
-                                    name: "name",
-                                    type: "text",
-                                    size: 4,
-                                    placeholder: "auth.placeholders.username",
-                                    label: "auth.fields.username",
-                                    nil: false
-                                },
-                                {
-                                    name: "email",
-                                    type: "email",
-                                    nil: false
-                                },
-                                {
-                                    name: "password",
-                                    type: "password",
-                                    nil: false
-                                },
-                                {
-                                    name: "re_password",
-                                    label: "fields.re_password",
-                                    type: "password",
-                                    placeholder: "placeholders.re_password",
-                                    nil: false
-                                }
-                            ]}/>
-                        <NoLoginLinks />
-                    </div>
-                </div>
+                <NoSignInForm source="/users/sign_up"/>
             );
         }
     }),
-    ResetPassword1: React.createClass({
-        mixins: [
-            T.IntlMixin
-        ],
-        render: function () {
-            return (<EmailForm
-                url="/users/reset_password/1"
-                action="reset-password-1"
-                title="auth.links.reset_password_1"/>);
-        }
-    }),
-    ResetPassword2: React.createClass({//todo
+    ForgotPassword: React.createClass({
         mixins: [
             T.IntlMixin
         ],
         render: function () {
             return (
-                <div className="row">
-                    <h3>{this.getIntlMessage("auth.titles.reset_password_2")}</h3>
-                    <hr/>
-                    <NoLoginLinks />
-                </div>
+                <NoSignInForm source="/users/forgot_password"/>
+            );
+        }
+    }),
+    ChangePassword: React.createClass({//todo
+        mixins: [
+            T.IntlMixin
+        ],
+        render: function () {
+            return (
+                <NoSignInForm source="/users/change_password"/>
             );
         }
     }),
@@ -229,7 +133,9 @@ module.exports = {
             T.IntlMixin
         ],
         render: function () {
-            return (<EmailForm url="/users/confirm"  action="confirm" title="auth.links.confirm"/>);
+            return (
+                <NoSignInForm source="/users/confirm"/>
+            );
         }
     }),
     Unlock: React.createClass({
@@ -237,7 +143,7 @@ module.exports = {
             T.IntlMixin
         ],
         render: function () {
-            return (<EmailForm url="/users/unlock" action="unlock" title="auth.links.unlock"/>);
+            return (<NoSignInForm source="/users/unlock"/>);
         }
     }),
     Profile: React.createClass({//todo
@@ -246,7 +152,7 @@ module.exports = {
         ],
         render: function () {
             return (
-                <div  className="row">
+                <div className="row">
                     <h2>Profile</h2>
                 </div>
             );

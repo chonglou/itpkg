@@ -7,6 +7,7 @@ public class PlaceholderField extends RequiredField {
     public PlaceholderField(String id, String type, String name) {
         super(id, type, name);
     }
+
     private String value;
     private String placeholder;
 

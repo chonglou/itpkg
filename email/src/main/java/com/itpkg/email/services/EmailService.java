@@ -1,8 +1,9 @@
 package com.itpkg.email.services;
 
+import com.itpkg.core.utils.EngineHelper;
 import com.itpkg.core.web.widgets.SelectField;
-import com.itpkg.email.dao.EmailAliasDao;
 import com.itpkg.email.dao.DomainDao;
+import com.itpkg.email.dao.EmailAliasDao;
 import com.itpkg.email.dao.UserDao;
 import com.itpkg.email.models.Alias;
 import com.itpkg.email.models.Domain;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.List;
 
@@ -133,11 +135,18 @@ public class EmailService {
         }
     }
 
+    @PostConstruct
+    void init() {
+        engineHelper.register("email");
+    }
+
     @Autowired
     UserDao userDao;
     @Autowired
     DomainDao domainDao;
     @Autowired
     EmailAliasDao aliasDao;
+    @Autowired
+    EngineHelper engineHelper;
 
 }

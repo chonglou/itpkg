@@ -1,9 +1,7 @@
 "use strict";
 
 var React = require('react');
-var Router = require("react-router");
-var Route = Router.Route;
-var DefaultRoute = Router.DefaultRoute;
+import {Router, Route, DefaultRoute} from "react-router";
 
 var Auth = require("./components/Auth");
 var Site = require("./components/Site");
@@ -16,8 +14,8 @@ var Routes = (
 
         <Route name="auth.sign-in" path="/users/sign-in" handler={ Auth.SignIn }/>
         <Route name="auth.sign-up" path="/users/sign-up" handler={ Auth.SignUp }/>
-        <Route name="auth.reset-password.1" path="/users/reset-password/1" handler={ Auth.ResetPassword1 }/>
-        <Route name="auth.reset-password.2" path="/users/reset-password/2" handler={ Auth.ResetPassword2 }/>
+        <Route name="auth.forgot-password" path="/users/forgot-password" handler={ Auth.ForgotPassword }/>
+        <Route name="auth.change-password" path="/users/change-password" handler={ Auth.ChangePassword }/>
         <Route name="auth.confirm" path="/users/confirm" handler={ Auth.Confirm }/>
         <Route name="auth.unlock" path="/users/unlock" handler={ Auth.Unlock }/>
         <Route name="auth.profile" path="/users/profile" handler={ Auth.Profile }/>

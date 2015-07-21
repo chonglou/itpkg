@@ -22,7 +22,8 @@ var Root = React.createClass({
         return (
             <div>
                 <Header/>
-                <div style={navPadStyle} />
+
+                <div style={navPadStyle}/>
                 <div className="container">
                     <RouteHandler />
                     <Footer />

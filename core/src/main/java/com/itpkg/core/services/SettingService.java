@@ -19,49 +19,60 @@ import java.util.Date;
 public class SettingService {
     private final Logger logger = LoggerFactory.getLogger(SettingService.class);
 
-    public void set(String key, Object val) throws IOException {
+    public void set(String key, Object val) {
         set(key, val, false);
     }
 
-    public void set(String key, Object val, boolean encode) throws IOException {
+    public void set(String key, Object val, boolean encode) {
         //String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(val);
-        String json = jsonHelper.object2json(val);
+        try {
+            String json = jsonHelper.object2json(val);
 
-        settingDao.findByKey(key).map((s) -> {
-            if (encode) {
-                s.setVal(encryptHelper.encrypt(json));
-            } else {
-                s.setVal(json);
-            }
-            s.setEncode(encode);
-            s.setUpdated(new Date());
-            settingDao.save(s);
-            return s;
-        }).orElseGet(() -> {
-            Setting s = new Setting();
-            s.setKey(key);
-            if (encode) {
-                s.setVal(encryptHelper.encrypt(json));
-            } else {
-                s.setVal(json);
-            }
-            s.setEncode(encode);
-            s.setCreated(new Date());
-            s.setUpdated(new Date());
-            settingDao.save(s);
-            return s;
-        });
+            settingDao.findByKey(key).map((s) -> {
+                if (encode) {
+                    s.setVal(encryptHelper.encrypt(json));
+                } else {
+                    s.setVal(json);
+                }
+                s.setEncode(encode);
+                s.setUpdated(new Date());
+                settingDao.save(s);
+                return s;
+            }).orElseGet(() -> {
+                Setting s = new Setting();
+                s.setKey(key);
+                if (encode) {
+                    s.setVal(encryptHelper.encrypt(json));
+                } else {
+                    s.setVal(json);
+                }
+                s.setEncode(encode);
+                s.setCreated(new Date());
+                s.setUpdated(new Date());
+                settingDao.save(s);
+                return s;
+            });
+        } catch (IOException e) {
+            logger.error("set setting error", e);
+        }
 
 
     }
 
-    public <T> T get(String key, Class<T> clazz) throws IOException {
+    public <T> T get(String key, Class<T> clazz) {
 
-        String json = settingDao.findByKey(key)
-                .map((s) -> s.isEncode() ? encryptHelper.decrypt(s.getVal()) : s.getVal())
-                .orElse(null);
+        try {
+            String json = settingDao.findByKey(key)
+                    .map((s) -> s.isEncode() ? encryptHelper.decrypt(s.getVal()) : s.getVal())
+                    .orElse(null);
+            if (json != null) {
+                return jsonHelper.json2object(json, clazz);
+            }
+        } catch (IOException e) {
+            logger.error("get setting error", e);
 
-        return jsonHelper.json2object(json, clazz);
+        }
+        return null;
     }
 
 

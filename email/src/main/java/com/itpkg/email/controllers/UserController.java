@@ -3,7 +3,6 @@ package com.itpkg.email.controllers;
 import com.itpkg.core.services.I18nService;
 import com.itpkg.core.web.widgets.Form;
 import com.itpkg.core.web.widgets.Response;
-import com.itpkg.core.web.widgets.SelectField;
 import com.itpkg.email.models.User;
 import com.itpkg.email.services.EmailService;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -46,7 +45,7 @@ public class UserController {
     Form add() {
         Form fm = new Form("new", i18n.T("form.email.title.add_user"), "/email/users");
         fm.addTextField("username", i18n.T("form.email.user.name"), true);
-        fm.addField( emailService.getDomainMap("domain", i18n.T("form.email.user.domain")));
+        fm.addField(emailService.getDomainMap("domain", i18n.T("form.email.user.domain")));
         fm.addPasswordField("password", i18n.T("form.email.user.password"), true);
         fm.addPasswordField("passwordConfirm", i18n.T("form.email.user.password_confirm"), true);
         fm.addSubmit(i18n.T("form.buttons.submit"));

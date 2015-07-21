@@ -18,6 +18,7 @@ public class Response implements Serializable {
     }
 
     public Response(boolean ok) {
+        this();
         this.ok = ok;
     }
 

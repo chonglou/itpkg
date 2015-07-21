@@ -3,7 +3,6 @@ package com.itpkg.email.controllers;
 import com.itpkg.core.services.I18nService;
 import com.itpkg.core.web.widgets.Form;
 import com.itpkg.core.web.widgets.Response;
-import com.itpkg.core.web.widgets.SelectField;
 import com.itpkg.email.models.Alias;
 import com.itpkg.email.services.EmailService;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -39,7 +38,6 @@ public class AliasController {
     Form add() {
         Form fm = new Form("new", i18n.T("form.email.title.add_alias"), "/email/aliases");
         fm.addTextField("source", i18n.T("form.email.alias.source"), true);
-
 
 
         fm.addField(emailService.getDomainMap("domain", i18n.T("form.email.alias.domain")));

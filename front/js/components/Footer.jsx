@@ -46,6 +46,7 @@ var Footer = React.createClass({
                                 message={this.getIntlMessage('links.back_to_top')}/>
                         </a>
                     </p>
+
                     <p>{this.state.copyright}</p>
                 </footer>
             </div>

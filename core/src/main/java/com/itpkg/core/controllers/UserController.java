@@ -1,12 +1,16 @@
 package com.itpkg.core.controllers;
 
+import com.itpkg.core.auth.CurrentUser;
 import com.itpkg.core.models.User;
 import com.itpkg.core.services.I18nService;
 import com.itpkg.core.services.UserService;
 import com.itpkg.core.utils.EmailHelper;
 import com.itpkg.core.utils.EncryptHelper;
+import com.itpkg.core.utils.EngineHelper;
 import com.itpkg.core.web.widgets.Form;
+import com.itpkg.core.web.widgets.Link;
 import com.itpkg.core.web.widgets.Response;
+import com.itpkg.core.web.widgets.TopNavBar;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
@@ -71,6 +75,32 @@ public class UserController {
         String email;
     }
 
+    @RequestMapping(value = "/nav_bar", method = RequestMethod.GET)
+    @ResponseBody
+    TopNavBar getNavBar(@CurrentUser User currentUser) {
+        TopNavBar tnb = new TopNavBar();
+        tnb.setTitle(i18n.T("site.title"));
+        tnb.setHome(new Link("/#home", i18n.T("pages.home.title")));
+
+        for (String en : engineHelper.getEngines()) {
+            if (engineHelper.isEnable(en)) {
+                tnb.addHotLink(new Link("/#" + en, i18n.T("engine." + en + ".name")));
+            }
+        }
+        tnb.addHotLink(new Link("/#about-us", i18n.T("pages.about_us.title")));
+
+        if (currentUser == null) {
+            tnb.setBarName(i18n.T("user.sign_in_or_up"));
+            for (String s : new String[]{"sign_in", "sign_up", "forgot_password", "confirm", "unlock"}) {
+                tnb.addBarLink(new Link("#/users/" + s, i18n.T("form.user." + s + ".title")));
+            }
+        } else {
+            tnb.setBarName(i18n.T("user.personal_center"));
+            tnb.addBarLink(new Link("#/users/profile", i18n.T("form.user.profile.title")));
+        }
+        return tnb;
+    }
+
     @RequestMapping(value = "/sign_in", method = RequestMethod.GET)
     @ResponseBody
     Form getSignIn() {
@@ -109,10 +139,10 @@ public class UserController {
     @ResponseBody
     Form getSignUp() {
         Form fm = new Form("sign_up", i18n.T("form.user.sign_up.title"), "/users/sign_up");
-        fm.addTextField("username", i18n.T("form.fields.username"), null, 4, true,  i18n.T("form.placeholders.username"));
-        fm.addEmailField("email", i18n.T("form.fields.email"), true,  i18n.T("form.placeholders.email"));
-        fm.addPasswordField("password", i18n.T("form.fields.password"), true,  i18n.T("form.placeholders.password"));
-        fm.addPasswordField("password_confirm", i18n.T("form.fields.password_confirm"), true,  i18n.T("form.placeholders.password_confirm"));
+        fm.addTextField("username", i18n.T("form.fields.username"), null, 4, true, i18n.T("form.placeholders.username"));
+        fm.addEmailField("email", i18n.T("form.fields.email"), true, i18n.T("form.placeholders.email"));
+        fm.addPasswordField("password", i18n.T("form.fields.password"), true, i18n.T("form.placeholders.password"));
+        fm.addPasswordField("password_confirm", i18n.T("form.fields.password_confirm"), true, i18n.T("form.placeholders.password_confirm"));
         fm.addSubmit(i18n.T("form.user.sign_up.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
         fm.setOk(true);
@@ -255,4 +285,6 @@ public class UserController {
     EncryptHelper encryptHelper;
     @Autowired
     EmailHelper emailHelper;
+    @Autowired
+    EngineHelper engineHelper;
 }

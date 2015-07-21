@@ -8,6 +8,7 @@ public class RequiredField extends Field {
         super(id, type);
         this.name = name;
     }
+
     private String name;
     private boolean required;
     private int size;
