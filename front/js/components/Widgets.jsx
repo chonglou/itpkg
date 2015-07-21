@@ -4,6 +4,7 @@ var React = require("react");
 var T = require('react-intl');
 
 var ReactBootstrap = require('react-bootstrap');
+var $ = require("jquery");
 
 var Input = React.createClass({
     mixins: [
@@ -13,14 +14,15 @@ var Input = React.createClass({
         return (
             <div className="form-group">
                 <label className={"col-md-3 control-label" + (this.props.nil ? "" : " required")}>
-                                {this.getIntlMessage(this.props.label)}
+                    {this.getIntlMessage(this.props.label)}
                 </label>
+
                 <div className={"col-md-" + (this.props.size || 8)}>
                     <input type={this.props.type}
-                        value={this.props.value}
-                        onChange={this.props.change}
-                        className="form-control"
-                        placeholder={this.getIntlMessage(this.props.placeholder)}/>
+                           value={this.props.value}
+                           onChange={this.props.change}
+                           className="form-control"
+                           placeholder={this.getIntlMessage(this.props.placeholder)}/>
                 </div>
             </div>
         )
@@ -59,7 +61,7 @@ var Button = React.createClass({
     render: function () {
         return (
             <button className={"btn btn-" + (this.props.style || "default")} onClick={this.props.click}>
-            {this.getIntlMessage(this.props.label || "buttons.submit")}
+                {this.getIntlMessage(this.props.label || "buttons.submit")}
             </button>
         )
     }
@@ -76,12 +78,12 @@ var Reset = React.createClass({
         T.IntlMixin
     ],
     render: function () {
-        return (<input className="btn btn-default" type="reset" value={this.getIntlMessage("buttons.reset")} />)
+        return (<input className="btn btn-default" type="reset" value={this.getIntlMessage("buttons.reset")}/>)
     }
 });
 
 var HttpMixin = require("../mixins/Http");
-var $ = require("jquery");
+
 
 var Form = React.createClass({
     mixins: [
@@ -148,7 +150,7 @@ var Form = React.createClass({
                             change={change.bind(null, object.name)}
                             value={state[object.name]}
                             placeholder={object.placeholder || "placeholders.empty_text"}
-                        />);
+                            />);
                 case "password":
                     return (
                         <Password
@@ -158,7 +160,7 @@ var Form = React.createClass({
                             change={change.bind(null, object.name)}
                             value={state[object.name]}
                             placeholder={object.placeholder || "placeholders.password"}
-                        />);
+                            />);
                 case "email":
                     return (
                         <Email
@@ -168,9 +170,9 @@ var Form = React.createClass({
                             change={change.bind(null, object.name)}
                             value={state[object.name]}
                             placeholder={object.placeholder || "placeholders.email"}
-                        />);
+                            />);
                 case "hidden":
-                    return (<Hidden key={key} value={state[object.name]} />);
+                    return (<Hidden key={key} value={state[object.name]}/>);
                 default:
                     return (<div key={key}>{"Unknown field type " + object.type}</div>);
             }
@@ -183,32 +185,32 @@ var Form = React.createClass({
                     show={this.state.modal.show} onHide={this.close}>
                     <ReactBootstrap.Modal.Header closeButton>
                         <ReactBootstrap.Modal.Title>
-                        {this.state.modal.title}
+                            {this.state.modal.title}
                         </ReactBootstrap.Modal.Title>
                     </ReactBootstrap.Modal.Header>
                     <ReactBootstrap.Modal.Body>
                         <ul>
-                        {this.state.modal.body.map(function (object, i) {
-                            return (<li key={"m-" + i}>{object}</li>);
-                        })}
+                            {this.state.modal.body.map(function (object, i) {
+                                return (<li key={"m-" + i}>{object}</li>);
+                            })}
                         </ul>
                     </ReactBootstrap.Modal.Body>
                     <ReactBootstrap.Modal.Footer>
                         <ReactBootstrap.Button onClick={this.close}>
-                        {this.getIntlMessage("buttons.close")}
+                            {this.getIntlMessage("buttons.close")}
                         </ReactBootstrap.Button>
                     </ReactBootstrap.Modal.Footer>
                 </ReactBootstrap.Modal>
                 <fieldset>
                     <legend className="glyphicon glyphicon-list">
-                    &nbsp;{this.getIntlMessage(this.props.title)}
+                        &nbsp;{this.getIntlMessage(this.props.title)}
                     </legend>
                     <form className="form-horizontal">
-                    {fields}
+                        {fields}
                         <div className="form-group">
                             <div className="col-sm-offset-3 col-sm-9">
-                                <Submit click={this.onSubmit} />
-                            &nbsp; &nbsp;
+                                <Submit click={this.onSubmit}/>
+                                &nbsp; &nbsp;
                                 <Reset />
                             </div>
                         </div>
@@ -248,7 +250,69 @@ var Form = React.createClass({
 //    }
 //});
 
+var AjaxForm = React.createClass({
+    getInitialState: function () {
+        return {form: {fields: [], buttons: []}}
+    },
+    componentDidMount: function () {
+        $.get(this.props.source, function (result) {
+            if (this.isMounted()) {
+                this.setState({form: result});
+            }
+        }.bind(this), "json");
+    },
+    render: function () {
+        var fm = this.state.form;
+        var fields = fm.fields.map(function (obj) {
+            var key = fm.id + "-" + obj.id;
+            var lblCss = "col-sm-3";
+            if (obj.required) {
+                lblCss += " required";
+            }
+            var fldCss = "col-sm-" + obj.size;
+            switch (obj.type) {
+                case "text":
+                case "email":
+                case "password":
+                    return (
+                        <ReactBootstrap.Input key={key} type={obj.type} placeholder={obj.placeholder} label={obj.name}
+                                              labelClassName={lblCss} wrapperClassName={fldCss}/>);
+                default:
+                    return (<input key={key}/>)
+            }
+        });
+        var buttons = fm.buttons.map(function (obj) {
+            var key = fm.id + "-" + obj.id;
+            if(obj.id == "reset"){
+                return (<input type='reset' className={"btn btn-"+obj.style} value={obj.name}/>);
+            }
+            return (
+                <ReactBootstrap.Button id={key} key={key} bsStyle={obj.style}>{obj.name}</ReactBootstrap.Button>
+            );
+        });
+        return (
+            <fieldset>
+                <legend className="glyphicon glyphicon-list">
+                    &nbsp;{fm.name}
+                </legend>
+                <form className='form-horizontal'>
+                    {fields}
+
+                    <div className="form-group">
+                        <div className="col-sm-offset-3 col-sm-9">
+                            <ReactBootstrap.ButtonToolbar>
+                                {buttons}
+                            </ReactBootstrap.ButtonToolbar>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+        )
+
+    }
+});
 
 module.exports = {
+    AjaxForm: AjaxForm,
     Form: Form
 };

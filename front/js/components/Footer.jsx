@@ -11,11 +11,12 @@ var padStyle = {
 };
 
 var HttpMixin = require("../mixins/Http");
+var cookie = require("js-cookie");
 
 var Footer = React.createClass({
     mixins: [T.IntlMixin, HttpMixin],
     switchLocale: function (locale) {
-        localStorage.locale = locale;
+        cookie.set("LANG", locale);
         location.reload();
     },
     getInitialState: function () {
@@ -38,8 +39,8 @@ var Footer = React.createClass({
                 <hr/>
                 <footer>
                     <p className="pull-right">
-                        <img onClick={this.switchLocale.bind(this, "en-US")} src={enUS} style={padStyle}/>
-                        <img onClick={this.switchLocale.bind(this, "zh-CN")} src={zhCN} style={padStyle}/>
+                        <img onClick={this.switchLocale.bind(this, "en_US")} src={enUS} style={padStyle}/>
+                        <img onClick={this.switchLocale.bind(this, "zh_CN")} src={zhCN} style={padStyle}/>
                         <a href='#'>
                             <T.FormattedMessage
                                 message={this.getIntlMessage('links.back_to_top')}/>

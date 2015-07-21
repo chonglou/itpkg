@@ -36,35 +36,51 @@ public class Form extends Response {
         fields.add(field);
     }
 
-    public void addEmailField(String id, String name) {
-        addEmailField(id, name, null, 0);
+    public void addEmailField(String id, String name, boolean required) {
+        addEmailField(id, name, null, 0, required, null);
     }
 
-    public void addEmailField(String id, String name, String value, int size) {
+    public void addEmailField(String id, String name, boolean required, String placeholder) {
+        addEmailField(id, name, null, 0, required, placeholder);
+    }
+
+    public void addEmailField(String id, String name, String value, int size, boolean required, String placeholder) {
         EmailField tf = new EmailField(id, name);
         tf.setValue(value);
-        tf.setSize(size > 0 ? size : 8);
+        tf.setSize(size > 0 ? size : 7);
+        tf.setRequired(required);
+        tf.setPlaceholder(placeholder);
         fields.add(tf);
     }
 
-    public void addTextField(String id, String name) {
-        addTextField(id, name, null, 0);
+    public void addTextField(String id, String name, boolean required) {
+        addTextField(id, name, null, 0, required, null);
+    }
+    public void addTextField(String id, String name, boolean required, String placeholder) {
+        addTextField(id, name, null, 0, required, placeholder);
     }
 
-    public void addTextField(String id, String name, String value, int size) {
+    public void addTextField(String id, String name, String value, int size, boolean required, String placeholder) {
         TextField tf = new TextField(id, name);
         tf.setValue(value);
         tf.setSize(size > 0 ? size : 8);
+        tf.setRequired(required);
+        tf.setPlaceholder(placeholder);
         fields.add(tf);
     }
 
-    public void addPasswordField(String id, String name) {
-        addPasswordField(id, name, 0);
+    public void addPasswordField(String id, String name, boolean required) {
+        addPasswordField(id, name, 0, required, null);
+    }
+    public void addPasswordField(String id, String name, boolean required, String placeholder) {
+        addPasswordField(id, name, 0, required, placeholder);
     }
 
-    public void addPasswordField(String id, String name, int size) {
+    public void addPasswordField(String id, String name, int size, boolean required, String placeholder) {
         PasswordField pf = new PasswordField(id, name);
         pf.setSize(size > 0 ? size : 6);
+        pf.setRequired(required);
+        pf.setPlaceholder(placeholder);
         fields.add(pf);
     }
 

@@ -37,7 +37,7 @@ public class DomainController {
     @ResponseBody
     Form add() {
         Form fm = new Form("new", i18n.T("form.email.title.add_domain"), "/email/domains");
-        fm.addTextField("name", i18n.T("form.email.domain.name"));
+        fm.addTextField("name", i18n.T("form.email.domain.name"), true);
         fm.addSubmit(i18n.T("form.buttons.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
         fm.setOk(true);

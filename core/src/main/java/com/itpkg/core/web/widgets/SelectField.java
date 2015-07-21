@@ -6,9 +6,9 @@ import java.util.Map;
 /**
  * Created by flamen on 15-7-18.
  */
-public class SelectField<T> extends Field {
-    public SelectField(String id) {
-        super(id, "select");
+public class SelectField<T> extends RequiredField {
+    public SelectField(String id, String name) {
+        super(id, "select", name);
         options = new HashMap<>();
     }
 
@@ -18,15 +18,6 @@ public class SelectField<T> extends Field {
 
     private Map<T, String> options;
     private T value;
-    private String name;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Map<T, String> getOptions() {
         return options;

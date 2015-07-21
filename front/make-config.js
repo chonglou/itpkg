@@ -7,7 +7,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = function (options) {
-    var port = 8080;
+    var port = 8088;
     var entry = {
         main: options.render ? "./js/render" : "./js/server",
         vendor: [
@@ -19,6 +19,7 @@ module.exports = function (options) {
             "react-router-bootstrap",
             "react-localstorage",
             "react-intl",
+            "js-cookie",
             "jwt-decode"
         ]
     };
@@ -108,7 +109,7 @@ module.exports = function (options) {
             hot: options.hot,
             inline: true,
             proxy: {
-                "*": "http://localhost:3000"
+                "*": "http://localhost:8080"
             }
         },
         debug: options.debug,

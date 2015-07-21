@@ -142,6 +142,11 @@ module.exports = {
         }
     }),
     SignUp: React.createClass({
+        render:function(){
+            return (<W.AjaxForm source="/users/sign_up"/>)
+        }
+    }),
+    SignUp1: React.createClass({
         mixins: [
             Router.Navigation,
             T.IntlMixin,

@@ -1,8 +1,9 @@
 *.swp
 *.un~
-.idea
 *.iml
+*.log
 out
-.gradle
 build
 tmp
+.gradle
+.idea

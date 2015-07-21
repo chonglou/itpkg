@@ -30,6 +30,7 @@ import java.io.IOException;
 
 
 @Controller("core.controllers.users")
+@RequestMapping("/users")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -70,19 +71,19 @@ public class UserController {
         String email;
     }
 
-    @RequestMapping(value = "/user/sign_in", method = RequestMethod.GET)
+    @RequestMapping(value = "/sign_in", method = RequestMethod.GET)
     @ResponseBody
     Form getSignIn() {
-        Form fm = new Form("sign_in", i18n.T("form.user.sign_in.title"), "/user/sign_in");
-        fm.addEmailField("email", i18n.T("form.fields.email"));
-        fm.addPasswordField("password", i18n.T("form.fields.password"));
+        Form fm = new Form("sign_in", i18n.T("form.user.sign_in.title"), "/users/sign_in");
+        fm.addEmailField("email", i18n.T("form.fields.email"), true);
+        fm.addPasswordField("password", i18n.T("form.fields.password"), true, i18n.T("form.placeholders.password"));
         fm.addSubmit(i18n.T("form.user.sign_in.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
         fm.setOk(true);
         return fm;
     }
 
-    @RequestMapping(value = "/user/sign_in", method = RequestMethod.POST)
+    @RequestMapping(value = "/sign_in", method = RequestMethod.POST)
     @ResponseBody
     Response postSignIn(@RequestBody SignInFm fm, BindingResult result) {
 
@@ -104,21 +105,21 @@ public class UserController {
         return res;
     }
 
-    @RequestMapping(value = "/user/sign_up", method = RequestMethod.GET)
+    @RequestMapping(value = "/sign_up", method = RequestMethod.GET)
     @ResponseBody
     Form getSignUp() {
-        Form fm = new Form("sign_up", i18n.T("form.user.sign_up.title"), "/user/sign_up");
-        fm.addTextField("username", i18n.T("form.fields.username"));
-        fm.addEmailField("email", i18n.T("form.fields.email"));
-        fm.addPasswordField("password", i18n.T("form.fields.password"));
-        fm.addPasswordField("password_confirm", i18n.T("form.fields.password_confirm"));
+        Form fm = new Form("sign_up", i18n.T("form.user.sign_up.title"), "/users/sign_up");
+        fm.addTextField("username", i18n.T("form.fields.username"), null, 4, true,  i18n.T("form.placeholders.username"));
+        fm.addEmailField("email", i18n.T("form.fields.email"), true,  i18n.T("form.placeholders.email"));
+        fm.addPasswordField("password", i18n.T("form.fields.password"), true,  i18n.T("form.placeholders.password"));
+        fm.addPasswordField("password_confirm", i18n.T("form.fields.password_confirm"), true,  i18n.T("form.placeholders.password_confirm"));
         fm.addSubmit(i18n.T("form.user.sign_up.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
         fm.setOk(true);
         return fm;
     }
 
-    @RequestMapping(value = "/user/sign_up", method = RequestMethod.POST)
+    @RequestMapping(value = "/sign_up", method = RequestMethod.POST)
     @ResponseBody
     Response postSignUp(@RequestBody SignUpFm fm, BindingResult result) {
         Response res = new Response(result);
@@ -150,18 +151,18 @@ public class UserController {
 
     }
 
-    @RequestMapping(value = "/user/forgot_password", method = RequestMethod.GET)
+    @RequestMapping(value = "/forgot_password", method = RequestMethod.GET)
     @ResponseBody
     Form getForgotPassword() {
-        Form fm = new Form("forgot_password", i18n.T("form.user.forgot_password.title"), "/user/forgot_password");
-        fm.addEmailField("email", i18n.T("form.fields.email"));
+        Form fm = new Form("forgot_password", i18n.T("form.user.forgot_password.title"), "/users/forgot_password");
+        fm.addEmailField("email", i18n.T("form.fields.email"), true);
         fm.addSubmit(i18n.T("form.user.forgot_password.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
         fm.setOk(true);
         return fm;
     }
 
-    @RequestMapping(value = "/user/forgot_password", method = RequestMethod.POST)
+    @RequestMapping(value = "/forgot_password", method = RequestMethod.POST)
     @ResponseBody
     Response postForgotPassword(@RequestBody SignUpFm fm, BindingResult result) {
         Response res = new Response(result);
@@ -182,36 +183,36 @@ public class UserController {
         return res;
     }
 
-    @RequestMapping(value = "/user/change_password", method = RequestMethod.GET)
+    @RequestMapping(value = "/change_password", method = RequestMethod.GET)
     @ResponseBody
     Form getChangePassword() {
-        Form fm = new Form("change_password", i18n.T("form.user.change_password.title"), "/user/change_password");
-        fm.addEmailField("email", i18n.T("form.fields.email"));
+        Form fm = new Form("change_password", i18n.T("form.user.change_password.title"), "/users/change_password");
+        fm.addEmailField("email", i18n.T("form.fields.email"), true);
         fm.addSubmit(i18n.T("form.user.change_password.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
         fm.setOk(true);
         return fm;
     }
 
-    @RequestMapping(value = "/user/change_password", method = RequestMethod.POST)
+    @RequestMapping(value = "/change_password", method = RequestMethod.POST)
     @ResponseBody
     Response postChangePassword() {
         Response res = new Response();
         return res;
     }
 
-    @RequestMapping(value = "/user/confirm", method = RequestMethod.GET)
+    @RequestMapping(value = "/confirm", method = RequestMethod.GET)
     @ResponseBody
     Form getConfirm() {
-        Form fm = new Form("confirm", i18n.T("form.user.confirm.title"), "/user/confirm");
-        fm.addEmailField("email", i18n.T("form.fields.email"));
+        Form fm = new Form("confirm", i18n.T("form.user.confirm.title"), "/users/confirm");
+        fm.addEmailField("email", i18n.T("form.fields.email"), true);
         fm.addSubmit(i18n.T("form.user.confirm.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
         fm.setOk(true);
         return fm;
     }
 
-    @RequestMapping(value = "/user/confirm", method = RequestMethod.POST)
+    @RequestMapping(value = "/confirm", method = RequestMethod.POST)
     @ResponseBody
     Response postConfirm() {
         Response res = new Response();
@@ -219,25 +220,25 @@ public class UserController {
     }
 
 
-    @RequestMapping(value = "/user/unlock", method = RequestMethod.GET)
+    @RequestMapping(value = "/unlock", method = RequestMethod.GET)
     @ResponseBody
     Form getUnlock() {
-        Form fm = new Form("unlock", i18n.T("form.user.unlock.title"), "/user/unlock");
-        fm.addEmailField("email", i18n.T("form.fields.email"));
+        Form fm = new Form("unlock", i18n.T("form.user.unlock.title"), "/users/unlock");
+        fm.addEmailField("email", i18n.T("form.fields.email"), true);
         fm.addSubmit(i18n.T("form.user.unlock.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
         fm.setOk(true);
         return fm;
     }
 
-    @RequestMapping(value = "/user/unlock", method = RequestMethod.POST)
+    @RequestMapping(value = "/unlock", method = RequestMethod.POST)
     @ResponseBody
     Response postUnlock() {
         Response res = new Response();
         return res;
     }
 
-    @RequestMapping(value = "/user/token", method = RequestMethod.GET)
+    @RequestMapping(value = "/token", method = RequestMethod.GET)
     @ResponseBody
     Response getToken() {
         Response res = new Response();

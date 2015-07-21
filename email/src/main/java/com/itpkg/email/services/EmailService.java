@@ -26,17 +26,18 @@ public class EmailService {
         return domainDao.findOne(id);
     }
 
-    public SelectField<Long> getDomainMap() {
-        SelectField<Long> s = new SelectField<>(null);
+    public SelectField<Long> getDomainMap(String id, String name) {
+        SelectField<Long> s = new SelectField<>(id, name);
         domainDao.findAll().forEach((d) -> s.addOption(d.getId(), d.getName()));
         return s;
     }
 
-    public SelectField<Long> getUserMap() {
-        SelectField<Long> s = new SelectField<>(null);
+    public SelectField<Long> getUserMap(String id, String name) {
+        SelectField<Long> s = new SelectField<>(id, name);
         userDao.findAll().forEach((u) -> s.addOption(u.getId(), u.getEmail()));
         return s;
     }
+
 
     public List<Domain> listAllDomain() {
         return domainDao.findAll();

@@ -10,6 +10,8 @@ IT-PACKAGE(PLATFORM)
     make
 
 ## Notes
+    npm install <pkgname> --save
+    npm install <pkgname> --save-dev    
     npm update --save
     npm view <pkgname> versions
     npm -g ls | grep -v 'npm@' | awk '/@/ {print $2}' | awk -F@ '{print $1}' | xargs sudo npm -g rm

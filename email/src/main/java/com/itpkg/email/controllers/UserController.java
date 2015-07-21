@@ -45,13 +45,10 @@ public class UserController {
     @ResponseBody
     Form add() {
         Form fm = new Form("new", i18n.T("form.email.title.add_user"), "/email/users");
-        fm.addTextField("username", i18n.T("form.email.user.name"));
-        SelectField<Long> domains = emailService.getDomainMap();
-        domains.setId("domain");
-        domains.setName(i18n.T("form.email.user.domain"));
-        fm.addField(domains);
-        fm.addPasswordField("password", i18n.T("form.email.user.password"));
-        fm.addPasswordField("passwordConfirm", i18n.T("form.email.user.password_confirm"));
+        fm.addTextField("username", i18n.T("form.email.user.name"), true);
+        fm.addField( emailService.getDomainMap("domain", i18n.T("form.email.user.domain")));
+        fm.addPasswordField("password", i18n.T("form.email.user.password"), true);
+        fm.addPasswordField("passwordConfirm", i18n.T("form.email.user.password_confirm"), true);
         fm.addSubmit(i18n.T("form.buttons.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
         fm.setOk(true);

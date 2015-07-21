@@ -33,20 +33,18 @@ public class AliasController {
 
     }
 
+
     @RequestMapping(value = "/new", method = RequestMethod.GET)
     @ResponseBody
     Form add() {
         Form fm = new Form("new", i18n.T("form.email.title.add_alias"), "/email/aliases");
-        fm.addTextField("source", i18n.T("form.email.alias.source"));
+        fm.addTextField("source", i18n.T("form.email.alias.source"), true);
 
-        SelectField<Long> domains = emailService.getDomainMap();
-        domains.setName(i18n.T("form.email.alias.domain"));
-        fm.addField(domains);
 
-        SelectField<Long> destinations = emailService.getUserMap();
-        destinations.setId("destination");
-        destinations.setName("form.email.alias.destination");
-        fm.addField(destinations);
+
+        fm.addField(emailService.getDomainMap("domain", i18n.T("form.email.alias.domain")));
+
+        fm.addField(emailService.getUserMap("destination", i18n.T("form.email.alias.destination")));
 
         fm.addSubmit(i18n.T("form.buttons.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
