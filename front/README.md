@@ -17,7 +17,6 @@ IT-PACKAGE(PLATFORM)
 
 
 ## Development
-    npm run server 
     npm run build
     npm start
     open http://localhost:8088
