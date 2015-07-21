@@ -37,7 +37,7 @@ public class HomeController {
     TopNavBar getNavBar(@CurrentUser User currentUser) {
         TopNavBar tnb = new TopNavBar();
         tnb.setTitle(i18n.T("site.title"));
-        tnb.setHome(new Link("/#home", i18n.T("pages.home.title")));
+        tnb.setHome(new Link("/#/", i18n.T("pages.home.title")));
 
         for (String en : engineHelper.getEngines()) {
             if (engineHelper.isEnable(en)) {
