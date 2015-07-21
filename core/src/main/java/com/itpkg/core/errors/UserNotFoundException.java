@@ -11,6 +11,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class UserNotFoundException extends RuntimeException {
 
     public UserNotFoundException(String userId) {
-        super("could not find user '" + userId + "'."); //todo i18n
+        super("could not find user."); //todo i18n
     }
 }

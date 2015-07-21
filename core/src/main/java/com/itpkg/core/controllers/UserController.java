@@ -31,7 +31,7 @@ import java.io.IOException;
 
 @Controller("core.controllers.users")
 public class UserController {
-    private final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     public class UserToken {
         public long id;

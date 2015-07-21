@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * Created by flamen on 15-7-16.
  */
 
-@Entity
+@Entity(name = "CmsTag")
 @Table(name = "cms_tags")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Tag extends IdEntity {

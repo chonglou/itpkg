@@ -49,7 +49,7 @@ dependencies {
     runtime "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
 
     compile project(':core')
-//    compile project(':cms')
+    compile project(':cms')
     compile project(':email')
 //    compile project(':forum')
 //    compile project(':ops')

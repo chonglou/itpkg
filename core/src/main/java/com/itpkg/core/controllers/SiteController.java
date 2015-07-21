@@ -1,5 +1,7 @@
 package com.itpkg.core.controllers;
 
+import com.itpkg.core.auth.AuthService;
+import com.itpkg.core.auth.Rule;
 import com.itpkg.core.services.I18nService;
 import com.itpkg.core.services.SettingService;
 import com.itpkg.core.services.UserService;
@@ -10,8 +12,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,10 +25,11 @@ import java.util.Map;
  */
 
 @Controller("core.controllers.site")
+@RequestMapping("/site")
 public class SiteController {
-    private final Logger logger = LoggerFactory.getLogger(SiteController.class);
+    private static final Logger logger = LoggerFactory.getLogger(SiteController.class);
 
-    @RequestMapping(value = "/site/info", method = RequestMethod.GET)
+    @RequestMapping(value = "/info", method = RequestMethod.GET)
     @ResponseBody
     Map<String, String> info() {
         Map<String, String> map = new HashMap<>();
@@ -31,6 +38,34 @@ public class SiteController {
         }
         return map;
     }
+
+    public class UrlInfo{
+        public String method;
+        public String url;
+        public String controller;
+    }
+
+    @Rule(role = "admin")
+    @RequestMapping(value = "/routes", method = RequestMethod.GET)
+    @ResponseBody
+    public List<UrlInfo> routes() {
+        List<UrlInfo> urls = new ArrayList<>();
+        requestMappingHandlerMapping.getHandlerMethods().forEach((k, v) -> {
+            for (RequestMethod m : k.getMethodsCondition().getMethods()) {
+                for (String u : k.getPatternsCondition().getPatterns()) {
+                    UrlInfo ui = new UrlInfo();
+                    ui.method = m.toString();
+                    ui.url = u;
+                    ui.controller = v.getMethod().toString();
+                    urls.add(ui);
+                }
+            }
+        });
+
+        return urls;
+
+    }
+
 
     @Autowired
     UserService userService;
@@ -41,5 +76,7 @@ public class SiteController {
     @Autowired
     SettingService settingService;
 
+    @Autowired
+    RequestMappingHandlerMapping requestMappingHandlerMapping;
 
 }
