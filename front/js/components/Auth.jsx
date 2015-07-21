@@ -5,43 +5,37 @@ var Reflux = require('reflux');
 import {Router,Link,Navigation} from 'react-router'
 
 var W = require("./Widgets");
-var SiteStore = require("../stores/Site");
+var SiteStores = require("../stores/Site");
 
 var NoSignInForm = React.createClass({
     mixins: [
         Navigation,
-        Reflux.connect(SiteStore.NavBar, 'navBar')
+        Reflux.connect(SiteStores.NavBar, 'navBar')
     ],
     render: function () {
         var navBar = this.state.navBar;
-        console.log("render no sign in form");
-        console.log(navBar);
-        if (navBar) {
-            return (
-                <div className="row">
-                    <div className="col-md-offset-2 col-md-8">
-                        <W.Form source={this.props.source}/>
+        //console.log("render no sign in form");
+        //console.log(navBar);
+        return (
+            <div className="row">
+                <div className="col-md-offset-2 col-md-8">
+                    <W.Form source={this.props.source}/>
 
-                        <div className="row">
-                            <br/>
-                            <ul>
-                                {navBar.barLinks.map(function (obj) {
-                                    return (
-                                        <li key={"l-" + obj.url}>
-                                            <Link to={obj.url}>{obj.name}</Link>
-                                        </li>
-                                    )
-                                })}
-                            </ul>
-                        </div>
+                    <div className="row">
+                        <br/>
+                        <ul>
+                            {navBar.barLinks.map(function (obj) {
+                                return (
+                                    <li key={"l-" + obj.url}>
+                                        <Link to={obj.url}>{obj.name}</Link>
+                                    </li>
+                                )
+                            })}
+                        </ul>
                     </div>
                 </div>
-            );
-        }
-        else {
-            return (<div/>)
-        }
-
+            </div>
+        );
     }
 });
 

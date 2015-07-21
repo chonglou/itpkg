@@ -9,12 +9,12 @@ import java.util.List;
  */
 public class TopNavBar implements Serializable {
     public TopNavBar() {
-        hot = new ArrayList<>();
+        hotLinks = new ArrayList<>();
         barLinks = new ArrayList<>();
     }
 
     public void addHotLink(Link l) {
-        hot.add(l);
+        hotLinks.add(l);
     }
 
     public void addBarLink(Link l) {
@@ -22,7 +22,7 @@ public class TopNavBar implements Serializable {
     }
 
     private String title;
-    private List<Link> hot;
+    private List<Link> hotLinks;
     private String barName;
     private List<Link> barLinks;
 
@@ -35,12 +35,12 @@ public class TopNavBar implements Serializable {
         this.title = title;
     }
 
-    public List<Link> getHot() {
-        return hot;
+    public List<Link> getHotLinks() {
+        return hotLinks;
     }
 
-    public void setHot(List<Link> hot) {
-        this.hot = hot;
+    public void setHotLinks(List<Link> hotLinks) {
+        this.hotLinks = hotLinks;
     }
 
     public String getBarName() {
