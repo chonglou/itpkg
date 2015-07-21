@@ -1,7 +1,8 @@
 package com.itpkg.core.controllers;
 
-import com.itpkg.core.auth.AuthService;
+import com.itpkg.core.auth.CurrentUser;
 import com.itpkg.core.auth.Rule;
+import com.itpkg.core.models.User;
 import com.itpkg.core.services.I18nService;
 import com.itpkg.core.services.SettingService;
 import com.itpkg.core.services.UserService;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +39,7 @@ public class SiteController {
         return map;
     }
 
-    public class UrlInfo{
+    public class UrlInfo {
         public String method;
         public String url;
         public String controller;
@@ -48,7 +48,7 @@ public class SiteController {
     @Rule(role = "admin")
     @RequestMapping(value = "/routes", method = RequestMethod.GET)
     @ResponseBody
-    public List<UrlInfo> routes() {
+    public List<UrlInfo> routes(@CurrentUser User currentUser) {
         List<UrlInfo> urls = new ArrayList<>();
         requestMappingHandlerMapping.getHandlerMethods().forEach((k, v) -> {
             for (RequestMethod m : k.getMethodsCondition().getMethods()) {

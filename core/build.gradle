@@ -27,7 +27,7 @@ dependencies {
     compile 'com.lowagie:itext:4.2.2'
     compile 'org.olap4j:olap4j:1.2.0'
 
-    compile 'org.springframework.hateoas:spring-hateoas:0.17.0.RELEASE'
+//    compile 'org.springframework.hateoas:spring-hateoas:0.17.0.RELEASE'
 
 
     compile "org.springframework:spring-web:${springVersion}"

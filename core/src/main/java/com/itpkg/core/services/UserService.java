@@ -20,14 +20,14 @@ import java.util.UUID;
 /**
  * Created by flamen on 15-7-14.
  */
-@Service
+@Service("core.service.user")
 public class UserService {
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public User auth(String email, String password) {
         return userDao.findByEmail(email).map((u) -> {
             if (encryptHelper.check(password, u.getPassword())) {
-                log(u, i18n.T("log.user.sign_in.success"), Log.Type.ERROR);
+                log(u, i18n.T("logs.user.sign_in.success"), Log.Type.ERROR);
                 return u;
             }
             log(u, i18n.T("form.user.sign_in.failed"), Log.Type.ERROR);

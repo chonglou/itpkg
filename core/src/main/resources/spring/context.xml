@@ -11,12 +11,18 @@
     <context:property-placeholder properties-ref="yamlProperties"/>
 
     <bean id="roleAspect" class="com.itpkg.core.auth.RoleAspect"/>
+
     <aop:aspectj-autoproxy>
         <aop:include name="roleAspect"/>
     </aop:aspectj-autoproxy>
+    <mvc:annotation-driven>
+        <mvc:argument-resolvers>
+            <bean class="com.itpkg.core.auth.CurrentUserHandlerMethodArgumentResolver"/>
+        </mvc:argument-resolvers>
+    </mvc:annotation-driven>
 
     <!--<mvc:interceptors>-->
-        <!--<bean class="com.itpkg.core.auth.AccessInterceptor"/>-->
+    <!--<bean class="com.itpkg.core.auth.AccessInterceptor"/>-->
     <!--</mvc:interceptors>-->
 
     <!--<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">-->

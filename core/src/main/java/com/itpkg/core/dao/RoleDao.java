@@ -17,13 +17,13 @@ public interface RoleDao extends JpaRepository<Role, Long> {
     Optional<Role> find(@Param("userId") long userId,
                         @Param("name") String name,
                         @Param("rType") String rType,
-                        @Param("rId") Integer rId);
+                        @Param("rId") Long rId);
 
     @Query(value = "delete from Role r where r.user.id=:userId and r.name=:name and r.rType=:rType and r.rId=:rId")
     void delete(@Param("userId") long userId,
                 @Param("name") String name,
                 @Param("rType") String rType,
-                @Param("rId") Integer rId);
+                @Param("rId") Long rId);
 
     @Query(value = "delete from Role r where r.user.id=:userId and r.name=:name and r.rType=:rType")
     void delete(@Param("userId") long userId,

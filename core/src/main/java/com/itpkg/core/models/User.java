@@ -17,6 +17,14 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User extends IdEntity {
 
+    public boolean isLocked() {
+        return locked != null;
+    }
+
+    public boolean isConfirmed() {
+        return confirmed != null;
+    }
+
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)

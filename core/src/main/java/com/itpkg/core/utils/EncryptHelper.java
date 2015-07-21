@@ -27,15 +27,6 @@ public class EncryptHelper {
     private final String TOKEN_AUDIENCE = "user";
 
     public <T> T token2payload(String token, Class<T> clazz) throws JoseException, IOException, InvalidJwtException {
-//        new JwtConsumerBuilder()
-//                .setRequireExpirationTime()
-//                .setAllowedClockSkewInSeconds(30)
-//                .setRequireSubject()
-//                .setExpectedIssuer(TOKEN_ISSUER)
-//                .setExpectedAudience(TOKEN_AUDIENCE)
-//                .setVerificationKey(tokenKey)
-//                .build()
-//                .processToClaims(token);
         JsonWebSignature jws = new JsonWebSignature();
         jws.setCompactSerialization(token);
         jws.setKey(tokenKey);

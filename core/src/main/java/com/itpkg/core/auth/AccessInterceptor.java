@@ -1,6 +1,5 @@
 package com.itpkg.core.auth;
 
-import com.itpkg.core.errors.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -18,12 +17,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //logger.debug("AUTH " + request.getRequestURL());
-//        if(authService.match(request)){
-//            return true;
-//        }
-//        throw new UserNotFoundException("");//todo
         return true;
     }
 
-    AuthService authService;
 }

@@ -1,7 +1,5 @@
 package com.itpkg.core.auth;
 
-import org.springframework.web.bind.annotation.RequestMethod;
-
 import java.lang.annotation.*;
 
 /**
@@ -11,7 +9,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Rule {
-     String role();
-     Class<?> resourceType() default Void.class;
-     String resourceId() default "nil";
+    String role();
+
+    Class<?> resourceType() default Void.class;
+
+    String resourceId() default "nil";
 }

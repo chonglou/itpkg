@@ -1,6 +1,6 @@
 package com.itpkg.core.errors;
 
-import org.springframework.hateoas.VndErrors;
+import com.itpkg.core.web.widgets.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class ExceptionAdvice {
-    @ResponseBody
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    VndErrors userNotFoundExceptionHandler(UserNotFoundException ex) {
-        return new VndErrors("error", ex.getMessage());
+    @ResponseBody
+    Response userNotFoundExceptionHandler(UserNotFoundException ex) {
+        Response r = new Response();
+        r.addError(ex.getMessage());
+        return r;
     }
+
 
 }

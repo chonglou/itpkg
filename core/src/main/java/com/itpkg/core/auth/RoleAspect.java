@@ -1,7 +1,9 @@
 package com.itpkg.core.auth;
 
-import com.itpkg.core.dao.RoleDao;
-import com.itpkg.core.dao.UserDao;
+import com.itpkg.core.errors.UserNotFoundException;
+import com.itpkg.core.models.User;
+import com.itpkg.core.services.I18nService;
+import com.itpkg.core.services.RoleService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -12,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 
 /**
  * Created by flamen on 15-7-20.
@@ -23,23 +27,45 @@ public class RoleAspect {
     @Around("within(com.itpkg.*.controllers.*) && @annotation(requestMapping) && @annotation(rule)")
     public Object ruleBean(ProceedingJoinPoint joinPoint, RequestMapping requestMapping, Rule rule) throws Exception {
 
-        String rType = rule.resourceType() == Void.class ? null : rule.resourceType().getTypeName();
+        String rType = Void.class.equals(rule.resourceType()) ? null : rule.resourceType().getTypeName();
 
-        //Long rId = rType == null || "nil".equals(rule.resourceId()) ? null : (Long)joinPoint.getArgs()[0];
         Long rId = null;
+        User currentUser = null;
         if (rType != null && !"nil".equals(rule.resourceId())) {
             Object[] args = joinPoint.getArgs();
             MethodSignature methodSignature = (MethodSignature) joinPoint.getStaticPart().getSignature();
             String[] names = methodSignature.getParameterNames();
+            Method method = methodSignature.getMethod();
+            Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+            assert args.length == parameterAnnotations.length && args.length == names.length;
             for (int i = 0; i < names.length; i++) {
                 if (names[i].equals(rule.resourceId())) {
                     rId = (Long) args[i];
+                    continue;
+                }
+                for (Annotation an : parameterAnnotations[i]) {
+                    if (an instanceof CurrentUser) {
+                        currentUser = (User) args[i];
+                    }
                 }
             }
         }
 
         logger.debug(String.format("AUTH(%s, %s, %d) %s", rule.role(), rType, rId, request.getRequestURI()));
 
+        if (currentUser == null) {
+            throw new UserNotFoundException(i18n.T("errors.user.not_sign_in"));
+        }
+        if (!currentUser.isConfirmed()) {
+            throw new UserNotFoundException(i18n.T("errors.user.need_to_confirm"));
+        }
+        if (currentUser.isLocked()) {
+            throw new UserNotFoundException(i18n.T("errors.user.need_to_unlock"));
+        }
+
+        if (!roleService.check(currentUser.getId(), rule.role(), rType, rId)) {
+            throw new UserNotFoundException(i18n.T("errors.user.no_role"));
+        }
 
         Object retVal;
         try {
@@ -54,8 +80,9 @@ public class RoleAspect {
     @Autowired
     HttpServletRequest request;
     @Autowired
-    UserDao userDao;
+    RoleService roleService;
+
     @Autowired
-    RoleDao roleDao;
+    I18nService i18n;
 
 }

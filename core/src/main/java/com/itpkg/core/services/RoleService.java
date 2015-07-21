@@ -13,7 +13,7 @@ import java.util.Date;
 /**
  * Created by flamen on 15-7-15.
  */
-@Service
+@Service("core.service.role")
 public class RoleService {
 
     public boolean check(long user, String name) {
@@ -24,7 +24,7 @@ public class RoleService {
         return check(user, name, rType, null);
     }
 
-    public boolean check(long user, String name, String rType, Integer rId) {
+    public boolean check(long user, String name, String rType, Long rId) {
         return roleDao.find(user, name, rType, rId).map((r) -> {
             Date now = new Date();
             return now.after(r.getStartUp()) && now.before(r.getShutDown());
@@ -43,7 +43,7 @@ public class RoleService {
         roleDao.delete(user, name, rType);
     }
 
-    public void delete(long user, String name, String rType, Integer rId) {
+    public void delete(long user, String name, String rType, Long rId) {
         roleDao.delete(user, name, rType, rId);
     }
 
@@ -55,11 +55,11 @@ public class RoleService {
         set(user, name, rType, null, min(), max());
     }
 
-    public void set(long user, String name, String rType, int rId) {
+    public void set(long user, String name, String rType, long rId) {
         set(user, name, rType, rId, min(), max());
     }
 
-    public void set(long user, String name, String rType, Integer rId, Date startUp, Date shutDown) {
+    public void set(long user, String name, String rType, Long rId, Date startUp, Date shutDown) {
         roleDao.find(user, name, rType, rId).map((r) -> {
             r.setStartUp(startUp);
             r.setShutDown(shutDown);
