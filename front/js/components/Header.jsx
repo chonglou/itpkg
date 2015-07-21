@@ -7,12 +7,7 @@ var T = require('react-intl');
 var Router = require('react-router');
 var Link = Router.Link;
 
-var ReactBootstrap = require('react-bootstrap');
-var Navbar = ReactBootstrap.Navbar;
-var Nav = ReactBootstrap.Nav;
-var NavItem = ReactBootstrap.NavItem;
-var DropdownButton = ReactBootstrap.DropdownButton;
-var MenuItem = ReactBootstrap.MenuItem;
+import {ReactBootstrap, Navbar, Nav, NavItem, DropdownButton, MenuItem} from "react-bootstrap"
 
 var ReactRouterBootstrap = require('react-router-bootstrap');
 
@@ -35,12 +30,14 @@ var Header = React.createClass({
         return {
             user: UserStore.currentUser(),
             title: '',
-            links: []
+            hot: [],
+            barName: '',
+            home:{},
+            barLinks:[]
         };
     },
     componentDidMount: function () {
-        this.get("/base/nav-bar", function (rs) {
-            document.title = rs.title;
+        this.get("/nav_bar", function (rs) {
             if (this.isMounted()) {
                 this.setState(rs);
             }

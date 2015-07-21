@@ -25,8 +25,9 @@ var Footer = React.createClass({
         };
     },
     componentDidMount: function () {
-        this.get("/base/copyright", function (rs) {
+        this.get("/info", function (rs) {
             if (this.isMounted()) {
+                document.title = rs.title;
                 this.setState({
                     copyright: rs.copyright
                 });
