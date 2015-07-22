@@ -1,11 +1,21 @@
+spring:
+  profiles.active: development-postgresql
+
+---
+spring:
+  profiles: default
+
 http:
-  home: http://localhost/8088
+  home: http://localhost:8088
   cache:
     expire: 1
+
 root:
   email: root@localhost
+
 secrets:
   encryptor: Iengoe6uingo1mae8iyooquiem7Foopigheif7cotiiV7bos1Tubei0eceiThaagh4kaetheeW3gae2eith4ichu5ihie9aeVo1Ephoo0ot6ahf4pheisu6OxaeDahki
+
 database:
   mode: update
   show_sql: true
@@ -15,39 +25,46 @@ database:
   password:
   dialect: org.hibernate.dialect.PostgreSQLDialect
 
-#  driver: com.mysql.jdbc.Driver
-#  url: jdbc:mysql://localhost:3306/itpkg
-#  username: root
-#  password:
-#  dialect: org.hibernate.dialect.MySQL5Dialect
 
-#  driver: org.apache.derby.jdbc.EmbeddedDriver
-#  url: jdbc:derby:tmp/db;create=true
-#  #url: jdbc:derby:tmp/db
-#  username:
-#  password:
-#  dialect: org.hibernate.dialect.DerbyDialect
 
 ---
-
 spring:
-    profiles: development
+    profiles: development-postgresql
 
 ---
-
 spring:
-    profiles: test
+    profiles: development-mysql
+
+database:
+  driver: com.mysql.jdbc.Driver
+  url: jdbc:mysql://localhost:3306/itpkg
+  username: root
+  password:
+  dialect: org.hibernate.dialect.MySQL5Dialect
 
 ---
+spring:
+    profiles: development-derby
+database:
+  driver: org.apache.derby.jdbc.EmbeddedDriver
+  url: jdbc:derby:tmp/db;create=true
+  #url: jdbc:derby:tmp/db
+  username:
+  password:
+  dialect: com.itpkg.core.dialects.DerbyDialect
 
+---
 spring:
     profiles: production
+
 http:
   home: https://CHANGE_ME
   cache:
     expire: -1
+
 secrets:
   encryptor: CHANGE_ME
+
 database:
   show_sql: false
   password: CHANGE ME

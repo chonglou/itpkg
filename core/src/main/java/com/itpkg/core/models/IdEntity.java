@@ -12,7 +12,7 @@ public class IdEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Date created;
     @Column(nullable = false)
     private Date updated;
