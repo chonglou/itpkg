@@ -11,7 +11,10 @@ import javax.persistence.*;
  */
 
 @Entity(name = "EmailUser")
-@Table(name = "email_users")
+@Table(name = "email_users", indexes = {
+        @Index(columnList = "email"),
+        @Index(columnList = "email,domain_id", unique = true)
+})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User extends IdEntity {
 
@@ -20,7 +23,7 @@ public class User extends IdEntity {
     private Domain domain;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     public Domain getDomain() {

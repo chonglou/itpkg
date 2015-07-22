@@ -25,11 +25,11 @@ public class RoleService {
     }
 
     public boolean check(long user, String name, String rType, Long rId) {
-        return roleDao.find(user, name, rType, rId).map((r) -> {
-            Date now = new Date();
-            return now.after(r.getStartUp()) && now.before(r.getShutDown());
-        }).orElse(false);
+        Date now = new Date();
+        Role r = roleDao.find(user, name, rType, rId);
+        return r != null && now.after(r.getStartUp()) && now.before(r.getShutDown());
     }
+
 
     public void delete(long user) {
         roleDao.delete(user);
@@ -60,22 +60,16 @@ public class RoleService {
     }
 
     public void set(long user, String name, String rType, Long rId, Date startUp, Date shutDown) {
-        roleDao.find(user, name, rType, rId).map((r) -> {
-            r.setStartUp(startUp);
-            r.setShutDown(shutDown);
-            r.setUpdated(new Date());
-            roleDao.save(r);
-            return r;
-        }).orElseGet(() -> {
-            Role r = new Role();
+        Role r = roleDao.find(user, name, rType, rId);
+        if (r == null) {
+            r = new Role();
             r.setUser(userDao.findOne(user));
             r.setName(name);
-            r.setStartUp(startUp);
-            r.setShutDown(shutDown);
-            r.setUpdated(new Date());
-            roleDao.save(r);
-            return r;
-        });
+        }
+        r.setStartUp(startUp);
+        r.setShutDown(shutDown);
+        r.setUpdated(new Date());
+        roleDao.save(r);
     }
 
 

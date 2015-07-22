@@ -1,6 +1,9 @@
 package com.itpkg.core.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -11,21 +14,36 @@ import java.io.IOException;
  */
 @Component("core.utils.json")
 public class JsonHelper {
+    private static final Logger logger = LoggerFactory.getLogger(JsonHelper.class);
 
-    public String object2json(Object obj) throws IOException {
-        return objectMapper.writeValueAsString(obj);
+    public String object2json(Object obj) {
+        if (obj != null) {
+            try {
+                return mapper.writeValueAsString(obj);
+            } catch (IOException e) {
+                logger.error("generate json error", e);
+            }
+        }
+        return null;
     }
 
-    public <T> T json2object(String json, Class<T> clazz) throws IOException {
-        return objectMapper.readValue(json, clazz);
+    public <T> T json2object(String json, Class<T> clazz) {
+        if (json != null) {
+            try {
+                return mapper.readValue(json, clazz);
+            } catch (IOException e) {
+                logger.error("parse json error", e);
+            }
+        }
+        return null;
     }
 
 
     @PostConstruct
     void init() {
-        objectMapper = new ObjectMapper();
-        //objectMapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
+        mapper = new ObjectMapper();
+        mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     }
 
-    private ObjectMapper objectMapper;
+    private ObjectMapper mapper;
 }

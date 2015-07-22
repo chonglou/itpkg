@@ -22,17 +22,19 @@ import java.util.UUID;
  */
 @Service("core.service.user")
 public class UserService {
-    private final Logger logger = LoggerFactory.getLogger(UserService.class);
+    private final static Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public User auth(String email, String password) {
-        return userDao.findByEmail(email).map((u) -> {
+        User u = userDao.findByEmail(email);
+        if (u != null) {
             if (encryptHelper.check(password, u.getPassword())) {
-                log(u, i18n.T("logs.user.sign_in.success"), Log.Type.ERROR);
+                log(u, i18n.T("logs.user.sign_in.success"), Log.Type.INFO);
                 return u;
+            } else {
+                log(u, i18n.T("form.user.sign_in.failed"), Log.Type.ERROR);
             }
-            log(u, i18n.T("form.user.sign_in.failed"), Log.Type.ERROR);
-            return u;
-        }).orElse(null);
+        }
+        return null;
 
     }
 
@@ -41,7 +43,7 @@ public class UserService {
     }
 
     public User findByEmail(String email) {
-        return userDao.findByEmail(email).map((u) -> u).orElse(null);
+        return userDao.findByEmail(email);
     }
 
 
@@ -54,9 +56,9 @@ public class UserService {
 
 
     public User create(String username, String email, String password) {
-        return userDao.findByEmail(email).map((u) -> (User) null).orElseGet(() -> {
-
-            User u = new User();
+        User u = userDao.findByEmail(email);
+        if (u == null) {
+            u = new User();
             u.setUsername(username);
             u.setEmail(email);
             u.setPassword(encryptHelper.password(password));
@@ -67,14 +69,20 @@ public class UserService {
             Date now = new Date();
             u.setUpdated(now);
             u.setCreated(now);
+            if (root.equals(email)) {
+                u.setConfirmed(new Date());
+            }
 
             userDao.save(u);
+            log(u, i18n.T("logs.user.sign_up.success"), Log.Type.INFO);
             if (root.equals(email)) {
                 roleService.set(u.getId(), "root");
                 roleService.set(u.getId(), "admin");
             }
+
             return u;
-        });
+        }
+        return null;
     }
 
     public User create(UserProfile profile, ConnectionKey key, ConnectionData data) {

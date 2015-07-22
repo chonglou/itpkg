@@ -4,6 +4,7 @@ import com.itpkg.core.auth.CurrentUser;
 import com.itpkg.core.auth.Rule;
 import com.itpkg.core.models.User;
 import com.itpkg.core.services.I18nService;
+import com.itpkg.core.services.LocaleService;
 import com.itpkg.core.services.SettingService;
 import com.itpkg.core.services.UserService;
 import com.itpkg.core.utils.EngineHelper;
@@ -110,5 +111,8 @@ public class HomeController {
 
     @Autowired
     RequestMappingHandlerMapping requestMappingHandlerMapping;
+
+    @Autowired
+    LocaleService localeService;
 
 }

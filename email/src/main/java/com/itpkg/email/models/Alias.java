@@ -10,7 +10,10 @@ import javax.persistence.*;
  * Created by flamen on 15-7-18.
  */
 @Entity(name = "EmailAlias")
-@Table(name = "email_aliases")
+@Table(name = "email_aliases", indexes = {
+        @Index(columnList = "source", unique = true),
+        @Index(columnList = "destination")
+})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Alias extends IdEntity {
 

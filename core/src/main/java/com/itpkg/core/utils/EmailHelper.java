@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  */
 @Component("core.utils.email")
 public class EmailHelper {
-    private final Logger logger = LoggerFactory.getLogger(EmailHelper.class);
+    private final static Logger logger = LoggerFactory.getLogger(EmailHelper.class);
 
     public void send(String to, String subject, String body) {
         //todo

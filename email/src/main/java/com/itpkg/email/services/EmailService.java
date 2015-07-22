@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Service("email.service")
 public class EmailService {
-    private final Logger logger = LoggerFactory.getLogger(EmailService.class);
+    private final static Logger logger = LoggerFactory.getLogger(EmailService.class);
 
     public Domain getDomain(long id) {
         return domainDao.findOne(id);
@@ -46,8 +46,9 @@ public class EmailService {
     }
 
     public Domain createDomain(String name) {
-        return domainDao.findByName(name).map((d) -> (Domain) null).orElseGet(() -> {
-            Domain d = new Domain();
+        Domain d = domainDao.findByName(name);
+        if (d == null) {
+            d = new Domain();
             d.setName(name);
             Date now = new Date();
             d.setCreated(now);
@@ -55,8 +56,8 @@ public class EmailService {
             domainDao.save(d);
             logger.info("add email domain " + name);
             return d;
-        });
-
+        }
+        return null;
     }
 
     public void removeDomain(long domain) {
@@ -78,20 +79,21 @@ public class EmailService {
         String src = source + "@" + d.getName();
         String dst = destination + "@" + d.getName();
 
-
-        return userDao.findByEmail(dst).map((ud) ->
-                        userDao.findByEmail(src).map((us) -> (Alias) null).orElseGet(() -> {
-                            Alias a = new Alias();
-                            a.setSource(src);
-                            a.setDestination(dst);
-                            Date now = new Date();
-                            a.setCreated(now);
-                            a.setUpdated(now);
-                            logger.info("add email alias " + a.getSource() + " => " + a.getDestination());
-                            return a;
-
-                        })
-        ).orElse(null);
+        User ud = userDao.findByEmail(dst);
+        if (ud != null) {
+            User us = userDao.findByEmail(src);
+            if (us == null) {
+                Alias a = new Alias();
+                a.setSource(src);
+                a.setDestination(dst);
+                Date now = new Date();
+                a.setCreated(now);
+                a.setUpdated(now);
+                logger.info("add email alias " + a.getSource() + " => " + a.getDestination());
+                return a;
+            }
+        }
+        return null;
     }
 
     public void removeAlias(long alias) {
@@ -110,8 +112,9 @@ public class EmailService {
             return null;
         }
         String email = name + "@" + d.getName();
-        return userDao.findByEmail(email).map((u) -> (User) null).orElseGet(() -> {
-            User u = new User();
+        User u = userDao.findByEmail(email);
+        if (u == null) {
+            u = new User();
             u.setEmail(email);
             u.setDomain(d);
 
@@ -123,7 +126,8 @@ public class EmailService {
             userDao.save(u);
             logger.info("add mail user " + email);
             return u;
-        });
+        }
+        return null;
     }
 
     public void removeUser(long user) {

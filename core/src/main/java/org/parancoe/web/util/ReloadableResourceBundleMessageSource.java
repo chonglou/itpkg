@@ -292,7 +292,7 @@ public class ReloadableResourceBundleMessageSource extends AbstractMessageSource
      * MessageFormat instance per message code.
      */
     @Override
-    protected MessageFormat resolveCode(String code, Locale locale) {
+    public MessageFormat resolveCode(String code, Locale locale) {
         if (this.cacheMillis < 0) {
             ReloadableResourceBundleMessageSource.PropertiesHolder propHolder = getMergedProperties(
                     locale);
