@@ -15,18 +15,18 @@ database:
   password:
   dialect: org.hibernate.dialect.PostgreSQLDialect
 
-  #driver: com.mysql.jdbc.Driver
-  #url: jdbc:mysql://localhost:3306/itpkg
-  #username: root
-  #password:
-  #dialect: org.hibernate.dialect.MySQL5Dialect
+#  driver: com.mysql.jdbc.Driver
+#  url: jdbc:mysql://localhost:3306/itpkg
+#  username: root
+#  password:
+#  dialect: org.hibernate.dialect.MySQL5Dialect
 
-  #driver: org.apache.derby.jdbc.EmbeddedDriver
-  ##url: jdbc:derby:tmp/db;create: true
-  #url: jdbc:derby:tmp/db
-  #username:
-  #password:
-  #dialect: org.hibernate.dialect.DerbyDialect
+#  driver: org.apache.derby.jdbc.EmbeddedDriver
+#  url: jdbc:derby:tmp/db;create=true
+#  #url: jdbc:derby:tmp/db
+#  username:
+#  password:
+#  dialect: org.hibernate.dialect.DerbyDialect
 
 ---
 

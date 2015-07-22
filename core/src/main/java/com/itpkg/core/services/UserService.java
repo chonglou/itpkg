@@ -1,7 +1,9 @@
 package com.itpkg.core.services;
 
+import com.itpkg.core.dao.ContactDao;
 import com.itpkg.core.dao.LogDao;
 import com.itpkg.core.dao.UserDao;
+import com.itpkg.core.models.Contact;
 import com.itpkg.core.models.Log;
 import com.itpkg.core.models.User;
 import com.itpkg.core.utils.EncryptHelper;
@@ -80,6 +82,12 @@ public class UserService {
                 roleService.set(u.getId(), "admin");
             }
 
+            Contact c = new Contact();
+            c.setUpdated(now);
+            c.setCreated(now);
+            c.setUser(u);
+            contactDao.save(c);
+
             return u;
         }
         return null;
@@ -119,6 +127,8 @@ public class UserService {
     RoleService roleService;
     @Autowired
     UserDao userDao;
+    @Autowired
+    ContactDao contactDao;
     @Value("${root.email}")
     String root;
     @Autowired

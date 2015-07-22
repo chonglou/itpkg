@@ -30,6 +30,7 @@ public class SettingService {
         if (s == null) {
             s = new Setting();
             s.setKey(key);
+            s.setCreated(now);
         }
         s.setEncode(encode);
         s.setVal(encode ? encryptHelper.encrypt(json) : json);

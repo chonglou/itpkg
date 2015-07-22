@@ -61,24 +61,29 @@ public class RoleService {
 
     public void set(long user, String name, String rType, Long rId, Date startUp, Date shutDown) {
         Role r = roleDao.find(user, name, rType, rId);
+        Date now = new Date();
         if (r == null) {
             r = new Role();
             r.setUser(userDao.findOne(user));
             r.setName(name);
+            r.setCreated(now);
         }
         r.setStartUp(startUp);
         r.setShutDown(shutDown);
-        r.setUpdated(new Date());
+        r.setUpdated(now);
         roleDao.save(r);
     }
 
 
     private Date max() {
-        return Date.from(LocalDateTime.MAX.atZone(ZoneId.systemDefault()).toInstant());
+
+        //return Date.from(LocalDateTime.MAX.atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from(LocalDateTime.of(1000, 1, 1, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
     }
 
     private Date min() {
-        return Date.from(LocalDateTime.MIN.atZone(ZoneId.systemDefault()).toInstant());
+        //return Date.from(LocalDateTime.MIN.atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from(LocalDateTime.of(9999, 12, 31, 23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
     }
 
     @Autowired

@@ -3,7 +3,7 @@ package com.itpkg.core.auth;
 import com.itpkg.core.controllers.UserController;
 import com.itpkg.core.models.User;
 import com.itpkg.core.services.UserService;
-import com.itpkg.core.utils.EncryptHelper;
+import com.itpkg.core.utils.JwtHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class CurrentUserHandlerMethodArgumentResolver implements HandlerMethodAr
             if (ss.length == 2 && !"Bearer".equals(ss[0])) {
                 UserController.UserToken token;
                 try {
-                    token = encryptHelper.token2payload(ss[1], UserController.UserToken.class);
+                    token = jwtHelper.token2payload(ss[1], UserController.UserToken.class);
                     return userService.findById(token.id);
                 } catch (Exception e) {
                     logger.error("Bad token", e);
@@ -45,6 +45,6 @@ public class CurrentUserHandlerMethodArgumentResolver implements HandlerMethodAr
     @Autowired
     UserService userService;
     @Autowired
-    EncryptHelper encryptHelper;
+    JwtHelper jwtHelper;
 
 }

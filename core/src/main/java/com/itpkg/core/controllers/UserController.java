@@ -6,10 +6,9 @@ import com.itpkg.core.models.User;
 import com.itpkg.core.services.I18nService;
 import com.itpkg.core.services.UserService;
 import com.itpkg.core.utils.EmailHelper;
-import com.itpkg.core.utils.EncryptHelper;
+import com.itpkg.core.utils.JwtHelper;
 import com.itpkg.core.web.widgets.Form;
 import com.itpkg.core.web.widgets.Response;
-import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 /**
  * Created by flamen on 15-7-14.
@@ -62,11 +60,7 @@ public class UserController {
             } else {
                 UserToken ut = new UserToken();
                 ut.id = u.getId();
-                try {
-                    res.addData(encryptHelper.payload2token("Sign in", ut, 60 * 24));
-                } catch (IOException | JoseException e) {
-                    res.addError(e.getMessage());
-                }
+                res.addData(jwtHelper.payload2token("Sign in", ut, 60 * 24));
             }
         }
         return res;
@@ -79,7 +73,7 @@ public class UserController {
         fm.addTextField("username", i18n.T("form.fields.username"), null, 4, true, i18n.T("form.placeholders.username"));
         fm.addEmailField("email", i18n.T("form.fields.email"), true, i18n.T("form.placeholders.email"));
         fm.addPasswordField("password", i18n.T("form.fields.password"), true, i18n.T("form.placeholders.password"));
-        fm.addPasswordField("password_confirm", i18n.T("form.fields.password_confirm"), true, i18n.T("form.placeholders.password_confirm"));
+        fm.addPasswordField("passwordConfirm", i18n.T("form.fields.password_confirm"), true, i18n.T("form.placeholders.password_confirm"));
         fm.addSubmit(i18n.T("form.user.sign_up.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
         fm.setOk(true);
@@ -110,7 +104,7 @@ public class UserController {
 
         UserToken ut = new UserToken();
         ut.id = uid;
-        String token = encryptHelper.payload2token(action, ut, 30);
+        String token = jwtHelper.payload2token(action, ut, 30);
         String subject = i18n.T("mail.user." + action.toLowerCase() + ".subject");
         String body = i18n.T("mail.user." + action.toLowerCase() + ".body", email, token);
         emailHelper.send(email, subject, body);
@@ -218,7 +212,7 @@ public class UserController {
     @Autowired
     I18nService i18n;
     @Autowired
-    EncryptHelper encryptHelper;
+    JwtHelper jwtHelper;
     @Autowired
     EmailHelper emailHelper;
 }

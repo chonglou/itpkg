@@ -2,22 +2,22 @@ package com.itpkg.core.forms;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Size;
 
 /**
  * Created by flamen on 15-7-21.
  */
 public class SignUpFm {
     @NotEmpty
-    @Range(min = 2, max = 32)
+    @Size(min = 2, max = 32)
     private String username;
     @NotEmpty
     @Email
     private String email;
     @NotEmpty
-    @Range(min = 6, max = 128)
+    @Size(min = 6, max = 128)
     private String password;
     private String passwordConfirm;
 

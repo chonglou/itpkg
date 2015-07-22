@@ -60,17 +60,20 @@
 
     <!-- ========================== translation ===================== -->
     <aop:config>
-        <aop:pointcut id="serviceMethods" expression="execution(* com.itpkg.*.services.*(..))"/>
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>
+        <aop:pointcut id="serviceMethods" expression="execution(* com.itpkg.*.services.*.*(..))"/>
 
+        <!--<aop:pointcut id="serviceMethods" expression="execution(* *..*Service*.*(..))"/>-->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>
     </aop:config>
 
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
-            <tx:method name="add*" propagation="REQUIRED"/>
-            <tx:method name="set*" propagation="REQUIRED"/>
-            <tx:method name="del*" propagation="REQUIRED"/>
-            <tx:method name="*" propagation="SUPPORTS" read-only="true"/>
+            <tx:method name="add*"/>
+            <tx:method name="set*"/>
+            <tx:method name="del*"/>
+            <tx:method name="create*"/>
+            <tx:method name="T"/>
+            <tx:method name="*" read-only="true"/>
         </tx:attributes>
     </tx:advice>
 
