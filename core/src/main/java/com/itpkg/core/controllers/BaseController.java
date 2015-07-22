@@ -18,20 +18,23 @@ import java.util.Locale;
  */
 public class BaseController {
 
-    void sendMail(String email, String url, Token token, Locale locale) {
-
-        String code = encryptHelper.toBase64(jwtHelper.payload2token(url, token, 30));
+    void sendTokenMail(String email, String path, Token token, Locale locale) {
+        String code = token2string(path, token, 30);
         String subject = i18n.T("mail." + token.getAction() + ".subject");
         String body = i18n.T(
-                "mail.user." + token.getAction() + ".body",
+                "mail." + token.getAction() + ".body",
                 email,
-                String.format("%s%s/%s?locale=%s", home, url, code, locale)
+                String.format("%s%s/%s?locale=%s", home, path, code, locale)
         );
         emailHelper.send(email, subject, body);
     }
 
-    Token toToken(String t) {
-        return jwtHelper.token2payload(encryptHelper.fromBase64(t), Token.class);
+    String token2string(String subject, Token token, int minutes) {
+        return encryptHelper.toBase64(jwtHelper.payload2token(subject, token, minutes));
+    }
+
+    Token string2token(String token) {
+        return jwtHelper.token2payload(encryptHelper.fromBase64(token), Token.class);
     }
 
     RedirectView doShow(Message msg) {

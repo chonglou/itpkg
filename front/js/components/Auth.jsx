@@ -5,6 +5,7 @@ var Reflux = require('reflux');
 import {Router,Link,Navigation} from 'react-router'
 
 var W = require("./Widgets");
+var Utils = require("../Utils");
 var SiteStores = require("../stores/Site");
 
 var NoSignInForm = React.createClass({
@@ -62,9 +63,13 @@ module.exports = {
     }),
     ChangePassword: React.createClass({//todo
         render: function () {
-            return (
-                <NoSignInForm source="/users/change_password"/>
-            );
+            var token = Utils.gup("code");
+            if(token){
+                return (
+                    <NoSignInForm source={"/users/change_password/"+token}/>
+                );
+            }
+            return (<div/>)
         }
     }),
     Confirm: React.createClass({//todo
