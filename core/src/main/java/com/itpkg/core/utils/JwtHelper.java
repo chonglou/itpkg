@@ -38,7 +38,7 @@ public class JwtHelper {
                 .build();
         try {
             JwtClaims claims = consumer.processToClaims(token);
-            return claims.getClaimValue("data", clazz);
+            return jsonHelper.json2object(claims.getClaimValue("data", String.class), clazz);
         } catch (InvalidJwtException | MalformedClaimException e) {
             logger.error("parse jwt error", e);
         }
@@ -54,7 +54,7 @@ public class JwtHelper {
         claims.setIssuedAtToNow();
         claims.setNotBeforeMinutesInThePast(2);
         claims.setSubject(subject);
-        claims.setClaim("data", payload);
+        claims.setStringClaim(CLAIM_KEY, jsonHelper.object2json(payload));
 
         JsonWebSignature jws = new JsonWebSignature();
         jws.setPayload(claims.toJson());
@@ -96,4 +96,5 @@ public class JwtHelper {
 
     private final String TOKEN_ISSUER = "itpkg";
     private final String TOKEN_AUDIENCE = "user";
+    private final String CLAIM_KEY = "data";
 }

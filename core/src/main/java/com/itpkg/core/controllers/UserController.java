@@ -6,9 +6,7 @@ import com.itpkg.core.forms.SignInFm;
 import com.itpkg.core.forms.SignUpFm;
 import com.itpkg.core.models.Token;
 import com.itpkg.core.models.User;
-import com.itpkg.core.services.I18nService;
 import com.itpkg.core.services.UserService;
-import com.itpkg.core.utils.EmailHelper;
 import com.itpkg.core.web.widgets.Form;
 import com.itpkg.core.web.widgets.Link;
 import com.itpkg.core.web.widgets.Message;
@@ -16,7 +14,6 @@ import com.itpkg.core.web.widgets.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -59,9 +56,8 @@ public class UserController extends BaseController {
                 res.addError(i18n.T("form.user.sign_in.failed"));
             } else {
                 Token ut = new Token();
-                ut.setId(u.getId());
-                ut.setAction(Token.Action.SIGN_IN);
-                res.addData(jwtHelper.payload2token("Sign in", ut, 60 * 24));
+                ut.setUid(u.getId());
+                res.addData(jwtHelper.payload2token("/users/sign_in", new Token(u.getId(), "users.sign_in"), 60 * 24));
             }
         }
         return res;
@@ -90,8 +86,7 @@ public class UserController extends BaseController {
             if (u == null) {
                 res.addError(i18n.T("form.user.sign_up.failed"));
             } else {
-                sendMail(u.getId(), fm.getEmail(), Token.Action.CONFIRM, locale);
-
+                sendMail(fm.getEmail(), "/users/confirm", new Token(u.getId(), "users.confirm"), locale);
             }
         }
         return res;
@@ -111,16 +106,14 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "/forgot_password", method = RequestMethod.POST)
     @ResponseBody
-    Response postForgotPassword(@RequestBody @Valid SignUpFm fm, BindingResult result, Locale locale) {
+    Response postForgotPassword(@RequestBody @Valid EmailFm fm, BindingResult result, Locale locale) {
         Response res = new Response(result);
         if (res.isOk()) {
             User u = userService.findByEmail(fm.getEmail());
             if (u == null) {
                 res.addError(i18n.T("form.user.email_not_exists"));
             } else {
-
-                sendMail(u.getId(), fm.getEmail(), Token.Action.CHANGE_PASSWORD, locale);
-
+                sendMail(fm.getEmail(), "#/users/change_password", new Token(u.getId(), "users.change_password"), locale);
             }
         }
         return res;
@@ -145,8 +138,8 @@ public class UserController extends BaseController {
         Response res = new Response(result);
         if (res.isOk()) {
             Token ut = toToken(fm.getToken());
-            if (ut != null && Token.Action.CHANGE_PASSWORD == ut.getAction()) {
-                userService.setPassword(ut.getId(), fm.getPassword());
+            if (ut != null && "users.change_password".equals(ut.getAction())) {
+                userService.setPassword(ut.getUid(), fm.getPassword());
             } else {
                 res.addError(i18n.T("errors.user.bad_token"));
             }
@@ -171,10 +164,14 @@ public class UserController extends BaseController {
         Response res = new Response(result);
         if (res.isOk()) {
             User u = userService.findByEmail(fm.getEmail());
-            if (u == null || u.isConfirmed()) {
+            if (u == null) {
                 res.addError(i18n.T("errors.user.not_found"));
             } else {
-                sendMail(u.getId(), u.getEmail(), Token.Action.CONFIRM, locale);
+                if (u.isConfirmed()) {
+                    res.addError(i18n.T("errors.user.bad_status"));
+                } else {
+                    sendMail(fm.getEmail(), "/users/confirm", new Token(u.getId(), "users.confirm"), locale);
+                }
             }
         }
         return res;
@@ -185,9 +182,14 @@ public class UserController extends BaseController {
 
         Message msg;
         Token ut = toToken(token);
-        if (ut != null && Token.Action.CONFIRM == ut.getAction()) {
-            userService.setConfirmed(ut.getId());
-            msg = Message.Success(i18n.T("logs.success"), null, new Link("users.sign_in", "form.user.sign_in.submit"));
+        if (ut != null && "users.confirm".equals(ut.getAction())) {
+            User u = userService.findById(ut.getUid());
+            if (u != null && !u.isConfirmed()) {
+                userService.setConfirmed(ut.getUid());
+                msg = Message.Success(i18n.T("logs.success"), null, new Link("users.sign_in", i18n.T("form.user.sign_in.submit")));
+            } else {
+                msg = Message.Warning(i18n.T("logs.failed"), i18n.T("errors.user.bad_status"), new Link("users.sign_in", i18n.T("form.user.sign_in.submit")));
+            }
         } else {
             msg = Message.Error(i18n.T("logs.failed"), i18n.T("errors.user.bad_token"), null);
         }
@@ -212,10 +214,16 @@ public class UserController extends BaseController {
         Response res = new Response(result);
         if (res.isOk()) {
             User u = userService.findByEmail(fm.getEmail());
-            if (u != null && u.isLocked()) {
-                sendMail(u.getId(), u.getEmail(), Token.Action.UNLOCK, locale);
+            if (u == null) {
+                res.addError(i18n.T("errors.user.not_found"));
+
             } else {
-                res.addError(i18n.T("errors.user.bad_status"));
+                if (u.isLocked()) {
+                    sendMail(fm.getEmail(), "/users/unlock", new Token(u.getId(), "users.unlock"), locale);
+                } else {
+                    res.addError(i18n.T("errors.user.bad_status"));
+                }
+
             }
         }
         return res;
@@ -223,12 +231,16 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "/unlock/{token}", method = RequestMethod.GET)
     RedirectView getUnlockToken(@PathVariable("token") String token) {
-        logger.debug("GET TOKEN: " + token);
         Message msg;
         Token ut = toToken(token);
-        if (ut != null && Token.Action.UNLOCK == ut.getAction()) {
-            userService.setLocked(ut.getId(), null);
-            msg = Message.Success(i18n.T("logs.success"), null, new Link("users.sign_in", "form.user.sign_in.submit"));
+        if (ut != null && "users.token".equals(ut.getAction())) {
+            User u = userService.findById(ut.getUid());
+            if (u != null && u.isLocked()) {
+                userService.setLocked(ut.getUid(), null);
+                msg = Message.Success(i18n.T("logs.success"), null, new Link("users.sign_in", i18n.T("form.user.sign_in.submit")));
+            } else {
+                msg = Message.Warning(i18n.T("logs.failed"), i18n.T("errors.user.bad_status"), new Link("users.sign_in", i18n.T("form.user.sign_in.submit")));
+            }
         } else {
             msg = Message.Error(i18n.T("logs.failed"), i18n.T("errors.user.bad_token"), null);
         }
@@ -236,28 +248,6 @@ public class UserController extends BaseController {
     }
 
 
-    private void sendMail(long uid, String email, Token.Action action, Locale locale) {
-        String act = action.name().toLowerCase();
-        Token ut = new Token();
-        ut.setId(uid);
-        ut.setAction(action);
-        String token = encryptHelper.toBase64(jwtHelper.payload2token(act, ut, 30));
-        String subject = i18n.T("mail.user." + act + ".subject");
-        String body = i18n.T(
-                "mail.user." + act + ".body",
-                email,
-                String.format("%s/users/%s/%s?locale=%s", home, act, token, locale)
-        );
-        emailHelper.send(email, subject, body);
-
-    }
-
     @Autowired
     UserService userService;
-    @Autowired
-    I18nService i18n;
-    @Autowired
-    EmailHelper emailHelper;
-    @Value("${http.home}")
-    String home;
 }

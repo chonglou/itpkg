@@ -32,8 +32,8 @@ public class CurrentUserHandlerMethodArgumentResolver implements HandlerMethodAr
             if (ss.length == 2 && !"Bearer".equals(ss[0])) {
 
                 Token token = jwtHelper.token2payload(ss[1], Token.class);
-                if (token != null && Token.Action.SIGN_IN == token.getAction()) {
-                    return userService.findById(token.getId());
+                if (token != null && "users.sign_in".equals(token.getAction())) {
+                    return userService.findById(token.getUid());
                 }
 
 
