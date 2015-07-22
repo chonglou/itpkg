@@ -6,6 +6,7 @@ import {Router, Route, DefaultRoute} from "react-router";
 var Auth = require("./components/Auth");
 var Site = require("./components/Site");
 var Root = require("./components/Root");
+var Message = require("./components/Message");
 
 var Routes = (
     <Route handler={Root}>
@@ -20,7 +21,7 @@ var Routes = (
         <Route name="users.confirm" path="/users/confirm" handler={ Auth.Confirm }/>
         <Route name="users.unlock" path="/users/unlock" handler={ Auth.Unlock }/>
         <Route name="users.profile" path="/users/profile" handler={ Auth.Profile }/>
-
+        <Route name="message.show" path="/show" handler={ Message }/>
     </Route>
 );
 

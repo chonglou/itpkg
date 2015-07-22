@@ -1,6 +1,6 @@
 package com.itpkg.core.auth;
 
-import com.itpkg.core.controllers.UserController;
+import com.itpkg.core.models.Token;
 import com.itpkg.core.models.User;
 import com.itpkg.core.services.UserService;
 import com.itpkg.core.utils.JwtHelper;
@@ -30,13 +30,13 @@ public class CurrentUserHandlerMethodArgumentResolver implements HandlerMethodAr
         if (auth != null) {
             String[] ss = auth.split(" ");
             if (ss.length == 2 && !"Bearer".equals(ss[0])) {
-                UserController.UserToken token;
-                try {
-                    token = jwtHelper.token2payload(ss[1], UserController.UserToken.class);
-                    return userService.findById(token.id);
-                } catch (Exception e) {
-                    logger.error("Bad token", e);
+
+                Token token = jwtHelper.token2payload(ss[1], Token.class);
+                if (token != null && Token.Action.SIGN_IN == token.getAction()) {
+                    return userService.findById(token.getId());
                 }
+
+
             }
         }
         return null;//WebArgumentResolver.UNRESOLVED;

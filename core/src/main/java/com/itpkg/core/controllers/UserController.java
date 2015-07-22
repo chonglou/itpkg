@@ -4,12 +4,15 @@ import com.itpkg.core.forms.EmailFm;
 import com.itpkg.core.forms.PasswordFm;
 import com.itpkg.core.forms.SignInFm;
 import com.itpkg.core.forms.SignUpFm;
+import com.itpkg.core.models.Token;
 import com.itpkg.core.models.User;
 import com.itpkg.core.services.I18nService;
 import com.itpkg.core.services.UserService;
 import com.itpkg.core.utils.EmailHelper;
 import com.itpkg.core.utils.JwtHelper;
 import com.itpkg.core.web.widgets.Form;
+import com.itpkg.core.web.widgets.Link;
+import com.itpkg.core.web.widgets.Message;
 import com.itpkg.core.web.widgets.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
 import java.util.Locale;
@@ -28,13 +32,8 @@ import java.util.Locale;
 
 @Controller("core.controllers.users")
 @RequestMapping("/users")
-public class UserController {
+public class UserController extends BaseController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
-    public class UserToken {
-        public long id;
-        public String action;
-    }
 
 
     @RequestMapping(value = "/sign_in", method = RequestMethod.GET)
@@ -59,8 +58,9 @@ public class UserController {
             if (u == null) {
                 res.addError(i18n.T("form.user.sign_in.failed"));
             } else {
-                UserToken ut = new UserToken();
-                ut.id = u.getId();
+                Token ut = new Token();
+                ut.setId(u.getId());
+                ut.setAction(Token.Action.SIGN_IN);
                 res.addData(jwtHelper.payload2token("Sign in", ut, 60 * 24));
             }
         }
@@ -90,7 +90,7 @@ public class UserController {
             if (u == null) {
                 res.addError(i18n.T("form.user.sign_up.failed"));
             } else {
-                sendMail(u.getId(), fm.getEmail(), "confirm", locale);
+                sendMail(u.getId(), fm.getEmail(), Token.Action.CONFIRM, locale);
 
             }
         }
@@ -119,7 +119,7 @@ public class UserController {
                 res.addError(i18n.T("form.user.email_not_exists"));
             } else {
 
-                sendMail(u.getId(), fm.getEmail(), "Change password", locale);
+                sendMail(u.getId(), fm.getEmail(), Token.Action.CHANGE_PASSWORD, locale);
 
             }
         }
@@ -144,9 +144,9 @@ public class UserController {
 
         Response res = new Response(result);
         if (res.isOk()) {
-            UserToken ut = jwtHelper.token2payload(fm.getToken(), UserToken.class);
-            if (ut != null && "forgot_password".equals(ut.action)) {
-                userService.setPassword(ut.id, fm.getPassword());
+            Token ut = jwtHelper.token2payload(fm.getToken(), Token.class);
+            if (ut != null && Token.Action.CHANGE_PASSWORD == ut.getAction()) {
+                userService.setPassword(ut.getId(), fm.getPassword());
             } else {
                 res.addError(i18n.T("errors.user.bad_token"));
             }
@@ -174,7 +174,7 @@ public class UserController {
             if (u == null || u.isConfirmed()) {
                 res.addError(i18n.T("errors.user.not_found"));
             } else {
-                sendMail(u.getId(), u.getEmail(), "confirm", locale);
+                sendMail(u.getId(), u.getEmail(), Token.Action.CONFIRM, locale);
             }
         }
         return res;
@@ -184,9 +184,9 @@ public class UserController {
     @ResponseBody
     Response getConfirmToken(@PathVariable("token") String token) {
         Response res = new Response();
-        UserToken ut = jwtHelper.token2payload(token, UserToken.class);
-        if (ut != null && "confirm".equals(ut.action)) {
-            userService.setConfirmed(ut.id);
+        Token ut = jwtHelper.token2payload(token, Token.class);
+        if (ut != null && Token.Action.CONFIRM == ut.getAction()) {
+            userService.setConfirmed(ut.getId());
             res.setOk(true);
         } else {
             res.addError(i18n.T("errors.user.bad_status"));
@@ -214,7 +214,7 @@ public class UserController {
         if (res.isOk()) {
             User u = userService.findByEmail(fm.getEmail());
             if (u != null && u.isLocked()) {
-                sendMail(u.getId(), u.getEmail(), "unlock", locale);
+                sendMail(u.getId(), u.getEmail(), Token.Action.UNLOCK, locale);
             } else {
                 res.addError(i18n.T("errors.user.bad_status"));
             }
@@ -223,32 +223,32 @@ public class UserController {
     }
 
     @RequestMapping(value = "/unlock/{token}", method = RequestMethod.GET)
-    @ResponseBody
-    Response getUnlockToken(@PathVariable("token") String token) {
-        Response res = new Response();
-        UserToken ut = jwtHelper.token2payload(token, UserToken.class);
-        if (ut != null && "unlock".equals(ut.action)) {
-            userService.setLocked(ut.id, null);
-            res.setOk(true);
-        } else {
-            res.addError(i18n.T("errors.user.bad_token"));
+    RedirectView getUnlockToken(@PathVariable("token") String token) {
 
+        Token ut = jwtHelper.token2payload(token, Token.class);
+        Message msg;
+        if (ut != null && Token.Action.UNLOCK == ut.getAction()) {
+            userService.setLocked(ut.getId(), null);
+            msg = Message.Success(i18n.T("logs.success"), null, new Link("users.sign_in", "form.user.sign_in.submit"));
+
+        } else {
+            msg = Message.Success(i18n.T("logs.success"), null, null);
         }
-        return res;
+        return doShow(msg);
     }
 
 
-    private void sendMail(long uid, String email, String action, Locale locale) {
-
-        UserToken ut = new UserToken();
-        ut.id = uid;
-        ut.action = action;
-        String token = jwtHelper.payload2token(action, ut, 30);
-        String subject = i18n.T("mail.user." + action.toLowerCase() + ".subject");
+    private void sendMail(long uid, String email, Token.Action action, Locale locale) {
+        String act = action.name().toLowerCase();
+        Token ut = new Token();
+        ut.setId(uid);
+        ut.setAction(action);
+        String token = jwtHelper.payload2token(act, ut, 30);
+        String subject = i18n.T("mail.user." + act + ".subject");
         String body = i18n.T(
-                "mail.user." + action.toLowerCase() + ".body",
+                "mail.user." + act + ".body",
                 email,
-                String.format("https://%s/users/%s/%s?locale=%s", i18n.T("site.domain"), action, token, locale)
+                String.format("https://%s/users/%s/%s?locale=%s", i18n.T("site.domain"), act, token, locale)
         );
         emailHelper.send(email, subject, body);
 
@@ -256,7 +256,6 @@ public class UserController {
 
     @Autowired
     UserService userService;
-
     @Autowired
     I18nService i18n;
     @Autowired
