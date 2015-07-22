@@ -1,14 +1,14 @@
+http:
+  home: http://localhost/8088
+  cache:
+    expire: 1
 root:
   email: root@localhost
-cache:
-  expire: 1
 secrets:
   encryptor: Iengoe6uingo1mae8iyooquiem7Foopigheif7cotiiV7bos1Tubei0eceiThaagh4kaetheeW3gae2eith4ichu5ihie9aeVo1Ephoo0ot6ahf4pheisu6OxaeDahki
-  token: zereeDucohv8ohXeefieh5Vai2rai7Ja
 database:
   mode: update
   show_sql: true
-
   driver: org.postgresql.Driver
   url: jdbc:postgresql://localhost:5432/itpkg
   username: postgres
@@ -42,12 +42,12 @@ spring:
 
 spring:
     profiles: production
-secrets:
-  encryptor: CHANGE_ME
-  token: CHANGE_ME
 http:
+  home: https://CHANGE_ME
   cache:
     expire: -1
-  database:
-    show_sql: false
-    password: CHANGE ME
+secrets:
+  encryptor: CHANGE_ME
+database:
+  show_sql: false
+  password: CHANGE ME

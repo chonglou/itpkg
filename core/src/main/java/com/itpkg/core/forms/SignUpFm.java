@@ -24,7 +24,7 @@ public class SignUpFm implements Serializable {
 
     @AssertTrue(message = "passwords not match")
     public boolean isValid() {
-        return password.equals(passwordConfirm);
+        return password != null && password.equals(passwordConfirm);
     }
 
     public String getUsername() {

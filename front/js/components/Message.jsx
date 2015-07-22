@@ -10,7 +10,7 @@ var Utils = require("../Utils");
 var Message = React.createClass({
     mixins: [T.IntlMixin],
     render: function () {
-        var msg = JSON.parse(Utils.gup("msg"));
+        var msg = JSON.parse(atob(Utils.gup("msg")));
         if (!msg) {
             msg = {
                 style: "danger",

@@ -3,6 +3,8 @@ package com.itpkg.email.forms;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.Size;
+
 /**
  * Created by flamen on 15-7-21.
  */
@@ -10,10 +12,10 @@ public class AliasFm {
     @NotEmpty
     private long domain;
     @NotEmpty
-    @Range(min = 1, max = 64)
+    @Size(min = 1, max = 64)
     private String source;
     @NotEmpty
-    @Range(min = 1, max = 64)
+    @Size(min = 1, max = 64)
     private String destination;
 
     public long getDomain() {

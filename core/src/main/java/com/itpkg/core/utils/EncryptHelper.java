@@ -8,12 +8,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Base64;
 
 /**
  * Created by flamen on 15-7-15.
  */
 @Component("core.utils.encrypt")
 public class EncryptHelper {
+
+    public String toBase64(String plain) {
+        return Base64.getEncoder().encodeToString(plain.getBytes());
+    }
+
+    public String fromBase64(String encode) {
+        return new String(Base64.getDecoder().decode(encode));
+    }
 
     public String encrypt(String plain) {
         return textEncryptor.encrypt(plain);
@@ -42,8 +51,6 @@ public class EncryptHelper {
 
     @Value("${secrets.encryptor}")
     String encryptorKey;
-    @Value("${secrets.token}")
-    String tokenKeyS;
     @Autowired
     JsonHelper jsonHelper;
 

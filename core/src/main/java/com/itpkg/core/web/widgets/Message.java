@@ -21,7 +21,7 @@ public class Message implements Serializable {
     public Message() {
     }
 
-    public Message(String style, String body, String subject, Link link) {
+    public Message(String style, String subject, String body, Link link) {
         this.body = body;
         this.subject = subject;
         this.style = style;

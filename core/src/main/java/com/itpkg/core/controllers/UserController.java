@@ -9,7 +9,6 @@ import com.itpkg.core.models.User;
 import com.itpkg.core.services.I18nService;
 import com.itpkg.core.services.UserService;
 import com.itpkg.core.utils.EmailHelper;
-import com.itpkg.core.utils.JwtHelper;
 import com.itpkg.core.web.widgets.Form;
 import com.itpkg.core.web.widgets.Link;
 import com.itpkg.core.web.widgets.Message;
@@ -17,6 +16,7 @@ import com.itpkg.core.web.widgets.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -144,7 +144,7 @@ public class UserController extends BaseController {
 
         Response res = new Response(result);
         if (res.isOk()) {
-            Token ut = jwtHelper.token2payload(fm.getToken(), Token.class);
+            Token ut = toToken(fm.getToken());
             if (ut != null && Token.Action.CHANGE_PASSWORD == ut.getAction()) {
                 userService.setPassword(ut.getId(), fm.getPassword());
             } else {
@@ -181,18 +181,17 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "/confirm/{token}", method = RequestMethod.GET)
-    @ResponseBody
-    Response getConfirmToken(@PathVariable("token") String token) {
-        Response res = new Response();
-        Token ut = jwtHelper.token2payload(token, Token.class);
+    RedirectView getConfirmToken(@PathVariable("token") String token) {
+
+        Message msg;
+        Token ut = toToken(token);
         if (ut != null && Token.Action.CONFIRM == ut.getAction()) {
             userService.setConfirmed(ut.getId());
-            res.setOk(true);
+            msg = Message.Success(i18n.T("logs.success"), null, new Link("users.sign_in", "form.user.sign_in.submit"));
         } else {
-            res.addError(i18n.T("errors.user.bad_status"));
-
+            msg = Message.Error(i18n.T("logs.failed"), i18n.T("errors.user.bad_token"), null);
         }
-        return res;
+        return doShow(msg);
     }
 
 
@@ -224,15 +223,14 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "/unlock/{token}", method = RequestMethod.GET)
     RedirectView getUnlockToken(@PathVariable("token") String token) {
-
-        Token ut = jwtHelper.token2payload(token, Token.class);
+        logger.debug("GET TOKEN: " + token);
         Message msg;
+        Token ut = toToken(token);
         if (ut != null && Token.Action.UNLOCK == ut.getAction()) {
             userService.setLocked(ut.getId(), null);
             msg = Message.Success(i18n.T("logs.success"), null, new Link("users.sign_in", "form.user.sign_in.submit"));
-
         } else {
-            msg = Message.Success(i18n.T("logs.success"), null, null);
+            msg = Message.Error(i18n.T("logs.failed"), i18n.T("errors.user.bad_token"), null);
         }
         return doShow(msg);
     }
@@ -243,12 +241,12 @@ public class UserController extends BaseController {
         Token ut = new Token();
         ut.setId(uid);
         ut.setAction(action);
-        String token = jwtHelper.payload2token(act, ut, 30);
+        String token = encryptHelper.toBase64(jwtHelper.payload2token(act, ut, 30));
         String subject = i18n.T("mail.user." + act + ".subject");
         String body = i18n.T(
                 "mail.user." + act + ".body",
                 email,
-                String.format("https://%s/users/%s/%s?locale=%s", i18n.T("site.domain"), act, token, locale)
+                String.format("%s/users/%s/%s?locale=%s", home, act, token, locale)
         );
         emailHelper.send(email, subject, body);
 
@@ -259,7 +257,7 @@ public class UserController extends BaseController {
     @Autowired
     I18nService i18n;
     @Autowired
-    JwtHelper jwtHelper;
-    @Autowired
     EmailHelper emailHelper;
+    @Value("${http.home}")
+    String home;
 }

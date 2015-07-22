@@ -4,24 +4,25 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Size;
 
 /**
  * Created by flamen on 15-7-21.
  */
 public class UserFm {
     @NotEmpty
-    @Range(min = 1, max = 64)
+    @Size(min = 1, max = 64)
     private String username;
     @NotEmpty
     private long domain;
     @NotEmpty
-    @Range(min = 6, max = 128)
+    @Size(min = 6, max = 128)
     private String password;
     private String passwordConfirm;
 
     @AssertTrue
     public boolean isValid() {
-        return password.equals(passwordConfirm);
+        return password!=null && password.equals(passwordConfirm);
     }
 
     public String getUsername() {
