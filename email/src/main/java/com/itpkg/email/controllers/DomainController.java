@@ -3,15 +3,15 @@ package com.itpkg.email.controllers;
 import com.itpkg.core.services.I18nService;
 import com.itpkg.core.web.widgets.Form;
 import com.itpkg.core.web.widgets.Response;
+import com.itpkg.email.forms.DomainFm;
 import com.itpkg.email.models.Domain;
 import com.itpkg.email.services.EmailService;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -20,12 +20,6 @@ import java.util.List;
 @Controller("email.controllers.domains")
 @RequestMapping("/email/domains")
 public class DomainController {
-
-    class DomainFm {
-        @NotEmpty
-        @Range(min = 1, max = 64)
-        String name;
-    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
@@ -61,10 +55,10 @@ public class DomainController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
-    Response create(@RequestBody DomainFm fm, BindingResult result) {
+    Response create(@RequestBody @Valid DomainFm fm, BindingResult result) {
         Response rs = new Response(result);
         if (rs.isOk()) {
-            Domain d = emailService.createDomain(fm.name);
+            Domain d = emailService.createDomain(fm.getName());
             if (d == null) {
                 rs.addError(i18n.T("form.email.error.add_domain"));
             } else {

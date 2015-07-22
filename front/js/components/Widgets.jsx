@@ -7,7 +7,7 @@ var $ = require("jquery");
 
 var AjaxForm = React.createClass({
     getInitialState: function () {
-        return {form: {fields: [], buttons: []}}
+        return {form: {fields: [], buttons: []}, data: {}}
     },
     componentDidMount: function () {
         $.get(this.props.source, function (result) {
@@ -15,6 +15,48 @@ var AjaxForm = React.createClass({
                 this.setState({form: result});
             }
         }.bind(this), "json");
+    },
+    handleSubmit: function (e) {
+        e.preventDefault();
+        var data = this.state.data;
+        var fm = this.state.form;
+        fm.fields.map(function (obj) {
+            switch (obj.type) {
+                case "hidden":
+                    data[obj.id] = obj.value;
+                    break;
+            }
+        });
+        switch (fm.method) {
+            case "POST":
+                $.ajax({
+                    type: "POST",
+                    url: fm.action,
+                    dataType: "json",
+                    data: JSON.stringify(data),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (result) {
+                        console.log(result);
+                    }
+
+                });
+                //$.post(
+                //    fm.action,
+                //    data,
+                //    function (result) {
+                //        console.log(result);
+                //    }.bind(this),
+                //    "json");
+                break;
+            default:
+                console.log("unsupported http method " + fm.method);
+        }
+    },
+    handleChange: function (e) {
+        var item = e.target;
+        var data = this.state.data;
+        data[item.id] = item.value;
+        this.setState({data: data});
     },
     render: function () {
         var fm = this.state.form;
@@ -27,44 +69,20 @@ var AjaxForm = React.createClass({
             var fldCss = "col-sm-" + obj.size;
             switch (obj.type) {
                 case "hidden":
-                    return (<input ref={obj.id} value={obj.value} key={key} type="hidden"/>);
+                    return (<input value={obj.value} key={key} type="hidden"/>);
                 case "text":
                 case "email":
                 case "password":
                     return (
-                        <Input ref={obj.id} value={obj.value} key={key} type={obj.type} placeholder={obj.placeholder}
+                        <Input id={obj.id} value={obj.value} key={key} type={obj.type} placeholder={obj.placeholder}
                                label={obj.name}
+                               onChange={this.handleChange}
                                labelClassName={lblCss} wrapperClassName={fldCss}/>);
                 default:
                     return (<input key={key}/>)
             }
-        });
-        var onSubmit = function (e) {
-            e.preventDefault();
-            var data = {};
-            fm.fields.map(function (obj) {
-                switch (obj.type) {
-                    case "text":
-                    case "hidden":
-                    case "email":
-                    case "password":
-                        data[obj.id] = React.findDOMNode(this.refs[obj.id]).value.trim();
-                        break;
-                    default :
-                        console.log("unknown type " + obj.type);
-                }
+        }.bind(this));
 
-            });
-            console.log(data);
-            $.post(
-                fm.action,
-                data,
-                function (result) {
-                    console.log(result);
-                }
-            );
-
-        };
         var buttons = fm.buttons.map(function (obj) {
             var key = fm.id + "-" + obj.id;
             if (obj.id == "reset") {
@@ -72,7 +90,7 @@ var AjaxForm = React.createClass({
             }
             if (obj.id == "submit") {
                 return (
-                    <Button onClick={onSubmit} id={key} key={key} bsStyle={obj.style}>
+                    <Button onClick={this.handleSubmit} id={key} key={key} bsStyle={obj.style}>
                         {obj.name}
                     </Button>
                 )
@@ -82,7 +100,7 @@ var AjaxForm = React.createClass({
                     {obj.name}
                 </Button>
             );
-        });
+        }.bind(this));
         return (
             <fieldset>
                 <legend className="glyphicon glyphicon-list">
@@ -100,6 +118,7 @@ var AjaxForm = React.createClass({
                 </form>
             </fieldset>
         )
+
 
     }
 });

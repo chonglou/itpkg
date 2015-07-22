@@ -1,5 +1,7 @@
 package com.itpkg.core.controllers;
 
+import com.itpkg.core.forms.SignInFm;
+import com.itpkg.core.forms.SignUpFm;
 import com.itpkg.core.models.User;
 import com.itpkg.core.services.I18nService;
 import com.itpkg.core.services.UserService;
@@ -7,9 +9,6 @@ import com.itpkg.core.utils.EmailHelper;
 import com.itpkg.core.utils.EncryptHelper;
 import com.itpkg.core.web.widgets.Form;
 import com.itpkg.core.web.widgets.Response;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.hibernate.validator.constraints.Range;
 import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.validation.constraints.AssertTrue;
+import javax.validation.Valid;
 import java.io.IOException;
 
 /**
@@ -38,38 +37,6 @@ public class UserController {
         public long id;
     }
 
-    class SignInFm {
-        @NotEmpty
-        @Email
-        String email;
-        @NotEmpty
-        String password;
-    }
-
-
-    class SignUpFm {
-        @NotEmpty
-        @Range(min = 2, max = 32)
-        String username;
-        @NotEmpty
-        @Email
-        String email;
-        @NotEmpty
-        @Range(min = 6, max = 128)
-        String password;
-        String passwordConfirm;
-
-        @AssertTrue
-        boolean isValid() {
-            return password.equals(passwordConfirm);
-        }
-    }
-
-    class EmailFm {
-        @NotEmpty
-        @Email
-        String email;
-    }
 
     @RequestMapping(value = "/sign_in", method = RequestMethod.GET)
     @ResponseBody
@@ -85,11 +52,11 @@ public class UserController {
 
     @RequestMapping(value = "/sign_in", method = RequestMethod.POST)
     @ResponseBody
-    Response postSignIn(@RequestBody SignInFm fm, BindingResult result) {
+    Response postSignIn(@RequestBody @Valid SignInFm fm, BindingResult result) {
 
         Response res = new Response(result);
         if (res.isOk()) {
-            User u = userService.auth(fm.email, fm.password);
+            User u = userService.auth(fm.getEmail(), fm.getPassword());
             if (u == null) {
                 res.addError(i18n.T("form.user.sign_in.failed"));
             } else {
@@ -121,16 +88,15 @@ public class UserController {
 
     @RequestMapping(value = "/sign_up", method = RequestMethod.POST)
     @ResponseBody
-    Response postSignUp(@RequestBody SignUpFm fm, BindingResult result) {
+    Response postSignUp(@RequestBody @Valid SignUpFm fm, BindingResult result) {
         Response res = new Response(result);
         if (res.isOk()) {
-
-            User u = userService.create(fm.username, fm.email, fm.password);
+            User u = userService.create(fm.getUsername(), fm.getEmail(), fm.getPassword());
             if (u == null) {
                 res.addError(i18n.T("form.user.sign_up.failed"));
             } else {
                 try {
-                    sendMail(u.getId(), fm.email, "confirm");
+                    sendMail(u.getId(), fm.getEmail(), "confirm");
                 } catch (Exception e) {
                     logger.error("Sign up error", e);
                     res.addError(e.getMessage());
@@ -164,16 +130,16 @@ public class UserController {
 
     @RequestMapping(value = "/forgot_password", method = RequestMethod.POST)
     @ResponseBody
-    Response postForgotPassword(@RequestBody SignUpFm fm, BindingResult result) {
+    Response postForgotPassword(@RequestBody @Valid SignUpFm fm, BindingResult result) {
         Response res = new Response(result);
         if (res.isOk()) {
-            User u = userService.findByEmail(fm.email);
+            User u = userService.findByEmail(fm.getEmail());
             if (u == null) {
                 res.addError(i18n.T("form.user.email_not_exists"));
             } else {
                 try {
                     //todo
-                    sendMail(u.getId(), fm.email, "Change password");
+                    sendMail(u.getId(), fm.getEmail(), "Change password");
                 } catch (Exception e) {
                     logger.error("Forgot password error", e);
                     res.addError(e.getMessage());

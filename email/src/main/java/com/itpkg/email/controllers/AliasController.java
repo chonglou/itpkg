@@ -3,14 +3,15 @@ package com.itpkg.email.controllers;
 import com.itpkg.core.services.I18nService;
 import com.itpkg.core.web.widgets.Form;
 import com.itpkg.core.web.widgets.Response;
+import com.itpkg.email.forms.AliasFm;
 import com.itpkg.email.models.Alias;
 import com.itpkg.email.services.EmailService;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * Created by flamen on 15-7-18.
@@ -18,19 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @Controller("email.controllers.aliases")
 @RequestMapping("/email/aliases")
 public class AliasController {
-
-    class AliasFm {
-        @NotEmpty
-        long domain;
-        @NotEmpty
-        @Range(min = 1, max = 64)
-        String source;
-        @NotEmpty
-        @Range(min = 1, max = 64)
-        String destination;
-
-
-    }
 
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)
@@ -54,10 +42,10 @@ public class AliasController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
-    Response create(@RequestBody AliasFm fm, BindingResult result) {
+    Response create(@RequestBody @Valid AliasFm fm, BindingResult result) {
         Response rs = new Response(result);
         if (rs.isOk()) {
-            Alias a = emailService.createAlias(fm.domain, fm.source, fm.destination);
+            Alias a = emailService.createAlias(fm.getDomain(), fm.getSource(), fm.getDestination());
             if (a == null) {
                 rs.addError(i18n.T("form.email.error.add_alias"));
             } else {

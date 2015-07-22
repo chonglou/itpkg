@@ -56,7 +56,7 @@ module.exports = function (options) {
         new webpack.optimize.CommonsChunkPlugin("vendor", options.render ? "[chunkhash].js" : "[name].js"),
         new webpack.PrefetchPlugin("react"),
         new webpack.PrefetchPlugin("react/lib/ReactComponentBrowserEnvironment"),
-        new StatsPlugin(path.join(__dirname, "build", "stats.json"), {
+        new StatsPlugin("stats.json", {
             chunkModules: true
         })
     ];

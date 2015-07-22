@@ -3,16 +3,15 @@ package com.itpkg.email.controllers;
 import com.itpkg.core.services.I18nService;
 import com.itpkg.core.web.widgets.Form;
 import com.itpkg.core.web.widgets.Response;
+import com.itpkg.email.forms.UserFm;
 import com.itpkg.email.models.User;
 import com.itpkg.email.services.EmailService;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.AssertTrue;
+import javax.validation.Valid;
 
 /**
  * Created by flamen on 15-7-18.
@@ -20,25 +19,6 @@ import javax.validation.constraints.AssertTrue;
 @Controller("email.controllers.users")
 @RequestMapping("/email/users")
 public class UserController {
-
-    class UserFm {
-        @NotEmpty
-        @Range(min = 1, max = 64)
-        String username;
-        @NotEmpty
-        long domain;
-        @NotEmpty
-        @Range(min = 6, max = 128)
-        String password;
-        String passwordConfirm;
-
-        @AssertTrue
-        boolean isValid() {
-            return password.equals(passwordConfirm);
-        }
-
-
-    }
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)
     @ResponseBody
@@ -58,10 +38,10 @@ public class UserController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
-    Response create(@RequestBody UserFm fm, BindingResult result) {
+    Response create(@RequestBody @Valid UserFm fm, BindingResult result) {
         Response rs = new Response(result);
         if (rs.isOk()) {
-            User u = emailService.createUser(fm.domain, fm.username, fm.password);
+            User u = emailService.createUser(fm.getDomain(), fm.getUsername(), fm.getPassword());
             if (u == null) {
                 rs.addError(i18n.T("form.email.error.add_user"));
             } else {

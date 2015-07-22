@@ -14,8 +14,6 @@ var NoSignInForm = React.createClass({
     ],
     render: function () {
         var navBar = this.state.navBar;
-        //console.log("render no sign in form");
-        //console.log(navBar);
         return (
             <div className="row">
                 <div className="col-md-offset-2 col-md-8">

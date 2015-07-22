@@ -23,8 +23,9 @@ public class Response implements Serializable {
     }
 
     public Response(BindingResult result) {
+        this();
         if (result.hasErrors()) {
-            result.getAllErrors().forEach((e) -> errors.add(e.toString()));
+            result.getAllErrors().forEach((e) -> errors.add(e.getDefaultMessage()));
         } else {
             ok = true;
         }

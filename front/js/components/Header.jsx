@@ -21,8 +21,6 @@ var Header = React.createClass({
     },
     render: function () {
         var navBar = this.state.navBar;
-        //console.log("header render");
-        //console.log(navBar);
         return (
             <Navbar brand={<Link to="home"> {navBar.title} </Link>} inverse fixedTop toggleNavKey={0}>
                 <Nav right onSelect={this.transitionTo}> {}
