@@ -69,9 +69,10 @@
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
             <tx:method name="add*"/>
-            <tx:method name="set*"/>
-            <tx:method name="del*"/>
+            <tx:method name="auth*"/>
             <tx:method name="create*"/>
+            <tx:method name="del*"/>
+            <tx:method name="set*"/>
             <tx:method name="T"/>
             <tx:method name="*" read-only="true"/>
         </tx:attributes>

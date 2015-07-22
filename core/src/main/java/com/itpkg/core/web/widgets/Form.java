@@ -16,6 +16,12 @@ public class Form extends Response {
         this.buttons = new ArrayList<>();
     }
 
+    public <T> void addHidden(String id, T value) {
+        HiddenField<T> f = new HiddenField<>(id);
+        f.setValue(value);
+        this.addField(f);
+    }
+
     public void addSubmit(String name) {
         addButton("submit", name, "primary");
     }

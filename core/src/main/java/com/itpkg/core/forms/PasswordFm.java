@@ -1,6 +1,5 @@
 package com.itpkg.core.forms;
 
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.AssertTrue;
@@ -8,15 +7,11 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
- * Created by flamen on 15-7-21.
+ * Created by flamen on 15-7-22.
  */
-public class SignUpFm implements Serializable {
+public class PasswordFm implements Serializable {
     @NotEmpty
-    @Size(min = 2, max = 32)
-    private String username;
-    @NotEmpty
-    @Email
-    private String email;
+    private String token;
     @NotEmpty
     @Size(min = 6, max = 128)
     private String password;
@@ -27,20 +22,12 @@ public class SignUpFm implements Serializable {
         return password.equals(passwordConfirm);
     }
 
-    public String getUsername() {
-        return username;
+    public String getToken() {
+        return token;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getPassword() {

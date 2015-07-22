@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Created by flamen on 15-7-18.
  */
-public class SelectField<T> extends RequiredField {
+public class SelectField<T> extends RequiredField<T> {
     public SelectField(String id, String name) {
         super(id, "select", name);
         options = new HashMap<>();

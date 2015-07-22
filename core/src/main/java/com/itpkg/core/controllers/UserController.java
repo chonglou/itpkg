@@ -1,5 +1,7 @@
 package com.itpkg.core.controllers;
 
+import com.itpkg.core.forms.EmailFm;
+import com.itpkg.core.forms.PasswordFm;
 import com.itpkg.core.forms.SignInFm;
 import com.itpkg.core.forms.SignUpFm;
 import com.itpkg.core.models.User;
@@ -14,12 +16,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Locale;
 
 /**
  * Created by flamen on 15-7-14.
@@ -33,6 +33,7 @@ public class UserController {
 
     public class UserToken {
         public long id;
+        public String action;
     }
 
 
@@ -82,34 +83,20 @@ public class UserController {
 
     @RequestMapping(value = "/sign_up", method = RequestMethod.POST)
     @ResponseBody
-    Response postSignUp(@RequestBody @Valid SignUpFm fm, BindingResult result) {
+    Response postSignUp(@RequestBody @Valid SignUpFm fm, BindingResult result, Locale locale) {
         Response res = new Response(result);
         if (res.isOk()) {
             User u = userService.create(fm.getUsername(), fm.getEmail(), fm.getPassword());
             if (u == null) {
                 res.addError(i18n.T("form.user.sign_up.failed"));
             } else {
-                try {
-                    sendMail(u.getId(), fm.getEmail(), "confirm");
-                } catch (Exception e) {
-                    logger.error("Sign up error", e);
-                    res.addError(e.getMessage());
-                }
+                sendMail(u.getId(), fm.getEmail(), "confirm", locale);
+
             }
         }
         return res;
     }
 
-    private void sendMail(long uid, String email, String action) throws Exception {
-
-        UserToken ut = new UserToken();
-        ut.id = uid;
-        String token = jwtHelper.payload2token(action, ut, 30);
-        String subject = i18n.T("mail.user." + action.toLowerCase() + ".subject");
-        String body = i18n.T("mail.user." + action.toLowerCase() + ".body", email, token);
-        emailHelper.send(email, subject, body);
-
-    }
 
     @RequestMapping(value = "/forgot_password", method = RequestMethod.GET)
     @ResponseBody
@@ -124,40 +111,46 @@ public class UserController {
 
     @RequestMapping(value = "/forgot_password", method = RequestMethod.POST)
     @ResponseBody
-    Response postForgotPassword(@RequestBody @Valid SignUpFm fm, BindingResult result) {
+    Response postForgotPassword(@RequestBody @Valid SignUpFm fm, BindingResult result, Locale locale) {
         Response res = new Response(result);
         if (res.isOk()) {
             User u = userService.findByEmail(fm.getEmail());
             if (u == null) {
                 res.addError(i18n.T("form.user.email_not_exists"));
             } else {
-                try {
-                    //todo
-                    sendMail(u.getId(), fm.getEmail(), "Change password");
-                } catch (Exception e) {
-                    logger.error("Forgot password error", e);
-                    res.addError(e.getMessage());
-                }
+
+                sendMail(u.getId(), fm.getEmail(), "Change password", locale);
+
             }
         }
         return res;
     }
 
-    @RequestMapping(value = "/change_password", method = RequestMethod.GET)
+    @RequestMapping(value = "/change_password/{token}", method = RequestMethod.GET)
     @ResponseBody
-    Form getChangePassword() {
+    Form getChangePassword(@PathVariable("token") String token) {
         Form fm = new Form("change_password", i18n.T("form.user.change_password.title"), "/users/change_password");
-        fm.addEmailField("email", i18n.T("form.fields.email"), true);
+        fm.addHidden("token", token);
         fm.addSubmit(i18n.T("form.user.change_password.submit"));
         fm.addReset(i18n.T("form.buttons.reset"));
         fm.setOk(true);
+
         return fm;
     }
 
     @RequestMapping(value = "/change_password", method = RequestMethod.POST)
     @ResponseBody
-    Response postChangePassword() {
-        Response res = new Response();
+    Response postChangePassword(@RequestBody @Valid PasswordFm fm, BindingResult result) {
+
+        Response res = new Response(result);
+        if (res.isOk()) {
+            UserToken ut = jwtHelper.token2payload(fm.getToken(), UserToken.class);
+            if (ut != null && "forgot_password".equals(ut.action)) {
+                userService.setPassword(ut.id, fm.getPassword());
+            } else {
+                res.addError(i18n.T("errors.user.bad_token"));
+            }
+        }
         return res;
     }
 
@@ -174,8 +167,31 @@ public class UserController {
 
     @RequestMapping(value = "/confirm", method = RequestMethod.POST)
     @ResponseBody
-    Response postConfirm() {
+    Response postConfirm(@RequestBody @Valid EmailFm fm, BindingResult result, Locale locale) {
+        Response res = new Response(result);
+        if (res.isOk()) {
+            User u = userService.findByEmail(fm.getEmail());
+            if (u == null || u.isConfirmed()) {
+                res.addError(i18n.T("errors.user.not_found"));
+            } else {
+                sendMail(u.getId(), u.getEmail(), "confirm", locale);
+            }
+        }
+        return res;
+    }
+
+    @RequestMapping(value = "/confirm/{token}", method = RequestMethod.GET)
+    @ResponseBody
+    Response getConfirmToken(@PathVariable("token") String token) {
         Response res = new Response();
+        UserToken ut = jwtHelper.token2payload(token, UserToken.class);
+        if (ut != null && "confirm".equals(ut.action)) {
+            userService.setConfirmed(ut.id);
+            res.setOk(true);
+        } else {
+            res.addError(i18n.T("errors.user.bad_status"));
+
+        }
         return res;
     }
 
@@ -193,18 +209,50 @@ public class UserController {
 
     @RequestMapping(value = "/unlock", method = RequestMethod.POST)
     @ResponseBody
-    Response postUnlock() {
-        Response res = new Response();
+    Response postUnlock(@RequestBody @Valid EmailFm fm, BindingResult result, Locale locale) {
+        Response res = new Response(result);
+        if (res.isOk()) {
+            User u = userService.findByEmail(fm.getEmail());
+            if (u != null && u.isLocked()) {
+                sendMail(u.getId(), u.getEmail(), "unlock", locale);
+            } else {
+                res.addError(i18n.T("errors.user.bad_status"));
+            }
+        }
         return res;
     }
 
-    @RequestMapping(value = "/token", method = RequestMethod.GET)
+    @RequestMapping(value = "/unlock/{token}", method = RequestMethod.GET)
     @ResponseBody
-    Response getToken() {
+    Response getUnlockToken(@PathVariable("token") String token) {
         Response res = new Response();
+        UserToken ut = jwtHelper.token2payload(token, UserToken.class);
+        if (ut != null && "unlock".equals(ut.action)) {
+            userService.setLocked(ut.id, null);
+            res.setOk(true);
+        } else {
+            res.addError(i18n.T("errors.user.bad_token"));
+
+        }
         return res;
     }
 
+
+    private void sendMail(long uid, String email, String action, Locale locale) {
+
+        UserToken ut = new UserToken();
+        ut.id = uid;
+        ut.action = action;
+        String token = jwtHelper.payload2token(action, ut, 30);
+        String subject = i18n.T("mail.user." + action.toLowerCase() + ".subject");
+        String body = i18n.T(
+                "mail.user." + action.toLowerCase() + ".body",
+                email,
+                String.format("https://%s/users/%s/%s?locale=%s", i18n.T("site.domain"), action, token, locale)
+        );
+        emailHelper.send(email, subject, body);
+
+    }
 
     @Autowired
     UserService userService;

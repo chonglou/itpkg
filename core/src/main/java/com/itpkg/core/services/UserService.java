@@ -26,6 +26,41 @@ import java.util.UUID;
 public class UserService {
     private final static Logger logger = LoggerFactory.getLogger(UserService.class);
 
+    public void setPassword(long user, String password) {
+        User u = userDao.findOne(user);
+        if (u != null) {
+            u.setPassword(encryptHelper.password(password));
+            u.setUpdated(new Date());
+            userDao.save(u);
+            log(u, i18n.T("logs.user.change_password"), Log.Type.INFO);
+        }
+    }
+
+    public void setLocked(long user, Date date) {
+        User u = userDao.findOne(user);
+        if (u != null) {
+            u.setLocked(date);
+            u.setUpdated(new Date());
+            userDao.save(u);
+            if (date == null) {
+                log(u, i18n.T("logs.user.unlock"), Log.Type.INFO);
+            } else {
+                log(u, i18n.T("logs.user.lock"), Log.Type.INFO);
+            }
+
+        }
+    }
+
+    public void setConfirmed(long user) {
+        User u = userDao.findOne(user);
+        if (u != null) {
+            u.setConfirmed(new Date());
+            u.setUpdated(new Date());
+            userDao.save(u);
+            log(u, i18n.T("logs.user.confirm"), Log.Type.INFO);
+        }
+    }
+
     public User auth(String email, String password) {
         User u = userDao.findByEmail(email);
         if (u != null) {
