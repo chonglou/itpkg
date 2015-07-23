@@ -2,7 +2,7 @@
 
 module.exports = {
     gup: function (name, url) {
-        if (!url){
+        if (!url) {
             url = window.location.href;
         }
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");

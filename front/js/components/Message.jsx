@@ -19,7 +19,7 @@ var Message = React.createClass({
             }
         }
         var lnk = (<span/>);
-        if(msg.link){
+        if (msg.link) {
             lnk = (
                 <Link to={msg.link.url} className={"btn btn-"+msg.style}>
                     {msg.link.name}
@@ -31,6 +31,7 @@ var Message = React.createClass({
                 <strong>{msg.subject}:</strong>
 
                 <p>{msg.body}</p>
+
                 <p>
                     {lnk}
                     &nbsp;

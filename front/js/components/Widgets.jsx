@@ -2,10 +2,11 @@
 
 var React = require("react");
 var T = require('react-intl');
-import {ReactBootstrap, Input, Button, ButtonToolbar} from "react-bootstrap"
+import {ReactBootstrap, Input, Button, ButtonToolbar, Alert} from "react-bootstrap"
 var $ = require("jquery");
 
 var AjaxForm = React.createClass({
+    mixins: [T.IntlMixin],
     getInitialState: function () {
         return {form: {fields: [], buttons: []}, data: {}}
     },
@@ -36,17 +37,30 @@ var AjaxForm = React.createClass({
                     data: JSON.stringify(data),
                     contentType: "application/json; charset=utf-8",
                     success: function (result) {
-                        console.log(result);
-                    }
-
+                        if (result.ok) {
+                            var clk = this.props.submit;
+                            if (clk) {
+                                clk(result.data);
+                            } else {
+                                this.setState({
+                                    message: {
+                                        title: this.getIntlMessage('labels.success'),
+                                        style: "success",
+                                        items: result.data
+                                    }
+                                });
+                            }
+                        } else {
+                            this.setState({
+                                message: {
+                                    title: this.getIntlMessage('labels.failed'),
+                                    style: "danger",
+                                    items: result.errors
+                                }
+                            });
+                        }
+                    }.bind(this)
                 });
-                //$.post(
-                //    fm.action,
-                //    data,
-                //    function (result) {
-                //        console.log(result);
-                //    }.bind(this),
-                //    "json");
                 break;
             default:
                 console.log("unsupported http method " + fm.method);
@@ -101,11 +115,31 @@ var AjaxForm = React.createClass({
                 </Button>
             );
         }.bind(this));
+
+        var message = (<div/>);
+        if (this.state.message) {
+            var msg = this.state.message;
+            message = (
+                <Alert bsStyle={msg.style}>
+                    <strong>{msg.title}</strong>
+
+                    <p>
+                        <ul>
+                            {msg.items.map(function (obj, i) {
+                                return (<li key={"err-"+i}>{obj}</li>)
+                            })}
+                        </ul>
+                    </p>
+                </Alert>
+            );
+        }
+
         return (
             <fieldset>
                 <legend className="glyphicon glyphicon-list">
                     &nbsp;{fm.name}
                 </legend>
+                {message}
                 <form className='form-horizontal'>
                     {fields}
                     <div className="form-group">
