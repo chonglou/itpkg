@@ -1,7 +1,6 @@
 package com.itpkg.email.forms;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Size;
 

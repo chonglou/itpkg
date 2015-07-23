@@ -15,7 +15,7 @@ import javax.persistence.*;
         @Index(columnList = "lang"),
         @Index(columnList = "code,lang", unique = true)
 })
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Locale extends IdEntity {
     @Column(nullable = false)
     private String code;

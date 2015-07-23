@@ -10,7 +10,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "contacts")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Contact extends IdEntity {
 
     @OneToOne

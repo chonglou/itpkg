@@ -13,7 +13,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "sessions")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Session implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

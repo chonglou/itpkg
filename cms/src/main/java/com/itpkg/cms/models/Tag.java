@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 @Entity(name = "CmsTag")
 @Table(name = "cms_tags")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Tag extends IdEntity {
     @Column(nullable = false, unique = true)
     private String name;

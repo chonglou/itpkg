@@ -18,7 +18,7 @@ import java.util.List;
         @Index(columnList = "username"),
         @Index(columnList = "providerId,providerUserId", unique = true)
 })
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User extends IdEntity {
 
     public boolean isLocked() {

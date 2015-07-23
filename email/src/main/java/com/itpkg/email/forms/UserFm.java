@@ -1,7 +1,6 @@
 package com.itpkg.email.forms;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Size;
@@ -22,7 +21,7 @@ public class UserFm {
 
     @AssertTrue
     public boolean isValid() {
-        return password!=null && password.equals(passwordConfirm);
+        return password != null && password.equals(passwordConfirm);
     }
 
     public String getUsername() {

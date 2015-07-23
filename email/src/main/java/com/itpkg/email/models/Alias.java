@@ -14,7 +14,7 @@ import javax.persistence.*;
         @Index(columnList = "source", unique = true),
         @Index(columnList = "destination")
 })
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Alias extends IdEntity {
 
     @ManyToOne

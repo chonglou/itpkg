@@ -24,16 +24,18 @@
     </appender>
 
 
-    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.springframework" level="INFO"/>
 
-    <logger name="org.apache" level="WARN"/>
-    <logger name="com.jolbox.bonecp" level="WARN"/>
-    <logger name="org.quartz" level="WARN"/>
-    <logger name="org.hibernate" level="WARN"/>
-    <logger name="net.sf.ehcache" level="WARN"/>
+    <logger name="org.apache" level="INFO"/>
+    <logger name="com.jolbox.bonecp" level="INFO"/>
+    <logger name="org.quartz" level="INFO"/>
+    <logger name="org.hibernate" level="INFO"/>
+    <logger name="net.sf.ehcache" level="INFO"/>
+
+    <logger name="org.parancoe.web" level="INFO"/>
 
 
-    <!--CHANGE TO INFO WHEN RUN ON PRODUCTION ENV-->
+    <!--CHANGE TO WARN WHEN RUN ON PRODUCTION ENV-->
     <root level="DEBUG">
         <appender-ref ref="stdout"/>
         <appender-ref ref="file"/>

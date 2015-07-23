@@ -15,7 +15,7 @@ import java.util.Date;
         @Index(columnList = "rType"),
         @Index(columnList = "name,rtype,rid,user_id", unique = true)
 })
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Role extends IdEntity {
 
     @ManyToOne

@@ -15,7 +15,7 @@ import javax.persistence.*;
         @Index(columnList = "email"),
         @Index(columnList = "email,domain_id", unique = true)
 })
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User extends IdEntity {
 
     @ManyToOne

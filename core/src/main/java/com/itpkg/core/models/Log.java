@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "logs")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Log implements Serializable {
     public enum Type {
         INFO, ERROR

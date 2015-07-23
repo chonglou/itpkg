@@ -17,7 +17,7 @@ import java.util.List;
 
 @Entity(name = "EmailDomain")
 @Table(name = "email_domains")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Domain extends IdEntity {
     public Domain() {
         users = new ArrayList<>();
