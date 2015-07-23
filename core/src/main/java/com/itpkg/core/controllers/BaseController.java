@@ -2,6 +2,7 @@ package com.itpkg.core.controllers;
 
 import com.itpkg.core.models.Token;
 import com.itpkg.core.services.I18nService;
+import com.itpkg.core.services.SessionService;
 import com.itpkg.core.utils.EmailHelper;
 import com.itpkg.core.utils.EncryptHelper;
 import com.itpkg.core.utils.JsonHelper;
@@ -17,6 +18,10 @@ import java.util.Locale;
  * Created by flamen on 15-7-22.
  */
 public class BaseController {
+
+    void releaseToken(String token) {
+        sessionService.delByToken(encryptHelper.fromBase64(token));
+    }
 
     void sendTokenMail(String email, String path, Token token, Locale locale) {
         String code = token2string(path, token, 30);
@@ -43,6 +48,8 @@ public class BaseController {
         return rv;
     }
 
+    @Autowired
+    SessionService sessionService;
     @Autowired
     JsonHelper jsonHelper;
     @Autowired

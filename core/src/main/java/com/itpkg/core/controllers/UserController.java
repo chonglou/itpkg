@@ -158,6 +158,7 @@ public class UserController extends BaseController {
             Token ut = string2token(fm.getToken());
             if (ut != null && "users.change_password".equals(ut.getAction())) {
                 userService.setPassword(ut.getUid(), fm.getPassword());
+                releaseToken(fm.getToken());
                 res.addData(i18n.T("form.user.change_password.success"));
             } else {
                 res.addError(i18n.T("errors.user.bad_token"));
@@ -206,6 +207,7 @@ public class UserController extends BaseController {
             User u = userService.findById(ut.getUid());
             if (u != null && !u.isConfirmed()) {
                 userService.setConfirmed(ut.getUid());
+                releaseToken(token);
                 msg = Message.Success(i18n.T("logs.success"), null, new Link("users.sign_in", i18n.T("form.user.sign_in.submit")));
             } else {
                 msg = Message.Warning(i18n.T("logs.failed"), i18n.T("errors.user.bad_status"), new Link("users.sign_in", i18n.T("form.user.sign_in.submit")));
@@ -259,6 +261,7 @@ public class UserController extends BaseController {
             User u = userService.findById(ut.getUid());
             if (u != null && u.isLocked()) {
                 userService.setLocked(ut.getUid(), null);
+                releaseToken(token);
                 msg = Message.Success(i18n.T("logs.success"), null, new Link("users.sign_in", i18n.T("form.user.sign_in.submit")));
             } else {
                 msg = Message.Warning(i18n.T("logs.failed"), i18n.T("errors.user.bad_status"), new Link("users.sign_in", i18n.T("form.user.sign_in.submit")));

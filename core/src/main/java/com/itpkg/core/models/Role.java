@@ -10,7 +10,11 @@ import java.util.Date;
  * Created by flamen on 15-7-14.
  */
 @Entity
-@Table(name = "roles")
+@Table(name = "roles", indexes = {
+        @Index(columnList = "name"),
+        @Index(columnList = "rType"),
+        @Index(columnList = "name,rtype,rid,user_id", unique = true)
+})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Role extends IdEntity {
 

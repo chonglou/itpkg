@@ -1,5 +1,6 @@
 package com.itpkg.core.utils;
 
+import com.itpkg.core.services.SessionService;
 import com.itpkg.core.services.SettingService;
 import org.jose4j.jwk.PublicJsonWebKey;
 import org.jose4j.jwk.RsaJsonWebKey;
@@ -27,7 +28,9 @@ import java.security.KeyPair;
 public class JwtHelper {
     private final static Logger logger = LoggerFactory.getLogger(JwtHelper.class);
 
+
     public <T> T token2payload(String token, Class<T> clazz) {
+
         JwtConsumer consumer = new JwtConsumerBuilder()
                 .setRequireExpirationTime()
                 .setAllowedClockSkewInSeconds(30)
@@ -38,7 +41,11 @@ public class JwtHelper {
                 .build();
         try {
             JwtClaims claims = consumer.processToClaims(token);
-            return jsonHelper.json2object(claims.getClaimValue("data", String.class), clazz);
+            T t = jsonHelper.json2object(claims.getClaimValue(CLAIM_KEY, String.class), clazz);
+            if (sessionService.getByToken(token) == null) {
+                return null;
+            }
+            return t;
         } catch (InvalidJwtException | MalformedClaimException e) {
             logger.error("parse jwt error", e);
         }
@@ -64,7 +71,9 @@ public class JwtHelper {
         jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA512);
 
         try {
-            return jws.getCompactSerialization();
+            String token = jws.getCompactSerialization();
+            sessionService.saveToken(token);
+            return token;
         } catch (JoseException e) {
             logger.error("generate jwt error", e);
         }
@@ -91,8 +100,11 @@ public class JwtHelper {
     JsonHelper jsonHelper;
     @Autowired
     SettingService settingService;
+    @Autowired
+    SessionService sessionService;
+    @Autowired
+    EncryptHelper encryptHelper;
     private RsaJsonWebKey key;
-
 
     private final String TOKEN_ISSUER = "itpkg";
     private final String TOKEN_AUDIENCE = "user";

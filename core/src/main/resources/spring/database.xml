@@ -73,6 +73,7 @@
             <tx:method name="create*"/>
             <tx:method name="del*"/>
             <tx:method name="set*"/>
+            <tx:method name="save*"/>
             <tx:method name="T"/>
             <tx:method name="*" read-only="true"/>
         </tx:attributes>

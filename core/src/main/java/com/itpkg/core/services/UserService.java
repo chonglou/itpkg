@@ -17,7 +17,6 @@ import org.springframework.social.connect.UserProfile;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by flamen on 15-7-14.
@@ -100,7 +99,7 @@ public class UserService {
             u.setEmail(email);
             u.setPassword(encryptHelper.password(password));
             u.setProviderId("email");
-            u.setProviderUserId(UUID.randomUUID().toString());
+            u.setProviderUserId(email);
 
 
             Date now = new Date();
