@@ -3,11 +3,14 @@ package com.itpkg.core.utils;
 import org.jasypt.util.password.PasswordEncryptor;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.jasypt.util.text.StrongTextEncryptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 
 /**
@@ -15,13 +18,19 @@ import java.util.Base64;
  */
 @Component("core.utils.encrypt")
 public class EncryptHelper {
+    private final static Logger logger = LoggerFactory.getLogger(EncryptHelper.class);
 
     public String toBase64(String plain) {
-        return Base64.getEncoder().encodeToString(plain.getBytes());
+
+            return Base64.getEncoder().encodeToString(plain.getBytes());
+
     }
 
-    public String fromBase64(String encode) {
-        return new String(Base64.getDecoder().decode(encode));
+    public String fromBase64(String encode)
+    {
+
+            return new String(Base64.getDecoder().decode(encode));
+
     }
 
     public String encrypt(String plain) {

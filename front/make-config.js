@@ -20,6 +20,7 @@ module.exports = function (options) {
             "react-localstorage",
             "react-intl",
             "js-cookie",
+            "js-base64",
             "jwt-decode"
         ]
     };

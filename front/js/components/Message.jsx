@@ -1,16 +1,18 @@
 "use strict";
 
 var React = require("react");
+var Base64 = require('js-base64').Base64;
 var T = require('react-intl');
 import {Router,Link} from 'react-router'
 import {ReactBootstrap, Alert, Button} from "react-bootstrap"
 
 var Utils = require("../Utils");
 
+
 var Message = React.createClass({
     mixins: [T.IntlMixin],
     render: function () {
-        var msg = JSON.parse(atob(Utils.gup("msg")));
+        var msg = JSON.parse(Base64.decode(Utils.gup("msg")));
         if (!msg) {
             msg = {
                 style: "danger",
