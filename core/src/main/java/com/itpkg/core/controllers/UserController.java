@@ -87,6 +87,7 @@ public class UserController extends BaseController {
                 res.addError(i18n.T("form.user.sign_up.failed"));
             } else {
                 sendTokenMail(fm.getEmail(), "/users/confirm", new Token(u.getId(), "users.confirm"), locale);
+                res.addData(i18n.T("form.user.confirm.success"));
             }
         }
         return res;
@@ -122,6 +123,7 @@ public class UserController extends BaseController {
                         String.format("%s/#/users/change_password?code=%s&locale=%s", home, code, locale)
                 );
                 emailHelper.send(u.getEmail(), subject, body);
+                res.addData(i18n.T("form.user.forgot_password.success"));
             }
         }
         return res;
@@ -150,6 +152,7 @@ public class UserController extends BaseController {
             Token ut = string2token(fm.getToken());
             if (ut != null && "users.change_password".equals(ut.getAction())) {
                 userService.setPassword(ut.getUid(), fm.getPassword());
+                res.addData(i18n.T("form.user.change_password.success"));
             } else {
                 res.addError(i18n.T("errors.user.bad_token"));
             }
@@ -181,6 +184,7 @@ public class UserController extends BaseController {
                     res.addError(i18n.T("errors.user.bad_status"));
                 } else {
                     sendTokenMail(fm.getEmail(), "/users/confirm", new Token(u.getId(), "users.confirm"), locale);
+                    res.addData(i18n.T("form.user.confirm.success"));
                 }
             }
         }
@@ -230,6 +234,8 @@ public class UserController extends BaseController {
             } else {
                 if (u.isLocked()) {
                     sendTokenMail(fm.getEmail(), "/users/unlock", new Token(u.getId(), "users.unlock"), locale);
+                    res.addData(i18n.T("form.user.unlock.success"));
+
                 } else {
                     res.addError(i18n.T("errors.user.bad_status"));
                 }

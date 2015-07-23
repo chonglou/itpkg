@@ -10,21 +10,14 @@ var SiteStores = require("../stores/Site");
 
 var NoSignInForm = React.createClass({
     mixins: [
-        Navigation,
         Reflux.connect(SiteStores.NavBar, 'navBar')
     ],
-    onSubmit: function (data) {
-        var goto = this.props.goto;
-        if (goto) {
-            this.transitionTo(goto);
-        }
-    },
     render: function () {
         var navBar = this.state.navBar;
         return (
             <div className="row">
                 <div className="col-md-offset-2 col-md-8">
-                    <W.Form source={this.props.source} submit={this.onSubmit}/>
+                    <W.Form source={this.props.source} submit={this.props.submit}/>
 
                     <div className="row">
                         <br/>
@@ -47,23 +40,29 @@ var NoSignInForm = React.createClass({
 
 module.exports = {
     SignIn: React.createClass({
+        mixins: [Navigation],
+        onSubmit: function (data) {
+            this.transitionTo("home");
+        },
         render: function () {
             return (
-                <NoSignInForm source="/users/sign_in" goto="home"/>
+                <NoSignInForm source="/users/sign_in" submit={this.onSubmit}/>
             );
         }
     }),
     SignUp: React.createClass({
+
         render: function () {
             return (
-                <NoSignInForm source="/users/sign_up" goto="users.sign_in"/>
+                <NoSignInForm source="/users/sign_up"/>
             );
         }
     }),
     ForgotPassword: React.createClass({
+
         render: function () {
             return (
-                <NoSignInForm source="/users/forgot_password" goto="users.sign_in"/>
+                <NoSignInForm source="/users/forgot_password"/>
             );
         }
     }),
@@ -72,7 +71,7 @@ module.exports = {
             var token = Utils.gup("code");
             if (token) {
                 return (
-                    <NoSignInForm source={"/users/change_password/"+token} goto="users.sign_in"/>
+                    <NoSignInForm source={"/users/change_password/"+token}/>
                 );
             }
             return (<div/>)
@@ -81,13 +80,13 @@ module.exports = {
     Confirm: React.createClass({
         render: function () {
             return (
-                <NoSignInForm source="/users/confirm" goto="users.sign_in"/>
+                <NoSignInForm source="/users/confirm"/>
             );
         }
     }),
     Unlock: React.createClass({
         render: function () {
-            return (<NoSignInForm source="/users/unlock" goto="users.sign_in"/>);
+            return (<NoSignInForm source="/users/unlock"/>);
         }
     }),
     Profile: React.createClass({//todo
