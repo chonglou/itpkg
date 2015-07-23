@@ -55,9 +55,15 @@ public class UserController extends BaseController {
             if (u == null) {
                 res.addError(i18n.T("form.user.sign_in.failed"));
             } else {
-                Token ut = new Token();
-                ut.setUid(u.getId());
-                res.addData(jwtHelper.payload2token("/users/sign_in", new Token(u.getId(), "users.sign_in"), 60 * 24));
+                if (!u.isConfirmed()) {
+                    res.addError(i18n.T("errors.user.need_to_confirm"));
+                } else if (u.isLocked()) {
+                    res.addError(i18n.T("errors.user.need_to_unlock"));
+                } else {
+                    Token ut = new Token();
+                    ut.setUid(u.getId());
+                    res.addData(jwtHelper.payload2token("/users/sign_in", new Token(u.getId(), "users.sign_in"), 60 * 24));
+                }
             }
         }
         return res;

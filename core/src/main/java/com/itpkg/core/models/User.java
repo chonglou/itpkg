@@ -57,6 +57,9 @@ public class User extends IdEntity {
     @OneToMany(mappedBy = "user")
     private List<Role> roles;
 
+    @OneToMany(mappedBy = "user")
+    private List<Session> sessions;
+
     public String getIds() {
         return Long.toString(this.getId(), 6);
     }
@@ -64,8 +67,16 @@ public class User extends IdEntity {
     public User() {
         this.logs = new ArrayList<>();
         this.roles = new ArrayList<>();
+        this.sessions = new ArrayList<>();
     }
 
+    public List<Session> getSessions() {
+        return sessions;
+    }
+
+    public void setSessions(List<Session> sessions) {
+        this.sessions = sessions;
+    }
 
     public List<Role> getRoles() {
         return roles;

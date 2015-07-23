@@ -51,7 +51,6 @@ module.exports = {
         }
     }),
     SignUp: React.createClass({
-
         render: function () {
             return (
                 <NoSignInForm source="/users/sign_up"/>
@@ -59,7 +58,6 @@ module.exports = {
         }
     }),
     ForgotPassword: React.createClass({
-
         render: function () {
             return (
                 <NoSignInForm source="/users/forgot_password"/>

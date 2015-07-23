@@ -39,7 +39,6 @@ public class BaseController {
 
     RedirectView doShow(Message msg) {
         RedirectView rv = new RedirectView();
-        //rv.setUrl("/#/show?msg=" + URLEncoder.encode(jsonHelper.object2json(msg), "UTF-8" ));
         rv.setUrl("/#/show?msg=" + encryptHelper.toBase64(jsonHelper.object2json(msg)));
         return rv;
     }

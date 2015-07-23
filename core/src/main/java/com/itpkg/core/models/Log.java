@@ -22,13 +22,13 @@ public class Log implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(updatable = false)
     private User user;
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private String message;
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Type type;
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Date created;
 
     public User getUser() {
