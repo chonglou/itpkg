@@ -15,6 +15,7 @@ public class SessionJob {
 
     public void run() {
         logger.info("JOB BEGIN");
+        sessionService.delByExpire();
         logger.info("JOB END");
     }
 
