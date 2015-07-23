@@ -17,10 +17,7 @@ public class SessionService {
     public void saveToken(String token) {
         Session ss = new Session();
         ss.setPayload(getPayload(token));
-
-        Date now = new Date();
-        ss.setUpdated(now);
-        ss.setCreated(now);
+        ss.setCreated(new Date());
         sessionDao.save(ss);
     }
 

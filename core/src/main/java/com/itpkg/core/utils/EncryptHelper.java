@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 
 /**
@@ -22,14 +21,20 @@ public class EncryptHelper {
 
     public String toBase64(String plain) {
 
-            return Base64.getEncoder().encodeToString(plain.getBytes());
+        return Base64.getEncoder().encodeToString(plain.getBytes());
 
     }
 
-    public String fromBase64(String encode)
-    {
+    public String toBase64(byte[] plain) {
 
-            return new String(Base64.getDecoder().decode(encode));
+        return Base64.getEncoder().encodeToString(plain);
+
+    }
+
+
+    public String fromBase64(String encode) {
+
+        return new String(Base64.getDecoder().decode(encode));
 
     }
 

@@ -19,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.*;
 import java.security.KeyPair;
+import java.util.Base64;
 
 /**
  * Created by flamen on 15-7-21.
@@ -81,13 +83,27 @@ public class JwtHelper {
     }
 
     @PostConstruct
-    void init() throws JoseException {
-        final String kk = "site.token.key_pair";
-        KeyPair kp = settingService.get(kk, KeyPair.class);
-        if (kp == null) {
+    void init() throws JoseException, IOException, ClassNotFoundException {
+        final String kk = "site.token.key";
+        String keyS = settingService.get(kk, String.class);
+        KeyPair kp;
+        if (keyS == null) {
             RsaKeyUtil keyUtil = new RsaKeyUtil();
             kp = keyUtil.generateKeyPair(2048);
-            settingService.set(kk, kp, true);
+            try (
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(baos)
+            ) {
+                oos.writeObject(kp);
+                settingService.set(kk, Base64.getEncoder().encodeToString(baos.toByteArray()), true);
+            }
+        } else {
+            try (
+                    ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(keyS));
+                    ObjectInputStream ois = new ObjectInputStream(bais);
+            ) {
+                kp = (KeyPair) ois.readObject();
+            }
         }
 
         key = (RsaJsonWebKey) PublicJsonWebKey.Factory.newPublicJwk(kp.getPublic());
