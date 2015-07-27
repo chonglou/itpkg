@@ -28,9 +28,9 @@ dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
     compile "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
 
-    compile 'net.sf.jasperreports:jasperreports:6.1.0'
-    compile 'com.lowagie:itext:4.2.2'
-    compile 'org.olap4j:olap4j:1.2.0'
+//    compile 'net.sf.jasperreports:jasperreports:6.1.0'
+//    compile 'com.lowagie:itext:4.2.2'
+//    compile 'org.olap4j:olap4j:1.2.0'
 
     compile "org.springframework:spring-web:${springVersion}"
     compile "org.springframework:spring-webmvc:${springVersion}"

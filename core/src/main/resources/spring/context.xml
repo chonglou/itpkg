@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.itpkg"/>
 
     <bean id="core.jwtHelper" class="com.itpkg.core.utils.impl.JwtHS512Helper" init-method="init">
         <property name="jsonHelper" ref="core.jsonHelper"/>
@@ -9,81 +12,4 @@
         <property name="settingService" ref="core.settingService"/>
     </bean>
 
-    <!--<bean id="yamlProperties" class="org.springframework.beans.factory.config.YamlPropertiesFactoryBean">-->
-    <!--<property name="resources" value="classpath:environments.yml"/>-->
-    <!--</bean>-->
-    <!--<context:property-placeholder properties-ref="yamlProperties"/>-->
-
-    <!--<bean id="roleAspect" class="com.itpkg.core.auth.RoleAspect"/>-->
-
-    <!--<aop:aspectj-autoproxy>-->
-    <!--<aop:include name="roleAspect"/>-->
-    <!--</aop:aspectj-autoproxy>-->
-    <!--<mvc:annotation-driven>-->
-    <!--<mvc:argument-resolvers>-->
-    <!--<bean class="com.itpkg.core.auth.CurrentUserHandlerMethodArgumentResolver"/>-->
-    <!--</mvc:argument-resolvers>-->
-    <!--</mvc:annotation-driven>-->
-
-
-    <!--<mvc:interceptors>-->
-    <!--<bean class="com.itpkg.core.auth.AccessInterceptor"/>-->
-    <!--</mvc:interceptors>-->
-
-    <!--<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">-->
-    <!--<property name="mediaTypes">-->
-    <!--<map>-->
-    <!--<entry key="json" value="application/json"/>-->
-    <!--<entry key="js" value="application/javascript"/>-->
-    <!--<entry key="xml" value="application/xml"/>-->
-    <!--<entry key="html" value="text/html"/>-->
-    <!--<entry key="txt" value="text/plain"/>-->
-
-    <!--<entry key="fm" value="text/html"/>-->
-    <!--<entry key="dlg" value="text/html"/>-->
-
-    <!--<entry key="pdf" value="application/pdf"/>-->
-    <!--<entry key="xls" value="application/vnd.ms-excel"/>-->
-    <!--<entry key="csv" value="text/csv"/>-->
-    <!--</map>-->
-    <!--</property>-->
-    <!--<property name="defaultContentType" value="application/html"/>-->
-
-    <!--&lt;!&ndash;/item.json&ndash;&gt;-->
-    <!--<property name="favorPathExtension" value="true"/>-->
-    <!--&lt;!&ndash;/item?format=json&ndash;&gt;-->
-    <!--<property name="favorParameter" value="true"/>-->
-    <!--<property name="parameterName" value="format"/>-->
-
-    <!--<property name="ignoreAcceptHeader" value="true"/>-->
-
-    <!--</bean>-->
-
-    <!--<bean id="contentNegotiatingViewResolver"-->
-    <!--class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">-->
-    <!--<property name="order" value="1"/>-->
-
-    <!--<property name="contentNegotiationManager" ref="contentNegotiationManager"/>-->
-    <!--<property name="viewResolvers">-->
-    <!--<list>-->
-    <!--<bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>-->
-    <!--</list>-->
-    <!--</property>-->
-    <!--<property name="defaultViews">-->
-    <!--<list>-->
-    <!--<bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">-->
-    <!--<property name="disableCaching" value="false"/>-->
-    <!--</bean>-->
-    <!--<bean class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView">-->
-    <!--<property name="disableCaching" value="false"/>-->
-    <!--</bean>-->
-    <!--<bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsCsvView"/>-->
-    <!--<bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"/>-->
-    <!--<bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsXlsView"/>-->
-    <!--</list>-->
-    <!--</property>-->
-    <!--</bean>-->
-
-
-    <!--<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager"/>-->
 </beans>

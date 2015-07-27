@@ -42,27 +42,10 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
-    <!-- ===================== for session factory================== -->
-    <!--<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">-->
-    <!--<property name="dataSource" ref="dataSource"/>-->
-    <!--<property name="packagesToScan" value="com.itpkg.**.models"/>-->
-    <!--<property name="hibernateProperties">-->
-    <!--<value>-->
-    <!--hibernate.dialect=${database.dialect}-->
-    <!--hibernate.hbm2ddl.auto=${database.mode}-->
-    <!--hibernate.show_sql=${database.show_sql}-->
-    <!--</value>-->
-    <!--</property>-->
-    <!--</bean>-->
-    <!--<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">-->
-    <!--<property name="sessionFactory" ref="sessionFactory"/>-->
-    <!--</bean>-->
 
     <!-- ========================== translation ===================== -->
     <aop:config>
         <aop:pointcut id="serviceMethods" expression="execution(* com.itpkg.*.services.*.*(..))"/>
-
-        <!--<aop:pointcut id="serviceMethods" expression="execution(* *..*Service*.*(..))"/>-->
         <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>
     </aop:config>
 

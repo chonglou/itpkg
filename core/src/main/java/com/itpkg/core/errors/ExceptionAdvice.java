@@ -2,6 +2,7 @@ package com.itpkg.core.errors;
 
 import com.itpkg.core.web.widgets.Response;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,6 +21,15 @@ public class ExceptionAdvice {
         Response r = new Response();
         r.addError(ex.getMessage());
         return r;
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public Response accessDeniedExceptionHandler(AccessDeniedException e) {
+        Response rs = new Response();
+        rs.addError(e.getMessage());
+        return rs;
     }
 
 
