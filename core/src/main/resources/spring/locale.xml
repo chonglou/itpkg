@@ -13,14 +13,6 @@
         <property name="fallbackToSystemLocale" value="false"/>
     </bean>
 
-    <!--<bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource">-->
-    <!--<property name="basenames" value="classpath*:messages"/>-->
-    <!--<property name="useCodeAsDefaultMessage" value="true"/>-->
-    <!--<property name="defaultEncoding" value="UTF-8"/>-->
-    <!--<property name="cacheSeconds" value="${http.cache.expire:-1}"/>-->
-    <!--<property name="fallbackToSystemLocale" value="false"/>-->
-    <!--</bean>-->
-
     <bean id="databaseDrivenMessageSource" class="com.itpkg.core.DatabaseDrivenMessageSource">
         <property name="localeService" ref="core.service.locale"/>
         <property name="parentMessageSource" ref="propertiesMessageSource"/>
@@ -30,7 +22,7 @@
     <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
         <property name="cookieName" value="LANG"/>
         <property name="defaultLocale" value="en_US"/>
-        <property name="cookieMaxAge" value="604800"/>
+        <property name="cookieMaxAge" value="#{60*60*24*365}"/>
     </bean>
 
     <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">

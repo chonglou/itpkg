@@ -27,7 +27,7 @@ $(function () {
             break;
         default:
             lang = enUS;
-            cookie.set("LANG", "en_US");
+            cookie.set("LANG", "en_US", { expires: 7 });
     }
 
     Router.run(Routes, function (Handler) {
