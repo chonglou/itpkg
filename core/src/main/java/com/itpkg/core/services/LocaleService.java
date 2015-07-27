@@ -32,16 +32,7 @@ public class LocaleService {
     public String get(String code, java.util.Locale locale) {
         String lang = locale.toString();
         Locale l = localeDao.findByCodeAndLang(code, lang);
-        if (l == null) {
-            l = new Locale();
-            l.setCode(code);
-            l.setLang(locale.toString());
-            Date now = new Date();
-            l.setCreated(now);
-            l.setUpdated(now);
-            localeDao.save(l);
-        }
-        return l.getMessage();
+        return l == null ? null : l.getMessage();
     }
 
     @Autowired

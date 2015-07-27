@@ -5,17 +5,15 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
     <context:component-scan base-package="com.itpkg"/>
 
-    <bean id="propertiesMessageSource" class="org.parancoe.web.util.ReloadableResourceBundleMessageSource">
-        <property name="basenames" value="classpath*:messages"/>
-        <property name="useCodeAsDefaultMessage" value="true"/>
-        <property name="defaultEncoding" value="UTF-8"/>
-        <property name="cacheSeconds" value="${http.cache.expire:-1}"/>
-        <property name="fallbackToSystemLocale" value="false"/>
-    </bean>
-
-    <bean id="databaseDrivenMessageSource" class="com.itpkg.core.DatabaseDrivenMessageSource">
+    <bean id="databaseDrivenMessageSource" class="com.itpkg.core.DatabaseDrivenMessageSource" init-method="init">
         <property name="localeService" ref="core.service.locale"/>
-        <property name="parentMessageSource" ref="propertiesMessageSource"/>
+        <property name="basenames" value="messages"/>
+        <property name="locales">
+            <array>
+                <value>zh_CN</value>
+                <value>en_US</value>
+            </array>
+        </property>
     </bean>
 
 
