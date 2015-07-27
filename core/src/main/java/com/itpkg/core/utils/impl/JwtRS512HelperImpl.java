@@ -41,12 +41,12 @@ public class JwtRS512HelperImpl extends JwtHelper {
 
     @Override
     protected Key getVerificationKey() {
-        return key.getPublicKey();
+        return key.getKey();
     }
 
     @Override
     protected Key getKey() {
-        return key.getKey();
+        return key.getPrivateKey();
     }
 
     private RsaJsonWebKey key;

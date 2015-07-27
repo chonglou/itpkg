@@ -22,7 +22,7 @@ import java.util.Base64;
 public abstract class JwtHelper {
     private final static Logger logger = LoggerFactory.getLogger(JwtHelper.class);
 
-    public <T> T token2payload(String token, Class<T> clazz) {
+    public <T> T token2payload(String token, Class<T> clazz) throws InvalidJwtException, MalformedClaimException {
         JwtConsumer consumer = new JwtConsumerBuilder()
                 .setRequireExpirationTime()
                 .setAllowedClockSkewInSeconds(30)
@@ -31,20 +31,17 @@ public abstract class JwtHelper {
                 .setExpectedAudience(TOKEN_AUDIENCE)
                 .setVerificationKey(getVerificationKey())
                 .build();
-        try {
-            JwtClaims claims = consumer.processToClaims(token);
-            T t = jsonHelper.json2object(claims.getClaimValue(CLAIM_KEY, String.class), clazz);
-            if (sessionService.getByToken(token) == null) {
-                return null;
-            }
-            return t;
-        } catch (InvalidJwtException | MalformedClaimException e) {
-            logger.error("parse jwt error", e);
+
+        JwtClaims claims = consumer.processToClaims(token);
+        T t = jsonHelper.json2object(claims.getClaimValue(CLAIM_KEY, String.class), clazz);
+        if (sessionService.getByToken(token) == null) {
+            return null;
         }
-        return null;
+        return t;
+
     }
 
-    public String payload2token(String subject, Object payload, long minutes) {
+    public String payload2token(String subject, Object payload, long minutes) throws JoseException {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer(TOKEN_ISSUER);
         claims.setAudience(TOKEN_AUDIENCE);
@@ -62,14 +59,11 @@ public abstract class JwtHelper {
         jws.setKeyIdHeaderValue(KEY_ID);
         jws.setAlgorithmHeaderValue(getAlgorithm());
 
-        try {
-            String token = jws.getCompactSerialization();
-            sessionService.saveToken(token);
-            return token;
-        } catch (JoseException e) {
-            logger.error("generate jwt error", e);
-        }
-        return null;
+
+        String token = jws.getCompactSerialization();
+        sessionService.saveToken(token);
+        return token;
+
     }
 
     public void init() throws JoseException, IOException, ClassNotFoundException {

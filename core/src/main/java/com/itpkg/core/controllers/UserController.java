@@ -47,7 +47,7 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "/sign_in", method = RequestMethod.POST)
     @ResponseBody
-    Response postSignIn(@RequestBody @Valid SignInFm fm, BindingResult result) {
+    Response postSignIn(@RequestBody @Valid SignInFm fm, BindingResult result) throws Exception{
 
         Response res = new Response(result);
         if (res.isOk()) {
@@ -85,7 +85,7 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "/sign_up", method = RequestMethod.POST)
     @ResponseBody
-    Response postSignUp(@RequestBody @Valid SignUpFm fm, BindingResult result, Locale locale) {
+    Response postSignUp(@RequestBody @Valid SignUpFm fm, BindingResult result, Locale locale) throws Exception{
         Response res = new Response(result);
         if (res.isOk()) {
             User u = userService.create(fm.getUsername(), fm.getEmail(), fm.getPassword());
@@ -113,7 +113,7 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "/forgot_password", method = RequestMethod.POST)
     @ResponseBody
-    Response postForgotPassword(@RequestBody @Valid EmailFm fm, BindingResult result, Locale locale) {
+    Response postForgotPassword(@RequestBody @Valid EmailFm fm, BindingResult result, Locale locale)  throws Exception{
         Response res = new Response(result);
         if (res.isOk()) {
             User u = userService.findByEmail(fm.getEmail());
@@ -151,7 +151,7 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "/change_password", method = RequestMethod.POST)
     @ResponseBody
-    Response postChangePassword(@RequestBody @Valid PasswordFm fm, BindingResult result) {
+    Response postChangePassword(@RequestBody @Valid PasswordFm fm, BindingResult result)  throws Exception{
 
         Response res = new Response(result);
         if (res.isOk()) {
@@ -180,7 +180,7 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "/confirm", method = RequestMethod.POST)
     @ResponseBody
-    Response postConfirm(@RequestBody @Valid EmailFm fm, BindingResult result, Locale locale) {
+    Response postConfirm(@RequestBody @Valid EmailFm fm, BindingResult result, Locale locale)  throws Exception{
         Response res = new Response(result);
         if (res.isOk()) {
             User u = userService.findByEmail(fm.getEmail());
@@ -199,7 +199,7 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "/confirm/{token}", method = RequestMethod.GET)
-    RedirectView getConfirmToken(@PathVariable("token") String token) {
+    RedirectView getConfirmToken(@PathVariable("token") String token)  throws Exception{
 
         Message msg;
         Token ut = string2token(token);
@@ -232,7 +232,7 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "/unlock", method = RequestMethod.POST)
     @ResponseBody
-    Response postUnlock(@RequestBody @Valid EmailFm fm, BindingResult result, Locale locale) {
+    Response postUnlock(@RequestBody @Valid EmailFm fm, BindingResult result, Locale locale)  throws Exception{
         Response res = new Response(result);
         if (res.isOk()) {
             User u = userService.findByEmail(fm.getEmail());
@@ -254,7 +254,7 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "/unlock/{token}", method = RequestMethod.GET)
-    RedirectView getUnlockToken(@PathVariable("token") String token) {
+    RedirectView getUnlockToken(@PathVariable("token") String token)  throws Exception{
         Message msg;
         Token ut = string2token(token);
         if (ut != null && "users.unlock".equals(ut.getAction())) {

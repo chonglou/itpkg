@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="core.jwtHelper" class="com.itpkg.core.utils.impl.JwtRS512HelperImpl" init-method="init">
+    <bean id="core.jwtHelper" class="com.itpkg.core.utils.impl.JwtHS512Helper" init-method="init">
         <property name="jsonHelper" ref="core.jsonHelper"/>
         <property name="sessionService" ref="core.sessionService"/>
         <property name="settingService" ref="core.settingService"/>
