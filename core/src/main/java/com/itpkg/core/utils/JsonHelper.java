@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Created by flamen on 15-7-15.
  */
-@Component("core.utils.json")
+@Component("core.jsonHelper")
 public class JsonHelper {
     private static final Logger logger = LoggerFactory.getLogger(JsonHelper.class);
 

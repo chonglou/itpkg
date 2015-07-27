@@ -13,7 +13,8 @@ dependencies {
     compile "org.slf4j:slf4j-api:${slf4jVersion}"
     compile 'javax.servlet:javax.servlet-api:3.1.0'
 
-    compile 'org.bitbucket.b_c:jose4j:0.4.3'
+    compile 'org.bitbucket.b_c:jose4j:0.4.4'
+
     compile "org.quartz-scheduler:quartz:${quartzVersion}"
     compile "org.quartz-scheduler:quartz-jobs:${quartzVersion}"
 
@@ -23,14 +24,13 @@ dependencies {
     compile "com.jolbox:bonecp:${bonecpVersion}"
     compile "com.jolbox:bonecp-spring:${bonecpVersion}"
 
+    compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
     compile "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
 
     compile 'net.sf.jasperreports:jasperreports:6.1.0'
     compile 'com.lowagie:itext:4.2.2'
     compile 'org.olap4j:olap4j:1.2.0'
-
-//    compile 'org.springframework.hateoas:spring-hateoas:0.17.0.RELEASE'
-
 
     compile "org.springframework:spring-web:${springVersion}"
     compile "org.springframework:spring-webmvc:${springVersion}"
@@ -39,9 +39,14 @@ dependencies {
     compile 'org.springframework.data:spring-data-jpa:1.8.1.RELEASE'
 
 
-    compile 'org.springframework.security:spring-security-web:4.0.2.RELEASE'
-    compile 'org.springframework.social:spring-social-core:1.1.2.RELEASE'
-    compile 'org.springframework.social:spring-social-facebook:2.0.1.RELEASE'
+    compile "org.springframework.security:spring-security-config:${springSecurityVersion}"
+    compile "org.springframework.security:spring-security-web:${springSecurityVersion}"
+
+
+//    compile 'org.springframework.security.oauth:spring-security-oauth2:2.0.7.RELEASE'
+//    compile 'org.springframework.security:spring-security-jwt:1.0.3.RELEASE'
+//    compile 'org.springframework.social:spring-social-core:1.1.2.RELEASE'
+//    compile 'org.springframework.social:spring-social-facebook:2.0.1.RELEASE'
 
 
     testCompile('junit:junit')

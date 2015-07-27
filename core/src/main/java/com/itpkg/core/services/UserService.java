@@ -11,9 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.social.connect.ConnectionData;
-import org.springframework.social.connect.ConnectionKey;
-import org.springframework.social.connect.UserProfile;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -125,23 +122,6 @@ public class UserService {
             return u;
         }
         return null;
-    }
-
-    public User create(UserProfile profile, ConnectionKey key, ConnectionData data) {
-        User u = new User();
-        u.setUsername(profile.getName());
-        u.setEmail(profile.getEmail());
-        u.setProviderId(key.getProviderId());
-        u.setProviderUserId(key.getProviderUserId());
-        u.setAccessToken(data.getAccessToken());
-
-        Date now = new Date();
-        u.setConfirmed(now);
-        u.setUpdated(now);
-        u.setCreated(now);
-
-        userDao.save(u);
-        return u;
     }
 
 

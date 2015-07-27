@@ -14,7 +14,7 @@ import java.util.Date;
 /**
  * Created by flamen on 15-7-14.
  */
-@Service
+@Service("core.settingService")
 public class SettingService {
     private final static Logger logger = LoggerFactory.getLogger(SettingService.class);
 

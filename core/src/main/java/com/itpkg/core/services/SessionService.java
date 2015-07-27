@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by flamen on 15-7-23.
  */
-@Service("core.service.session")
+@Service("core.sessionService")
 public class SessionService {
     private final static Logger logger = LoggerFactory.getLogger(SessionService.class);
 
