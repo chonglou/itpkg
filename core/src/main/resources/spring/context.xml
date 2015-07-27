@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd     http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!--<bean id="yamlProperties" class="org.springframework.beans.factory.config.YamlPropertiesFactoryBean">-->
     <!--<property name="resources" value="classpath:environments.yml"/>-->
     <!--</bean>-->
     <!--<context:property-placeholder properties-ref="yamlProperties"/>-->
 
-    <bean id="roleAspect" class="com.itpkg.core.auth.RoleAspect"/>
+    <!--<bean id="roleAspect" class="com.itpkg.core.auth.RoleAspect"/>-->
 
-    <aop:aspectj-autoproxy>
-        <aop:include name="roleAspect"/>
-    </aop:aspectj-autoproxy>
-    <mvc:annotation-driven>
-        <mvc:argument-resolvers>
-            <bean class="com.itpkg.core.auth.CurrentUserHandlerMethodArgumentResolver"/>
-        </mvc:argument-resolvers>
-    </mvc:annotation-driven>
+    <!--<aop:aspectj-autoproxy>-->
+    <!--<aop:include name="roleAspect"/>-->
+    <!--</aop:aspectj-autoproxy>-->
+    <!--<mvc:annotation-driven>-->
+    <!--<mvc:argument-resolvers>-->
+    <!--<bean class="com.itpkg.core.auth.CurrentUserHandlerMethodArgumentResolver"/>-->
+    <!--</mvc:argument-resolvers>-->
+    <!--</mvc:annotation-driven>-->
+
 
     <!--<mvc:interceptors>-->
     <!--<bean class="com.itpkg.core.auth.AccessInterceptor"/>-->

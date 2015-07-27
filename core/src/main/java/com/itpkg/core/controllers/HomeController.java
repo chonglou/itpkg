@@ -1,7 +1,5 @@
 package com.itpkg.core.controllers;
 
-import com.itpkg.core.auth.CurrentUser;
-import com.itpkg.core.auth.Rule;
 import com.itpkg.core.models.User;
 import com.itpkg.core.services.I18nService;
 import com.itpkg.core.services.LocaleService;
@@ -35,7 +33,10 @@ public class HomeController {
 
     @RequestMapping(value = "/nav_bar", method = RequestMethod.GET)
     @ResponseBody
-    TopNavBar getNavBar(@CurrentUser User currentUser) {
+    TopNavBar getNavBar() {
+        //todo
+        User currentUser = null;
+
         TopNavBar tnb = new TopNavBar();
         tnb.setTitle(i18n.T("site.title"));
 
@@ -76,10 +77,12 @@ public class HomeController {
         public String controller;
     }
 
-    @Rule(role = "admin")
     @RequestMapping(value = "/routes", method = RequestMethod.GET)
     @ResponseBody
-    public List<UrlInfo> routes(@CurrentUser User currentUser) {
+    public List<UrlInfo> routes() {
+        //todo
+        User currentUser = null;
+
         List<UrlInfo> urls = new ArrayList<>();
         requestMappingHandlerMapping.getHandlerMethods().forEach((k, v) -> {
             for (RequestMethod m : k.getMethodsCondition().getMethods()) {
