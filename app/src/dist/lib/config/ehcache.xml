@@ -16,20 +16,19 @@
            maxElementsInMemory="10000"
            eternal="false"
            overflowToDisk="true"
-           memoryStoreEvictionPolicy="LRU" />
+           memoryStoreEvictionPolicy="LRU"/>
 
     <cache name="org.hibernate.cache.spi.UpdateTimestampsCache"
            maxElementsInMemory="1000"
            eternal="false"
            overflowToDisk="true"
-           memoryStoreEvictionPolicy="LRU" />
+           memoryStoreEvictionPolicy="LRU"/>
 
     <cache name="org.hibernate.cache.internal.StandardQueryCache"
            maxElementsInMemory="1000"
            eternal="false"
            overflowToDisk="true"
-           memoryStoreEvictionPolicy="LRU" />
-
+           memoryStoreEvictionPolicy="LRU"/>
 
 
 </ehcache>

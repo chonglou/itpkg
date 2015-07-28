@@ -23,7 +23,7 @@ public class BaseController {
         sessionService.delByToken(encryptHelper.fromBase64(token));
     }
 
-    void sendTokenMail(String email, String path, Token token, Locale locale) throws Exception{
+    void sendTokenMail(String email, String path, Token token, Locale locale) throws Exception {
         String code = token2string(path, token, 30);
         String subject = i18n.T("mail." + token.getAction() + ".subject");
         String body = i18n.T(
@@ -34,11 +34,11 @@ public class BaseController {
         emailHelper.send(email, subject, body);
     }
 
-    String token2string(String subject, Token token, int minutes) throws Exception{
+    String token2string(String subject, Token token, int minutes) throws Exception {
         return encryptHelper.toBase64(jwtHelper.payload2token(subject, token, minutes));
     }
 
-    Token string2token(String token) throws Exception{
+    Token string2token(String token) throws Exception {
         return jwtHelper.token2payload(encryptHelper.fromBase64(token), Token.class);
     }
 

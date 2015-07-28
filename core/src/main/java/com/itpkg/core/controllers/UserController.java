@@ -14,6 +14,7 @@ import com.itpkg.core.web.widgets.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -33,9 +34,10 @@ public class UserController extends BaseController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 
+    @PreAuthorize("isAnonymous()")
     @RequestMapping(value = "/sign_in", method = RequestMethod.GET)
     @ResponseBody
-    Form getSignIn() {
+    public Form getSignIn() {
         Form fm = new Form("sign_in", i18n.T("form.user.sign_in.title"), "/users/sign_in");
         fm.addEmailField("email", i18n.T("form.fields.email"), true, i18n.T("form.placeholders.email"));
         fm.addPasswordField("password", i18n.T("form.fields.password"), true, i18n.T("form.placeholders.password"));
@@ -45,9 +47,10 @@ public class UserController extends BaseController {
         return fm;
     }
 
+    @PreAuthorize("isAnonymous()")
     @RequestMapping(value = "/sign_in", method = RequestMethod.POST)
     @ResponseBody
-    Response postSignIn(@RequestBody @Valid SignInFm fm, BindingResult result) throws Exception{
+    public Response postSignIn(@RequestBody @Valid SignInFm fm, BindingResult result) throws Exception {
 
         Response res = new Response(result);
         if (res.isOk()) {
@@ -69,9 +72,10 @@ public class UserController extends BaseController {
         return res;
     }
 
+    @PreAuthorize("isAnonymous()")
     @RequestMapping(value = "/sign_up", method = RequestMethod.GET)
     @ResponseBody
-    Form getSignUp() {
+    public Form getSignUp() {
         Form fm = new Form("sign_up", i18n.T("form.user.sign_up.title"), "/users/sign_up");
         fm.addTextField("username", i18n.T("form.fields.username"), null, 4, true, i18n.T("form.placeholders.username"));
         fm.addEmailField("email", i18n.T("form.fields.email"), true, i18n.T("form.placeholders.email"));
@@ -83,9 +87,10 @@ public class UserController extends BaseController {
         return fm;
     }
 
+    @PreAuthorize("isAnonymous()")
     @RequestMapping(value = "/sign_up", method = RequestMethod.POST)
     @ResponseBody
-    Response postSignUp(@RequestBody @Valid SignUpFm fm, BindingResult result, Locale locale) throws Exception{
+    public Response postSignUp(@RequestBody @Valid SignUpFm fm, BindingResult result, Locale locale) throws Exception {
         Response res = new Response(result);
         if (res.isOk()) {
             User u = userService.create(fm.getUsername(), fm.getEmail(), fm.getPassword());
@@ -100,9 +105,10 @@ public class UserController extends BaseController {
     }
 
 
+    @PreAuthorize("isAnonymous()")
     @RequestMapping(value = "/forgot_password", method = RequestMethod.GET)
     @ResponseBody
-    Form getForgotPassword() {
+    public Form getForgotPassword() {
         Form fm = new Form("forgot_password", i18n.T("form.user.forgot_password.title"), "/users/forgot_password");
         fm.addEmailField("email", i18n.T("form.fields.email"), true);
         fm.addSubmit(i18n.T("form.user.forgot_password.submit"));
@@ -111,9 +117,10 @@ public class UserController extends BaseController {
         return fm;
     }
 
+    @PreAuthorize("isAnonymous()")
     @RequestMapping(value = "/forgot_password", method = RequestMethod.POST)
     @ResponseBody
-    Response postForgotPassword(@RequestBody @Valid EmailFm fm, BindingResult result, Locale locale)  throws Exception{
+    public Response postForgotPassword(@RequestBody @Valid EmailFm fm, BindingResult result, Locale locale) throws Exception {
         Response res = new Response(result);
         if (res.isOk()) {
             User u = userService.findByEmail(fm.getEmail());
@@ -135,9 +142,10 @@ public class UserController extends BaseController {
         return res;
     }
 
+    @PreAuthorize("isAnonymous()")
     @RequestMapping(value = "/change_password/{token}", method = RequestMethod.GET)
     @ResponseBody
-    Form getChangePassword(@PathVariable("token") String token) {
+    public Form getChangePassword(@PathVariable("token") String token) {
         Form fm = new Form("change_password", i18n.T("form.user.change_password.title"), "/users/change_password");
         fm.addHidden("token", token);
         fm.addPasswordField("password", i18n.T("form.fields.password"), true, i18n.T("form.placeholders.password"));
@@ -149,9 +157,10 @@ public class UserController extends BaseController {
         return fm;
     }
 
+    @PreAuthorize("isAnonymous()")
     @RequestMapping(value = "/change_password", method = RequestMethod.POST)
     @ResponseBody
-    Response postChangePassword(@RequestBody @Valid PasswordFm fm, BindingResult result)  throws Exception{
+    public Response postChangePassword(@RequestBody @Valid PasswordFm fm, BindingResult result) throws Exception {
 
         Response res = new Response(result);
         if (res.isOk()) {
@@ -167,9 +176,10 @@ public class UserController extends BaseController {
         return res;
     }
 
+    @PreAuthorize("isAnonymous()")
     @RequestMapping(value = "/confirm", method = RequestMethod.GET)
     @ResponseBody
-    Form getConfirm() {
+    public Form getConfirm() {
         Form fm = new Form("confirm", i18n.T("form.user.confirm.title"), "/users/confirm");
         fm.addEmailField("email", i18n.T("form.fields.email"), true);
         fm.addSubmit(i18n.T("form.user.confirm.submit"));
@@ -178,9 +188,10 @@ public class UserController extends BaseController {
         return fm;
     }
 
+    @PreAuthorize("isAnonymous()")
     @RequestMapping(value = "/confirm", method = RequestMethod.POST)
     @ResponseBody
-    Response postConfirm(@RequestBody @Valid EmailFm fm, BindingResult result, Locale locale)  throws Exception{
+    public Response postConfirm(@RequestBody @Valid EmailFm fm, BindingResult result, Locale locale) throws Exception {
         Response res = new Response(result);
         if (res.isOk()) {
             User u = userService.findByEmail(fm.getEmail());
@@ -198,8 +209,9 @@ public class UserController extends BaseController {
         return res;
     }
 
+    @PreAuthorize("isAnonymous()")
     @RequestMapping(value = "/confirm/{token}", method = RequestMethod.GET)
-    RedirectView getConfirmToken(@PathVariable("token") String token)  throws Exception{
+    public RedirectView getConfirmToken(@PathVariable("token") String token) throws Exception {
 
         Message msg;
         Token ut = string2token(token);
@@ -219,9 +231,10 @@ public class UserController extends BaseController {
     }
 
 
+    @PreAuthorize("isAnonymous()")
     @RequestMapping(value = "/unlock", method = RequestMethod.GET)
     @ResponseBody
-    Form getUnlock() {
+    public Form getUnlock() {
         Form fm = new Form("unlock", i18n.T("form.user.unlock.title"), "/users/unlock");
         fm.addEmailField("email", i18n.T("form.fields.email"), true);
         fm.addSubmit(i18n.T("form.user.unlock.submit"));
@@ -230,9 +243,10 @@ public class UserController extends BaseController {
         return fm;
     }
 
+    @PreAuthorize("isAnonymous()")
     @RequestMapping(value = "/unlock", method = RequestMethod.POST)
     @ResponseBody
-    Response postUnlock(@RequestBody @Valid EmailFm fm, BindingResult result, Locale locale)  throws Exception{
+    public Response postUnlock(@RequestBody @Valid EmailFm fm, BindingResult result, Locale locale) throws Exception {
         Response res = new Response(result);
         if (res.isOk()) {
             User u = userService.findByEmail(fm.getEmail());
@@ -253,8 +267,9 @@ public class UserController extends BaseController {
         return res;
     }
 
+    @PreAuthorize("isAnonymous()")
     @RequestMapping(value = "/unlock/{token}", method = RequestMethod.GET)
-    RedirectView getUnlockToken(@PathVariable("token") String token)  throws Exception{
+    public RedirectView getUnlockToken(@PathVariable("token") String token) throws Exception {
         Message msg;
         Token ut = string2token(token);
         if (ut != null && "users.unlock".equals(ut.getAction())) {

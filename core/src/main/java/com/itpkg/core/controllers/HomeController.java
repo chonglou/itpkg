@@ -11,6 +11,7 @@ import com.itpkg.core.web.widgets.TopNavBar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,7 +34,7 @@ public class HomeController {
 
     @RequestMapping(value = "/nav_bar", method = RequestMethod.GET)
     @ResponseBody
-    TopNavBar getNavBar() {
+    public TopNavBar getNavBar() {
         //todo
         User currentUser = null;
 
@@ -60,10 +61,10 @@ public class HomeController {
         return tnb;
     }
 
-
+    @PreAuthorize("permitAll()")
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     @ResponseBody
-    Map<String, String> getCopyright() {
+    public Map<String, String> getInfo() {
         Map<String, String> map = new HashMap<>();
         for (String s : new String[]{"title", "description", "keywords", "copyright"}) {
             map.put(s, i18n.T("site." + s));
@@ -77,6 +78,8 @@ public class HomeController {
         public String controller;
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/routes", method = RequestMethod.GET)
     @ResponseBody
     public List<UrlInfo> routes() {

@@ -6,6 +6,7 @@
 
     <context:component-scan base-package="com.itpkg"/>
 
+
     <bean id="core.jwtHelper" class="com.itpkg.core.utils.impl.JwtHS512Helper" init-method="init">
         <property name="jsonHelper" ref="core.jsonHelper"/>
         <property name="sessionService" ref="core.sessionService"/>
