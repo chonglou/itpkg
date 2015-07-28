@@ -25,7 +25,10 @@ public class Security extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.addFilterAfter(new AuthenticationFilter(authenticationManager(), jwtHelper, i18n), BasicAuthenticationFilter.class);
+        http.addFilterAfter(
+                new AuthenticationFilter(authenticationManager(), jwtHelper, i18n),
+                BasicAuthenticationFilter.class)
+                .csrf().disable();
     }
 
     @Autowired

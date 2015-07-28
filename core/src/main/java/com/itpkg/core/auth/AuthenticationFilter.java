@@ -40,11 +40,11 @@ public class AuthenticationFilter extends GenericFilterBean {
         HttpServletResponse resp = (HttpServletResponse) response;
 
 
-        String jwt = jwt(req);
-        if (jwt != null) {
+        String ticket = getTicket(req);
+        if (ticket != null) {
             try {
-                logger.debug("get jwt: " + jwt);
-                Authentication reqAuth = new PreAuthenticatedAuthenticationToken(jwtHelper.token2payload(jwt, String.class), null);
+                logger.debug("get jwt: " + ticket);
+                Authentication reqAuth = new PreAuthenticatedAuthenticationToken(jwtHelper.token2payload(ticket, String.class), null);
                 Authentication respAuth = authenticationManager.authenticate(reqAuth);
                 if (respAuth == null || !respAuth.isAuthenticated()) {
                     throw new InternalAuthenticationServiceException(i18n.T("errors.user.bad_token"));
@@ -62,21 +62,21 @@ public class AuthenticationFilter extends GenericFilterBean {
         chain.doFilter(request, response);
     }
 
-    private String jwt(HttpServletRequest request) {
-        String token = request.getParameter("token");
-        if (token == null) {
+    private String getTicket(HttpServletRequest request) {
+        String ticket = request.getParameter("ticket");
+        if (ticket == null) {
 
             String auth = request.getHeader("Authorization");
             if (auth != null) {
                 String[] ss = auth.split(" ");
                 if (ss.length == 2 && !"Bearer".equals(ss[0])) {
-                    token = ss[1];
+                    ticket = ss[1];
                 }
             }
         }
 
 
-        return token;
+        return ticket;
     }
 
 

@@ -6,6 +6,8 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 /**
  * Created by flamen on 15-7-28.
  */
@@ -15,6 +17,10 @@ public class EmailJob {
 
     @RabbitListener(queues = "email")
     public void onMessage(Message message) {
-        logger.debug("receive email task: " + message);
+        Map<String, Object> headers = message.getMessageProperties().getHeaders();
+        String to = (String) headers.get("to");
+        String from = (String) headers.get("from");
+        String body = new String(message.getBody());
+        logger.debug("send mail: {}\n{}", to, body);
     }
 }
