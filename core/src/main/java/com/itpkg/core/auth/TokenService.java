@@ -4,6 +4,7 @@ import com.itpkg.core.services.SettingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -53,6 +54,7 @@ public class TokenService {
     private long expire;
 
     @Autowired
+    @Qualifier("core.redisTemplate")
     RedisTemplate<String, Authentication> redis;
     @Autowired
     SettingService settingService;

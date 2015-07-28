@@ -9,6 +9,8 @@
     {% for (var css in o.htmlWebpackPlugin.files.css) { %}
     <link href="{%=o.htmlWebpackPlugin.files.css[css] %}" rel="stylesheet">
     {% } %}
+    <!--<meta name="_csrf" content="${_csrf.token}"/>-->
+    <!--<meta name="_csrf_header" content="${_csrf.headerName}"/>-->
 </head>
 <body>
 <div id="content"></div>

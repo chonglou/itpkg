@@ -49,6 +49,7 @@
     "start": "webpack-dev-server --config webpack-development.config.js --progress --colors",
     "build": "webpack --config webpack-development.config.js --progress --profile --colors",
     "release": "webpack --config webpack-production.config.js --progress --profile --colors",
+    "watch": "webpack --config webpack-development.config.js --progress --colors --watch",
     "update": "npm-check-updates -u"
   },
   "repository": {
