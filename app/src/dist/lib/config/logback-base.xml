@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<included>
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>%d{yyyy-MM-dd_HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
@@ -24,20 +24,4 @@
     </appender>
 
 
-    <logger name="org.springframework" level="DEBUG"/>
-
-    <logger name="org.apache" level="INFO"/>
-    <logger name="com.jolbox.bonecp" level="INFO"/>
-    <logger name="org.quartz" level="INFO"/>
-    <logger name="org.hibernate" level="INFO"/>
-    <logger name="net.sf.ehcache" level="INFO"/>
-
-    <logger name="org.parancoe.web" level="INFO"/>
-
-
-    <!--CHANGE TO WARN WHEN RUN ON PRODUCTION ENV-->
-    <root level="DEBUG">
-        <appender-ref ref="stdout"/>
-        <appender-ref ref="file"/>
-    </root>
-</configuration>
+</included>

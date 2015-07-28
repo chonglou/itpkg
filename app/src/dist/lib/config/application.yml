@@ -1,10 +1,13 @@
 spring:
-  profiles.active: development-postgresql
+  profiles.active: development,postgresql
 
 
 ---
 spring:
   profiles: default
+
+logging:
+  config: classpath:logback-development.xml
 
 server:
   port: 8080
@@ -19,7 +22,6 @@ root:
 
 secrets:
   encryptor: Iengoe6uingo1mae8iyooquiem7Foopigheif7cotiiV7bos1Tubei0eceiThaagh4kaetheeW3gae2eith4ichu5ihie9aeVo1Ephoo0ot6ahf4pheisu6OxaeDahki
-  token: ahgheif4Ooheefeith9aaqueigie5Zae
 
 database:
   mode: update
@@ -31,14 +33,17 @@ database:
   dialect: org.hibernate.dialect.PostgreSQLDialect
 
 
+---
+spring:
+    profiles: development
 
 ---
 spring:
-    profiles: development-postgresql
+    profiles: postgresql
 
 ---
 spring:
-    profiles: development-mysql
+    profiles: mysql
 
 database:
   driver: com.mysql.jdbc.Driver
@@ -49,7 +54,7 @@ database:
 
 ---
 spring:
-    profiles: development-derby
+    profiles: derby
 database:
   driver: org.apache.derby.jdbc.EmbeddedDriver
   url: jdbc:derby:tmp/db;create=true
@@ -61,6 +66,9 @@ database:
 ---
 spring:
     profiles: production
+
+logging:
+  config: classpath:logback-production.xml
 
 http:
   home: https://CHANGE_ME
