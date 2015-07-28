@@ -15,7 +15,7 @@ public class RssJob {
 
     @Scheduled(cron = "0 0 */6 * * *")
     public void run() {
-        if(enable) {
+        if (enable) {
             logger.info("begin rss job");
             logger.info("end rss job");
         }

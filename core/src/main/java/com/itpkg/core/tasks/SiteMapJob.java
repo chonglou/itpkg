@@ -15,7 +15,7 @@ public class SiteMapJob {
 
     @Scheduled(cron = "0 0 */12 * * *")
     public void run() {
-        if(enable) {
+        if (enable) {
             logger.info("begin sitemap job");
             logger.info("end sitemap job");
         }
