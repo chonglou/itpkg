@@ -1,35 +1,37 @@
 "use strict";
 
 var Reflux = require('reflux');
-var jwt_decode = require('jwt-decode');
+var $ = require("jquery");
 
 var Actions = require('../actions/Auth');
 
-var UserStore = Reflux.createStore({
+var _key = "ticket";
+
+var userStore = Reflux.createStore({
     listenables: Actions,
-    init: function () {
-        var jwt = localStorage.getItem('jid');
-        if (jwt) {
-            this.user = jwt_decode(jwt);
-        } else {
-            this.user = {};
+    getInitialState: function () {
+        var val = sessionStorage.getItem(_key);
+        if (val) {
+            this.ticket = val;
         }
+        return this.ticket;
     },
-
-    currentUser: function () {
-        return this.user;
+    onSignIn: function (ticket) {
+        sessionStorage.setItem(_key, ticket);
+        this.ticket = ticket;
+        this.trigger(this.ticket);
     },
-    updateJid: function (jid) {
-        localStorage.setItem('jid', jid);
-        this.user = jwt_decode(jid);
-        this.trigger(this.user);
-    },
-    signOut: function () {
-        localStorage.removeItem('jid');
-        this.user = {};
-        this.trigger(this.user);
+    onSignOut: function () {
+        $.get(
+            "/users/sign_out",
+            function () {
+                sessionStorage.removeItem(_key);
+                this.ticket = undefined;
+                this.trigger(this.ticket);
+            }.bind(this),
+            "json"
+        );
     }
-
 });
 
-module.exports = UserStore;
+module.exports = userStore;

@@ -17,10 +17,10 @@ var AjaxForm = React.createClass({
                 if (this.isMounted()) {
                     this.setState({form: result});
                 }
-            }.bind(this),
+            },
             function (httpObj) {
                 this.setState({message: {style: 'danger', items: [httpObj.statusText]}});
-            }.bind(this)
+            }
         );
 
     },
@@ -37,13 +37,10 @@ var AjaxForm = React.createClass({
         });
         switch (fm.method) {
             case "POST":
-                $.ajax({
-                    type: "POST",
-                    url: fm.action,
-                    dataType: "json",
-                    data: JSON.stringify(data),
-                    contentType: "application/json; charset=utf-8",
-                    success: function (result) {
+                this.post(
+                    fm.action,
+                    JSON.stringify(data),
+                    function (result) {
                         if (result.ok) {
                             var clk = this.props.submit;
                             if (clk) {
@@ -66,8 +63,11 @@ var AjaxForm = React.createClass({
                                 }
                             });
                         }
-                    }.bind(this)
-                });
+                    },
+                    function (httpObj) {
+                        this.setState({message: {style: 'danger', items: [httpObj.statusText]}});
+                    }
+                );
                 break;
             default:
                 console.log("unsupported http method " + fm.method);

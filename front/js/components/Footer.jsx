@@ -26,13 +26,11 @@ var Footer = React.createClass({
     },
     componentDidMount: function () {
         this.get("/info", function (rs) {
-            if (this.isMounted()) {
-                document.title = rs.title;
-                this.setState({
-                    copyright: rs.copyright
-                });
-            }
-        }.bind(this));
+            document.title = rs.title;
+            this.setState({
+                copyright: rs.copyright
+            });
+        });
     },
     render: function () {
         return (

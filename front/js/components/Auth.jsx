@@ -8,9 +8,14 @@ import {Router,Link,Navigation} from 'react-router'
 var W = require("./Widgets");
 var Utils = require("../Utils");
 var HttpMixin = require("../mixins/Http");
+var AuthStore = require("../stores/Auth");
+var AuthActions = require("../actions/Auth");
 
 var NoSignInForm = React.createClass({
-    mixins: [T.IntlMixin, HttpMixin],
+    mixins: [
+        T.IntlMixin,
+        HttpMixin
+    ],
     getInitialState: function () {
         return {links: []}
     },
@@ -49,8 +54,12 @@ var NoSignInForm = React.createClass({
 
 module.exports = {
     SignIn: React.createClass({
-        mixins: [Navigation],
+        mixins: [
+            Navigation,
+            Reflux.connect(AuthStore, 'ticket')
+        ],
         onSubmit: function (data) {
+            AuthActions.signIn(data[0]);
             this.transitionTo("home");
         },
         render: function () {
