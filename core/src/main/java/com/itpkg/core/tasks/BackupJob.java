@@ -5,7 +5,6 @@ import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.DatabaseSequenceFilter;
 import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.FilteredDataSet;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.filter.ITableFilter;
@@ -19,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -37,6 +37,7 @@ import java.util.Date;
 public class BackupJob {
     private final static Logger logger = LoggerFactory.getLogger(BackupJob.class);
 
+    @Scheduled(cron = "0 0 3 * * *")
     public void run() throws SQLException, DatabaseUnitException, IOException {
         if (enable) {
             logger.info("begin backup database");
@@ -55,15 +56,14 @@ public class BackupJob {
 
     }
 
-    public void load(File file) throws IOException,SQLException,DatabaseUnitException{
+    public void load(File file) throws IOException, SQLException, DatabaseUnitException {
         IDataSet dataSet = new FlatXmlDataSetBuilder().build(file);
         DatabaseOperation.CLEAN_INSERT.execute(conn, dataSet);
     }
 
 
-
     @PostConstruct
-    void init()  throws SQLException, DatabaseUnitException{
+    void init() throws SQLException, DatabaseUnitException {
         new File(root).mkdirs();
         conn = new DatabaseConnection(dataSource.getConnection());
         DatabaseConfig config = conn.getConfig();
@@ -76,15 +76,13 @@ public class BackupJob {
                 break;
             default:
                 logger.info("Not support database: " + driver);
-                return;
         }
-
     }
 
     private final String root = "tmp/backups";
     private IDatabaseConnection conn;
 
-    @Value("${database.backup}")
+    @Value("${job.dispatcher}")
     boolean enable;
     @Value("${database.driver}")
     String driver;
