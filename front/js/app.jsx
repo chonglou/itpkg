@@ -14,11 +14,10 @@ var zhCN = require("./i18n/zh_CN");
 var enUS = require("./i18n/en_US");
 
 $(function () {
-    //var token = $("meta[name='_csrf']").attr("content");
-    //var header = $("meta[name='_csrf_header']").attr("content");
-    //$(document).ajaxSend(function(e, xhr, options) {
-    //    xhr.setRequestHeader(header, token);
-    //});
+
+    $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader('Authorization', 'Bearer '+sessionStorage.getItem("ticket"));
+    });
 
     var lang;
 
@@ -41,6 +40,7 @@ $(function () {
             document.getElementById('content'));
     });
 
+    console.log("init.");
 });
 
 

@@ -36,7 +36,7 @@ module.exports = function (options) {
         {
             test: /\.jsx?$/,
             exclude: /(node_modules)/,
-            loaders: options.hot ? ["react-hot-loader", "babel-loader?stage=0"] : ["babel-loader?stage=0"]
+            loaders: options.hot ? ["react-hot-loader", "babel-loader?stage=0"] : ["babel-loader?stage=0", "strip-loader?strip[]=console.log"]
         },
 
         //{test: /\.css$/, loader: "style-loader!css-loader?importLoaders=1"},

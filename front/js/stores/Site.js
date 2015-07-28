@@ -9,7 +9,7 @@ var _key = "nav-bar";
 var navBarStore = Reflux.createStore({
     listenables: [Actions],
     getInitialState: function () {
-        var val = localStorage.getItem(_key);
+        var val = sessionStorage.getItem(_key);
         if (val) {
             this.navBar = JSON.parse(val);
         } else {
@@ -24,7 +24,7 @@ var navBarStore = Reflux.createStore({
         $.get(
             "/nav_bar",
             function (result) {
-                localStorage.setItem(_key, JSON.stringify(result));
+                sessionStorage.setItem(_key, JSON.stringify(result));
                 this.navBar = result;
                 this.trigger(this.navBar);
             }.bind(this),

@@ -43,7 +43,7 @@ public class AuthenticationFilter extends GenericFilterBean {
         String ticket = getTicket(req);
         if (ticket != null) {
             try {
-                logger.debug("get jwt: " + ticket);
+                logger.debug("get ticket: " + ticket);
                 Authentication reqAuth = new PreAuthenticatedAuthenticationToken(jwtHelper.token2payload(ticket, String.class), null);
                 Authentication respAuth = authenticationManager.authenticate(reqAuth);
                 if (respAuth == null || !respAuth.isAuthenticated()) {
@@ -65,16 +65,18 @@ public class AuthenticationFilter extends GenericFilterBean {
     private String getTicket(HttpServletRequest request) {
         String ticket = request.getParameter("ticket");
         if (ticket == null) {
-
             String auth = request.getHeader("Authorization");
             if (auth != null) {
                 String[] ss = auth.split(" ");
-                if (ss.length == 2 && !"Bearer".equals(ss[0])) {
+                if (ss.length == 2 && "Bearer".equals(ss[0])) {
                     ticket = ss[1];
                 }
             }
         }
 
+        if("null".equals(ticket)){
+            ticket = null;
+        }
 
         return ticket;
     }
