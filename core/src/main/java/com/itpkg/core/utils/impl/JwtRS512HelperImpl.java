@@ -1,6 +1,6 @@
 package com.itpkg.core.utils.impl;
 
-import com.itpkg.core.utils.JwtHelper;
+import com.itpkg.core.auth.JwtHelper;
 import org.jose4j.jwk.PublicJsonWebKey;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jws.AlgorithmIdentifiers;

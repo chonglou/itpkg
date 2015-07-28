@@ -1,17 +1,18 @@
-package com.itpkg.core.models;
+package com.itpkg.core.auth;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by flamen on 15-7-22.
  */
-public class Token {
-    public Token() {
+public class UserToken implements Serializable {
+    public UserToken() {
         params = new HashMap<>();
     }
 
-    public Token(long uid, String action) {
+    public UserToken(long uid, String action) {
         this();
         this.uid = uid;
         this.action = action;

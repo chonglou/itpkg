@@ -7,6 +7,7 @@ import com.itpkg.email.forms.DomainFm;
 import com.itpkg.email.models.Domain;
 import com.itpkg.email.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.List;
  */
 @Controller("email.controllers.domains")
 @RequestMapping("/email/domains")
+@PreAuthorize("hasRole('ADMIN')")
 public class DomainController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)

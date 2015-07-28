@@ -1,6 +1,6 @@
 package com.itpkg.core.utils.impl;
 
-import com.itpkg.core.utils.JwtHelper;
+import com.itpkg.core.auth.JwtHelper;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.keys.AesKey;

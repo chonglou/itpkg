@@ -7,6 +7,7 @@ import com.itpkg.email.forms.UserFm;
 import com.itpkg.email.models.User;
 import com.itpkg.email.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import javax.validation.Valid;
  */
 @Controller("email.controllers.users")
 @RequestMapping("/email/users")
+@PreAuthorize("hasRole('ADMIN')")
 public class UserController {
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)

@@ -1,5 +1,5 @@
 spring:
-  profiles.active: development,postgresql
+  profiles.active: development,mysql
 
 
 ---
@@ -24,6 +24,7 @@ secrets:
   encryptor: Iengoe6uingo1mae8iyooquiem7Foopigheif7cotiiV7bos1Tubei0eceiThaagh4kaetheeW3gae2eith4ichu5ihie9aeVo1Ephoo0ot6ahf4pheisu6OxaeDahki
 
 database:
+  backup: true
   mode: update
   show_sql: true
   driver: org.postgresql.Driver
@@ -32,6 +33,10 @@ database:
   password:
   dialect: org.hibernate.dialect.PostgreSQLDialect
 
+redis:
+  host: localhost
+  port: 6379
+  db: 2
 
 ---
 spring:
