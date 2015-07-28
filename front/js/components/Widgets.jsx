@@ -3,19 +3,26 @@
 var React = require("react");
 var T = require('react-intl');
 import {ReactBootstrap, Input, Button, ButtonToolbar, Alert} from "react-bootstrap"
-var $ = require("jquery");
+var HttpMixin = require("../mixins/Http");
 
 var AjaxForm = React.createClass({
-    mixins: [T.IntlMixin],
+    mixins: [T.IntlMixin, HttpMixin],
     getInitialState: function () {
         return {form: {fields: [], buttons: []}, data: {}}
     },
     componentDidMount: function () {
-        $.get(this.props.source, function (result) {
-            if (this.isMounted()) {
-                this.setState({form: result});
-            }
-        }.bind(this), "json");
+        this.get(
+            this.props.source,
+            function (result) {
+                if (this.isMounted()) {
+                    this.setState({form: result});
+                }
+            }.bind(this),
+            function (httpObj) {
+                this.setState({message: {style: 'danger', items: [httpObj.statusText]}});
+            }.bind(this)
+        );
+
     },
     handleSubmit: function (e) {
         e.preventDefault();

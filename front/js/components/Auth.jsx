@@ -1,19 +1,28 @@
 "use strict";
 
 var React = require('react');
+var T = require('react-intl');
 var Reflux = require('reflux');
 import {Router,Link,Navigation} from 'react-router'
 
 var W = require("./Widgets");
 var Utils = require("../Utils");
-var SiteStores = require("../stores/Site");
+var HttpMixin = require("../mixins/Http");
 
 var NoSignInForm = React.createClass({
-    mixins: [
-        Reflux.connect(SiteStores.NavBar, 'navBar')
-    ],
+    mixins: [T.IntlMixin, HttpMixin],
+    getInitialState: function () {
+        return {links: []}
+    },
+    componentDidMount: function () {
+        this.get(
+            "/users/bar",
+            function (result) {
+                this.setState({links: result.data.slice(1)});
+            }.bind(this));
+
+    },
     render: function () {
-        var navBar = this.state.navBar;
         return (
             <div className="row">
                 <div className="col-md-offset-2 col-md-8">
@@ -22,7 +31,7 @@ var NoSignInForm = React.createClass({
                     <div className="row">
                         <br/>
                         <ul>
-                            {navBar.barLinks.map(function (obj) {
+                            { this.state.links.map(function (obj) {
                                 return (
                                     <li key={"l-" + obj.url}>
                                         <Link to={obj.url}>{obj.name}</Link>

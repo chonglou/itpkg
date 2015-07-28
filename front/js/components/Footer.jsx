@@ -16,7 +16,7 @@ var cookie = require("js-cookie");
 var Footer = React.createClass({
     mixins: [T.IntlMixin, HttpMixin],
     switchLocale: function (locale) {
-        cookie.set("LANG", locale, { expires: 7 });
+        cookie.set("LANG", locale, {expires: 7});
         location.reload();
     },
     getInitialState: function () {

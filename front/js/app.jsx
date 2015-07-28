@@ -15,8 +15,8 @@ var enUS = require("./i18n/en_US");
 
 $(function () {
 
-    $(document).ajaxSend(function(e, xhr, options) {
-        xhr.setRequestHeader('Authorization', 'Bearer '+sessionStorage.getItem("ticket"));
+    $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader('Authorization', 'Bearer ' + sessionStorage.getItem("ticket"));
     });
 
     var lang;
@@ -32,7 +32,7 @@ $(function () {
             break;
         default:
             lang = enUS;
-            cookie.set("LANG", "en_US", { expires: 7 });
+            cookie.set("LANG", "en_US", {expires: 7});
     }
 
     Router.run(Routes, function (Handler) {

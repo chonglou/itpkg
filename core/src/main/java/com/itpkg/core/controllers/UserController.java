@@ -7,6 +7,7 @@ import com.itpkg.core.forms.SignInFm;
 import com.itpkg.core.forms.SignUpFm;
 import com.itpkg.core.models.User;
 import com.itpkg.core.services.UserService;
+import com.itpkg.core.utils.EngineHelper;
 import com.itpkg.core.web.widgets.Form;
 import com.itpkg.core.web.widgets.Link;
 import com.itpkg.core.web.widgets.Message;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,39 @@ import java.util.Locale;
 public class UserController extends BaseController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
+    @RequestMapping(value = "/nav", method = RequestMethod.GET)
+    @ResponseBody
+    public Response getNav(Authentication auth) {
+        Response rs = new Response(true);
+
+        rs.addData(i18n.T("site.title"));
+
+        rs.addData(new Link("home", i18n.T("pages.home.title")));
+        for (String en : engineHelper.getEngines()) {
+            if (engineHelper.isEnable(en)) {
+                rs.addData(new Link("engine." + en, i18n.T("engine." + en + ".name")));
+            }
+        }
+        rs.addData(new Link("about_us", i18n.T("pages.about_us.title")));
+        return rs;
+    }
+
+    @RequestMapping(value = "/bar", method = RequestMethod.GET)
+    @ResponseBody
+    public Response getPersonalBar(Authentication auth) {
+
+        Response rs = new Response(true);
+        if (auth != null && auth.isAuthenticated()) {
+            rs.addData(i18n.T("user.personal_center"));
+            rs.addData(new Link("users.profile", i18n.T("form.user.profile.title")));
+        } else {
+            rs.addData(i18n.T("user.sign_in_or_up"));
+            for (String s : new String[]{"sign_in", "sign_up", "forgot_password", "confirm", "unlock"}) {
+                rs.addData(new Link("users." + s, i18n.T("form.user." + s + ".title")));
+            }
+        }
+        return rs;
+    }
 
     @PreAuthorize("isAnonymous()")
     @RequestMapping(value = "/sign_in", method = RequestMethod.GET)
@@ -290,4 +325,6 @@ public class UserController extends BaseController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    EngineHelper engineHelper;
 }

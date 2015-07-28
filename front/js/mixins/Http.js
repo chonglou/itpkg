@@ -2,18 +2,16 @@
 
 var $ = require("jquery");
 
-$.ajaxSetup({
-    beforeSend: function (xhr) {
-        xhr.setRequestHeader("Accept-Language", localStorage.locale);
-        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.jid);
-    }
-});
-
 var Http = {
-    get: function (url, success) {
+    get: function (url, success, error) {
+        if (error == undefined) {
+            error = function () {
+            };
+        }
         $.ajax({
             url: this.url(url),
             success: success.bind(this),
+            error: error.bind(this),
             type: "GET",
             dataType: "json"
         });

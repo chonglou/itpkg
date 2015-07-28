@@ -5,9 +5,6 @@ import com.itpkg.core.services.I18nService;
 import com.itpkg.core.services.LocaleService;
 import com.itpkg.core.services.SettingService;
 import com.itpkg.core.services.UserService;
-import com.itpkg.core.utils.EngineHelper;
-import com.itpkg.core.web.widgets.Link;
-import com.itpkg.core.web.widgets.TopNavBar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,35 +28,6 @@ import java.util.Map;
 public class HomeController {
     private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
-
-    @RequestMapping(value = "/nav_bar", method = RequestMethod.GET)
-    @ResponseBody
-    public TopNavBar getNavBar() {
-        //todo
-        User currentUser = null;
-
-        TopNavBar tnb = new TopNavBar();
-        tnb.setTitle(i18n.T("site.title"));
-
-        tnb.addHotLink(new Link("home", i18n.T("pages.home.title")));
-        for (String en : engineHelper.getEngines()) {
-            if (engineHelper.isEnable(en)) {
-                tnb.addHotLink(new Link("engine." + en, i18n.T("engine." + en + ".name")));
-            }
-        }
-        tnb.addHotLink(new Link("about_us", i18n.T("pages.about_us.title")));
-
-        if (currentUser == null) {
-            tnb.setBarName(i18n.T("user.sign_in_or_up"));
-            for (String s : new String[]{"sign_in", "sign_up", "forgot_password", "confirm", "unlock"}) {
-                tnb.addBarLink(new Link("users." + s, i18n.T("form.user." + s + ".title")));
-            }
-        } else {
-            tnb.setBarName(i18n.T("user.personal_center"));
-            tnb.addBarLink(new Link("users.profile", i18n.T("form.user.profile.title")));
-        }
-        return tnb;
-    }
 
     @PreAuthorize("permitAll()")
     @RequestMapping(value = "/info", method = RequestMethod.GET)
@@ -112,8 +80,6 @@ public class HomeController {
 
     @Autowired
     SettingService settingService;
-    @Autowired
-    EngineHelper engineHelper;
 
     @Autowired
     RequestMappingHandlerMapping requestMappingHandlerMapping;
