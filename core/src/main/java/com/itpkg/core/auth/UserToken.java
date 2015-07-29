@@ -3,6 +3,7 @@ package com.itpkg.core.auth;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by flamen on 15-7-22.
@@ -16,11 +17,21 @@ public class UserToken implements Serializable {
         this();
         this.uid = uid;
         this.action = action;
+        this.tid = UUID.randomUUID().toString();
     }
 
     private long uid;
+    private String tid;
     private String action;
     private Map<String, Object> params;
+
+    public String getTid() {
+        return tid;
+    }
+
+    public void setTid(String tid) {
+        this.tid = tid;
+    }
 
     public long getUid() {
         return uid;

@@ -25,12 +25,12 @@ import java.io.IOException;
  * Created by flamen on 15-7-27.
  */
 
+
 public class AuthenticationFilter extends GenericFilterBean {
     private final static Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
 
-    public AuthenticationFilter(AuthenticationManager authenticationManager, JwtHelper jwtHelper, I18nService i18n) {
+    public AuthenticationFilter(AuthenticationManager authenticationManager, I18nService i18n) {
         this.i18n = i18n;
-        this.jwtHelper = jwtHelper;
         this.authenticationManager = authenticationManager;
     }
 
@@ -43,19 +43,19 @@ public class AuthenticationFilter extends GenericFilterBean {
         String ticket = getTicket(req);
         if (ticket != null) {
             try {
-                logger.debug("get ticket: " + ticket);
-                Authentication reqAuth = new PreAuthenticatedAuthenticationToken(jwtHelper.token2payload(ticket, String.class), null);
+                Authentication reqAuth = new PreAuthenticatedAuthenticationToken(ticket, null);
                 Authentication respAuth = authenticationManager.authenticate(reqAuth);
-                if (respAuth == null || !respAuth.isAuthenticated()) {
-                    throw new InternalAuthenticationServiceException(i18n.T("errors.user.bad_token"));
+//                if (respAuth == null || !respAuth.isAuthenticated()) {
+//                    throw new InternalAuthenticationServiceException(i18n.T("errors.user.bad_token"));
+//                }
+                if(respAuth != null &&respAuth.isAuthenticated()){
+                    SecurityContextHolder.getContext().setAuthentication(respAuth);
                 }
 
-                SecurityContextHolder.getContext().setAuthentication(respAuth);
-
-            } catch (AuthenticationException | InvalidJwtException | MalformedClaimException e) {
+            } catch (AuthenticationException  e) {
                 logger.error("auth failed", e);
                 SecurityContextHolder.clearContext();
-                resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                //resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             }
         }
 
@@ -74,7 +74,7 @@ public class AuthenticationFilter extends GenericFilterBean {
             }
         }
 
-        if("null".equals(ticket)){
+        if ("null".equals(ticket)) {
             ticket = null;
         }
 
@@ -83,6 +83,5 @@ public class AuthenticationFilter extends GenericFilterBean {
 
 
     private I18nService i18n;
-    private JwtHelper jwtHelper;
     private AuthenticationManager authenticationManager;
 }

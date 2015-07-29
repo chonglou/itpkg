@@ -1,6 +1,8 @@
 package com.itpkg.core.auth;
 
 import com.itpkg.core.services.SettingService;
+import org.jose4j.jwt.MalformedClaimException;
+import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ public class TokenService {
     }
 
     public Authentication retrieve(String token) {
+        logger.debug("get authentication: "+token);
         return redis.opsForValue().get(token2id(token));
     }
 
