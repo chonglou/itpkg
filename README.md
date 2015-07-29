@@ -1,7 +1,24 @@
 IT-PACKAGE
 --------------------------------
 
-## Needed packages
+## Using by docker
+
+### Install(https://docs.docker.com/)
+    docker pull chonglou/itpkg
+
+### First run
+    docker run -d --name itpkg -p 2222:22 -p 443:443 -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro chonglou/itpkg:latest
+
+### Other commands
+    docker ps
+    docker start itpkg # start itpkg 
+    docker stop itpkg # stop itpkg
+    firefox https://localhost
+    ssh -p 2222 root@localhost # password is changeme
+
+## Using in local
+
+### Needed packages
 
  * JDK8: http://www.oracle.com/technetwork/java/javase/downloads/index.html
  * JCE: http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html
