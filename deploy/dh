@@ -23,7 +23,7 @@ case $1 in
 		docker pull chonglou/itpkg
 		;;
 	run)
-		docker run -d --name itpkg -p 2222:22 -p 443:443 -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro chonglou/itpkg:latest 		
+		docker run -d --name itpkg -p 2222:22 -p 443:443 -p 8080:8080 -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro chonglou/itpkg:latest 		
 		;;
 	start)
 		docker start itpkg
@@ -45,5 +45,5 @@ case $1 in
 		docker rmi $(docker images -q --filter "dangling=true")
 		;;
 	*)
-		echo "Usage: ./dh (info|build|run|start|stop|commit|push|pull)"
+		echo "Usage: ./dh (info|build|run|start|stop|clean|push|pull)"
 esac
