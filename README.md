@@ -6,7 +6,9 @@ IT-PACKAGE
  * JDK8: http://www.oracle.com/technetwork/java/javase/downloads/index.html
  * JCE: http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html
  * Gradle: https://gradle.org/
-
+ * Redis: http://redis.io/
+ * RabbitMQ: https://www.rabbitmq.com/
+ * A database, recommend mysql(https://www.mysql.com/, https://www.percona.com/software/percona-server) or postgresql(http://www.postgresql.org/)
 ## Setup
 #### Env
     mkdir local
@@ -26,6 +28,6 @@ IT-PACKAGE
     export JAVA_HOME GRADLE_HOME PATH
 
 #### Build
-    cd app; more README.md
-    cd platform; more README.md
+    cd app; more README.md     # backend
+    cd front; more README.md   # frontend
 

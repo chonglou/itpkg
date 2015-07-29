@@ -1,0 +1,19 @@
+[Unit]
+Description=IT-PACKAGE
+After=postgresql.target
+After=redis.target
+After=rabbitmq.target
+
+
+[Service]
+Type=simple
+User=root
+Group=root
+
+PIDFile=/opt/itpkg/app/build/install/app/tmp/itpkg.pid
+
+ExecStart=cd /opt/itpkg/app/build/install/app && ./bin/itpkg
+
+
+[Install]
+WantedBy=multi-user.target
