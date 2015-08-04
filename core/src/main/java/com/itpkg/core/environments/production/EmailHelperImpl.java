@@ -4,8 +4,7 @@ import com.itpkg.core.models.Smtp;
 import com.itpkg.core.services.SettingService;
 import com.itpkg.core.utils.EmailHelper;
 import com.itpkg.core.utils.EmailSender;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -24,8 +23,8 @@ import java.util.Map;
  */
 @Component
 @Profile("production")
+@Slf4j
 public class EmailHelperImpl implements EmailHelper {
-    private final static Logger logger = LoggerFactory.getLogger(EmailHelperImpl.class);
 
     @Override
     public void sendHtml(String to, String subject, String body) {
@@ -71,7 +70,7 @@ public class EmailHelperImpl implements EmailHelper {
             amqpTemplate.convertAndSend("email", baos.toByteArray());
 
         } catch (MessagingException | IOException e) {
-            logger.error("generate eml error", e);
+            log.error("generate eml error", e);
         }
 
 //        Mail m = new Mail();

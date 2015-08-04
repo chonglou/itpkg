@@ -12,7 +12,7 @@ public class CacheKeyGenerator implements KeyGenerator {
     public Object generate(Object target, Method method, Object... params) {
         StringBuilder sb = new StringBuilder();
         sb.append(target.getClass().getName());
-        for(Object p : params){
+        for (Object p : params) {
             sb.append("/");
             sb.append(p.toString());
         }

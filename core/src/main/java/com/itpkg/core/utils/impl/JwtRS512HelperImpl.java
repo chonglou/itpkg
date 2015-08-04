@@ -6,8 +6,6 @@ import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.keys.RsaKeyUtil;
 import org.jose4j.lang.JoseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.security.Key;
 import java.security.KeyPair;
@@ -16,7 +14,6 @@ import java.security.KeyPair;
  * Created by flamen on 15-7-27.
  */
 public class JwtRS512HelperImpl extends JwtHelper {
-    private final static Logger logger = LoggerFactory.getLogger(JwtRS512HelperImpl.class);
 
 
     @Override

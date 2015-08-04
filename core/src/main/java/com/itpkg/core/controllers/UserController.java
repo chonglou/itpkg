@@ -12,8 +12,6 @@ import com.itpkg.core.web.widgets.Form;
 import com.itpkg.core.web.widgets.Link;
 import com.itpkg.core.web.widgets.Message;
 import com.itpkg.core.web.widgets.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -33,7 +31,7 @@ import java.util.Locale;
 @Controller("core.controllers.users")
 @RequestMapping("/users")
 public class UserController extends BaseController {
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
 
     @RequestMapping(value = "/nav", method = RequestMethod.GET)
     @ResponseBody

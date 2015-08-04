@@ -1,5 +1,6 @@
 package com.itpkg.core.tasks;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
@@ -14,8 +15,6 @@ import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.mysql.MySqlDataTypeFactory;
 import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -34,13 +33,14 @@ import java.util.Date;
  * Created by flamen on 15-7-27.
  */
 @Component("core.backupJob")
+@Slf4j
 public class BackupJob {
-    private final static Logger logger = LoggerFactory.getLogger(BackupJob.class);
+
 
     @Scheduled(cron = "0 0 3 * * *")
     public void run() throws SQLException, DatabaseUnitException, IOException {
         if (enable) {
-            logger.info("begin backup database");
+            log.info("begin backup database");
 
             String bak = root + "/" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 
@@ -50,7 +50,7 @@ public class BackupJob {
             //IDataSet dataSet = conn.createDataSet();
             FlatXmlDataSet.write(dataSet, new FileOutputStream(bak + ".xml"));
             FlatDtdDataSet.write(dataSet, new FileOutputStream(bak + ".dtd"));
-            logger.info("end backup database");
+            log.info("end backup database");
         }
 
 
@@ -75,7 +75,7 @@ public class BackupJob {
                 config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new PostgresqlDataTypeFactory());
                 break;
             default:
-                logger.info("Not support database: " + driver);
+                log.info("Not support database: " + driver);
         }
     }
 

@@ -2,8 +2,6 @@ package com.itpkg.core.utils;
 
 import com.itpkg.core.models.Smtp;
 import com.itpkg.core.services.SettingService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -17,8 +15,6 @@ import javax.annotation.PostConstruct;
 @Component
 @DependsOn("core.siteHelper")
 public class EmailSender {
-    private final static Logger logger = LoggerFactory.getLogger(EmailSender.class);
-
 
     @PostConstruct
     public void init() {

@@ -1,7 +1,6 @@
 package com.itpkg.core.tasks;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -10,14 +9,15 @@ import org.springframework.stereotype.Component;
  * Created by flamen on 15-7-28.
  */
 @Component("core.siteMapJob")
+@Slf4j
 public class SiteMapJob {
-    private final static Logger logger = LoggerFactory.getLogger(SiteMapJob.class);
+
 
     @Scheduled(cron = "0 0 */12 * * *")
     public void run() {
         if (enable) {
-            logger.info("begin sitemap job");
-            logger.info("end sitemap job");
+            log.info("begin sitemap job");
+            log.info("end sitemap job");
         }
     }
 

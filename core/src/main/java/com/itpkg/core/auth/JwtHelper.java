@@ -10,8 +10,6 @@ import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.lang.JoseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.security.Key;
@@ -21,7 +19,6 @@ import java.util.Base64;
  * Created by flamen on 15-7-21.
  */
 public abstract class JwtHelper {
-    private final static Logger logger = LoggerFactory.getLogger(JwtHelper.class);
 
     public <T> T token2payload(String token, Class<T> clazz) throws InvalidJwtException, MalformedClaimException {
         JwtConsumer consumer = new JwtConsumerBuilder()

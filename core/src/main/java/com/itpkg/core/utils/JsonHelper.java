@@ -3,8 +3,7 @@ package com.itpkg.core.utils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -16,8 +15,8 @@ import java.util.Map;
  * Created by flamen on 15-7-15.
  */
 @Component("core.jsonHelper")
+@Slf4j
 public class JsonHelper {
-    private static final Logger logger = LoggerFactory.getLogger(JsonHelper.class);
 
     public <K, V> Map<K, V> json2map(String json) {
         try {
@@ -25,7 +24,7 @@ public class JsonHelper {
             };
             return mapper.readValue(json, type);
         } catch (IOException e) {
-            logger.error("parse json to map error", e);
+            log.error("parse json to map error", e);
         }
         return null;
     }
@@ -35,7 +34,7 @@ public class JsonHelper {
             try {
                 return mapper.writeValueAsString(obj);
             } catch (IOException e) {
-                logger.error("generate json error", e);
+                log.error("generate json error", e);
             }
         }
         return null;
@@ -46,7 +45,7 @@ public class JsonHelper {
             try {
                 return mapper.readValue(json, clazz);
             } catch (IOException e) {
-                logger.error("parse json error", e);
+                log.error("parse json error", e);
             }
         }
         return null;

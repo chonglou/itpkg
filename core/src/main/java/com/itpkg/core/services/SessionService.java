@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itpkg.core.dao.SessionDao;
 import com.itpkg.core.models.Session;
 import com.itpkg.core.utils.EncryptHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +18,9 @@ import java.util.List;
  * Created by flamen on 15-7-23.
  */
 @Service("core.sessionService")
+@Slf4j
 public class SessionService {
-    private final static Logger logger = LoggerFactory.getLogger(SessionService.class);
+
 
     public void delByExpire() {
         ObjectMapper mapper = new ObjectMapper();
@@ -33,7 +33,7 @@ public class SessionService {
                     ids.add(s.getId());
                 }
             } catch (IOException e) {
-                logger.error("parse json error", e);
+                log.error("parse json error", e);
             }
         });
         ids.forEach(sessionDao::delete);

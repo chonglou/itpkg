@@ -4,8 +4,6 @@ import com.itpkg.core.dao.SettingDao;
 import com.itpkg.core.models.Setting;
 import com.itpkg.core.utils.EncryptHelper;
 import com.itpkg.core.utils.JsonHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +14,6 @@ import java.util.Date;
  */
 @Service("core.settingService")
 public class SettingService {
-    private final static Logger logger = LoggerFactory.getLogger(SettingService.class);
 
     public void set(String key, Object val) {
         set(key, val, false);

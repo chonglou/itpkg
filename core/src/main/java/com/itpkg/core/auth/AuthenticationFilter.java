@@ -1,8 +1,6 @@
 package com.itpkg.core.auth;
 
 import com.itpkg.core.services.I18nService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -24,7 +22,6 @@ import java.io.IOException;
 
 
 public class AuthenticationFilter extends GenericFilterBean {
-    private final static Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
 
     public AuthenticationFilter(AuthenticationManager authenticationManager, I18nService i18n) {
         this.i18n = i18n;

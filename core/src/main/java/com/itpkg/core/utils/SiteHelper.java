@@ -28,7 +28,7 @@ public class SiteHelper {
             settingService.set("site.url", "http://localhost:8088");
         }
 
-        if(userService.count() == 0){
+        if (userService.count() == 0) {
             User u = userService.create("root", "root@localhost", "changeme");
             userService.setConfirmed(u.getId());
             roleService.set(u.getId(), "admin");

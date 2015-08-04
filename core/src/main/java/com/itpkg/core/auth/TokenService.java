@@ -1,8 +1,7 @@
 package com.itpkg.core.auth;
 
 import com.itpkg.core.services.SettingService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,8 +15,9 @@ import java.util.UUID;
  * Created by flamen on 15-7-27.
  */
 @Component("core.tokenService")
+@Slf4j
 public class TokenService {
-    private final static Logger logger = LoggerFactory.getLogger(TokenService.class);
+
 
     public String generate() {
         return UUID.randomUUID().toString();
@@ -32,7 +32,7 @@ public class TokenService {
     }
 
     public Authentication retrieve(String token) {
-        logger.debug("get authentication: " + token);
+        log.debug("get authentication: " + token);
         return redis.opsForValue().get(token2id(token));
     }
 

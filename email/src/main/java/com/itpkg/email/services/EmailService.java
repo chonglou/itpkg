@@ -8,8 +8,7 @@ import com.itpkg.email.dao.UserDao;
 import com.itpkg.email.models.Alias;
 import com.itpkg.email.models.Domain;
 import com.itpkg.email.models.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +20,9 @@ import java.util.List;
  * Created by flamen on 15-7-18.
  */
 @Service("email.service")
+@Slf4j
 public class EmailService {
-    private final static Logger logger = LoggerFactory.getLogger(EmailService.class);
+
 
     public Domain getDomain(long id) {
         return domainDao.findOne(id);
@@ -54,7 +54,7 @@ public class EmailService {
             d.setCreated(now);
             d.setUpdated(now);
             domainDao.save(d);
-            logger.info("add email domain " + name);
+            log.info("add email domain " + name);
             return d;
         }
         return null;
@@ -66,7 +66,7 @@ public class EmailService {
             aliasDao.deleteByDomainId(domain);
             userDao.deleteByDomainId(domain);
             domainDao.delete(domain);
-            logger.info("del email domain " + d.getName());
+            log.info("del email domain " + d.getName());
         }
     }
 
@@ -89,7 +89,7 @@ public class EmailService {
                 Date now = new Date();
                 a.setCreated(now);
                 a.setUpdated(now);
-                logger.info("add email alias " + a.getSource() + " => " + a.getDestination());
+                log.info("add email alias " + a.getSource() + " => " + a.getDestination());
                 return a;
             }
         }
@@ -100,7 +100,7 @@ public class EmailService {
         Alias a = aliasDao.findOne(alias);
         if (a != null) {
             aliasDao.delete(alias);
-            logger.info("del email alias " + a.getSource());
+            log.info("del email alias " + a.getSource());
 
         }
     }
@@ -124,7 +124,7 @@ public class EmailService {
             u.setUpdated(now);
             u.setCreated(now);
             userDao.save(u);
-            logger.info("add mail user " + email);
+            log.info("add mail user " + email);
             return u;
         }
         return null;
@@ -135,7 +135,7 @@ public class EmailService {
         if (u != null) {
             aliasDao.deleteByDestination(u.getEmail());
             userDao.delete(user);
-            logger.info("del email user " + u.getEmail());
+            log.info("del email user " + u.getEmail());
         }
     }
 

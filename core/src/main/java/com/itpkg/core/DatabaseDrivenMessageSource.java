@@ -2,8 +2,6 @@ package com.itpkg.core;
 
 import com.itpkg.core.services.LocaleService;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractMessageSource;
 
 import java.text.MessageFormat;
@@ -16,7 +14,6 @@ import java.util.Set;
  */
 
 public class DatabaseDrivenMessageSource extends AbstractMessageSource {
-    private final static Logger logger = LoggerFactory.getLogger(DatabaseDrivenMessageSource.class);
 
     public void init() {
         logger.info("load locales from: " + StringUtils.join(basenames, ", "));

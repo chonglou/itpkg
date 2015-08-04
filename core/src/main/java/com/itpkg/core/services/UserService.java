@@ -7,10 +7,7 @@ import com.itpkg.core.models.Contact;
 import com.itpkg.core.models.Log;
 import com.itpkg.core.models.User;
 import com.itpkg.core.utils.EncryptHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -20,9 +17,8 @@ import java.util.Date;
  */
 @Service("core.userService")
 public class UserService {
-    private final static Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    public long count(){
+    public long count() {
         return userDao.count();
     }
 
@@ -32,7 +28,7 @@ public class UserService {
             u.setPassword(encryptHelper.password(password));
             u.setUpdated(new Date());
             userDao.save(u);
-            log(u, i18n.T("logs.user.change_password"), Log.Type.INFO);
+            addLog(u, i18n.T("logs.user.change_password"), Log.Type.INFO);
         }
     }
 
@@ -43,9 +39,9 @@ public class UserService {
             u.setUpdated(new Date());
             userDao.save(u);
             if (date == null) {
-                log(u, i18n.T("logs.user.unlock"), Log.Type.INFO);
+                addLog(u, i18n.T("logs.user.unlock"), Log.Type.INFO);
             } else {
-                log(u, i18n.T("logs.user.lock"), Log.Type.INFO);
+                addLog(u, i18n.T("logs.user.lock"), Log.Type.INFO);
             }
 
         }
@@ -57,7 +53,7 @@ public class UserService {
             u.setConfirmed(new Date());
             u.setUpdated(new Date());
             userDao.save(u);
-            log(u, i18n.T("logs.user.confirm"), Log.Type.INFO);
+            addLog(u, i18n.T("logs.user.confirm"), Log.Type.INFO);
         }
     }
 
@@ -65,10 +61,10 @@ public class UserService {
         User u = userDao.findByEmail(email);
         if (u != null) {
             if (encryptHelper.check(password, u.getPassword())) {
-                log(u, i18n.T("logs.user.sign_in.success"), Log.Type.INFO);
+                addLog(u, i18n.T("logs.user.sign_in.success"), Log.Type.INFO);
                 return u;
             } else {
-                log(u, i18n.T("form.user.sign_in.failed"), Log.Type.ERROR);
+                addLog(u, i18n.T("form.user.sign_in.failed"), Log.Type.ERROR);
             }
         }
         return null;
@@ -108,7 +104,7 @@ public class UserService {
             u.setCreated(now);
 
             userDao.save(u);
-            log(u, i18n.T("logs.user.sign_up.success"), Log.Type.INFO);
+            addLog(u, i18n.T("logs.user.sign_up.success"), Log.Type.INFO);
 
 
             Contact c = new Contact();
@@ -123,7 +119,7 @@ public class UserService {
     }
 
 
-    public void log(User user, String message, Log.Type type) {
+    public void addLog(User user, String message, Log.Type type) {
         Log l = new Log();
         l.setUser(user);
         l.setMessage(message);

@@ -5,8 +5,7 @@ import com.itpkg.core.services.I18nService;
 import com.itpkg.core.services.LocaleService;
 import com.itpkg.core.services.SettingService;
 import com.itpkg.core.services.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -25,9 +24,8 @@ import java.util.Map;
  */
 
 @Controller("core.controllers.home")
+@Slf4j
 public class HomeController {
-    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-
 
     @PreAuthorize("permitAll()")
     @RequestMapping(value = "/info", method = RequestMethod.GET)

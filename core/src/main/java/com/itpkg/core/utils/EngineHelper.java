@@ -1,8 +1,7 @@
 package com.itpkg.core.utils;
 
 import com.itpkg.core.services.SettingService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +13,9 @@ import java.util.List;
  * Created by flamen on 15-7-21.
  */
 @Component("core.utils.engine")
+@Slf4j
 public class EngineHelper {
-    private static final Logger logger = LoggerFactory.getLogger(EngineHelper.class);
+
 
     public boolean isEnable(String id) {
         return settingService.get("site.engine." + id + ".enable", Boolean.class) == Boolean.TRUE;
@@ -26,7 +26,7 @@ public class EngineHelper {
     }
 
     public void register(String id) {
-        logger.info("Load engine " + id);
+        log.info("Load engine " + id);
         engines.add(id);
     }
 

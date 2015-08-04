@@ -1,8 +1,7 @@
 package com.itpkg.core.environments.development;
 
 import com.itpkg.core.utils.EmailHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -11,11 +10,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Profile("!production")
+@Slf4j
 public class EmailHelperImpl implements EmailHelper {
-    private final static Logger logger = LoggerFactory.getLogger(EmailHelperImpl.class);
-
     @Override
     public void sendHtml(String to, String subject, String body) {
-        logger.debug("send mail: {}\n{}", to, body);
+        log.debug("send mail: {}\n{}", to, body);
     }
 }
