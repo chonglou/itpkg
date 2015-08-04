@@ -22,6 +22,7 @@ repositories {
     maven { url 'http://repo.spring.io/libs-snapshot' }
     maven { url 'http://repository.pentaho.org/artifactory/repo/' }
     maven { url 'https://maven.java.net/content/repositories/releases/'}
+    maven {url 'http://dl.bintray.com/debop/maven'}
 }
 
 configurations {
@@ -42,9 +43,11 @@ dependencies {
     runtime "org.postgresql:postgresql:${postgresqlVersion}"
     runtime 'org.apache.derby:derby:10.11.1.1'
 
-    runtime "net.sf.ehcache:ehcache-core:${ehcacheVersion}"
-
     runtime "org.hibernate:hibernate-entitymanager:${hibernateVersion}"
+
+    runtime 'com.github.debop:hibernate-redis:1.6.1'
+
+    runtime "net.sf.ehcache:ehcache-core:${ehcacheVersion}"
     runtime "org.hibernate:hibernate-ehcache:${hibernateVersion}"
 
     runtime "ch.qos.logback:logback-classic:${logbackVersion}"

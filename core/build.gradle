@@ -3,7 +3,7 @@ apply plugin: 'idea'
 
 repositories {
     mavenCentral()
-    maven { url "http://repository.pentaho.org/artifactory/repo/" }
+    maven { url 'http://repository.pentaho.org/artifactory/repo/' }
 }
 
 dependencies {
@@ -44,9 +44,11 @@ dependencies {
     compile "org.springframework:spring-web:${springVersion}"
     compile "org.springframework:spring-webmvc:${springVersion}"
     compile "org.springframework:spring-orm:${springVersion}"
+    compile "org.springframework:spring-aspects:${springVersion}"
+    compile "org.springframework:spring-messaging:${springVersion}"
     compile "org.springframework:spring-context-support:${springVersion}"
     compile 'org.springframework.data:spring-data-jpa:1.8.1.RELEASE'
-    compile 'org.springframework.data:spring-data-redis:1.5.1.RELEASE'
+    compile 'org.springframework.data:spring-data-redis:1.5.2.RELEASE'
     compile 'org.springframework.amqp:spring-rabbit:1.4.5.RELEASE'
     compile 'org.springframework.session:spring-session-data-redis:1.0.1.RELEASE'
 

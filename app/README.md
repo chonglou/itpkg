@@ -22,4 +22,8 @@ IT-PACKAGE(executable jar package)
     systemctl restart rabbitmq
     open http://localhost:15672 # default username and password is guest
 
+## Redis
+    FLUSHALL
+    KEYS *
+
 

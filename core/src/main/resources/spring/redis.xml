@@ -12,4 +12,6 @@
     <bean id="core.redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
         <property name="connectionFactory" ref="core.redisConnectionFactory"/>
     </bean>
+
+
 </beans>
