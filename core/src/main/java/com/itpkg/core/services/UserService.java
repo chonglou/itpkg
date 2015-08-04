@@ -22,6 +22,10 @@ import java.util.Date;
 public class UserService {
     private final static Logger logger = LoggerFactory.getLogger(UserService.class);
 
+    public long count(){
+        return userDao.count();
+    }
+
     public void setPassword(long user, String password) {
         User u = userDao.findOne(user);
         if (u != null) {
@@ -102,16 +106,10 @@ public class UserService {
             Date now = new Date();
             u.setUpdated(now);
             u.setCreated(now);
-            if (root.equals(email)) {
-                u.setConfirmed(new Date());
-            }
 
             userDao.save(u);
             log(u, i18n.T("logs.user.sign_up.success"), Log.Type.INFO);
-            if (root.equals(email)) {
-                roleService.set(u.getId(), "root");
-                roleService.set(u.getId(), "admin");
-            }
+
 
             Contact c = new Contact();
             c.setUpdated(now);
@@ -143,8 +141,6 @@ public class UserService {
     UserDao userDao;
     @Autowired
     ContactDao contactDao;
-    @Value("${root.email}")
-    String root;
     @Autowired
     EncryptHelper encryptHelper;
     @Autowired

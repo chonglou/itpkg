@@ -76,14 +76,13 @@ public class RoleService {
 
 
     private Date max() {
-
         //return Date.from(LocalDateTime.MAX.atZone(ZoneId.systemDefault()).toInstant());
-        return Date.from(LocalDateTime.of(1000, 1, 1, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from(LocalDateTime.of(9999, 12, 31, 23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
     }
 
     private Date min() {
         //return Date.from(LocalDateTime.MIN.atZone(ZoneId.systemDefault()).toInstant());
-        return Date.from(LocalDateTime.of(9999, 12, 31, 23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from(LocalDateTime.of(2015, 8, 4, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
     }
 
     @Autowired

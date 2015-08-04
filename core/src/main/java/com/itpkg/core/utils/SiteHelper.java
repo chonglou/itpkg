@@ -1,7 +1,10 @@
 package com.itpkg.core.utils;
 
 import com.itpkg.core.models.Smtp;
+import com.itpkg.core.models.User;
+import com.itpkg.core.services.RoleService;
 import com.itpkg.core.services.SettingService;
+import com.itpkg.core.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,19 +16,32 @@ import javax.annotation.PostConstruct;
 @Component("core.siteHelper")
 public class SiteHelper {
     @PostConstruct
-    void init(){
-        if(settingService.get("site.smtp", Smtp.class) == null){
+    void init() {
+        if (settingService.get("site.smtp", Smtp.class) == null) {
             Smtp smtp = new Smtp();
             smtp.setHost("localhost");
             smtp.setPort(25);
             smtp.setFrom("no-reply@localhost");
             settingService.set("site.smtp", smtp);
         }
-        if(settingService.get("site.url", String.class) == null){
+        if (settingService.get("site.url", String.class) == null) {
             settingService.set("site.url", "http://localhost:8088");
         }
 
+        if(userService.count() == 0){
+            User u = userService.create("root", "root@localhost", "changeme");
+            userService.setConfirmed(u.getId());
+            roleService.set(u.getId(), "admin");
+            roleService.set(u.getId(), "root");
+        }
+
+
     }
+
     @Autowired
     SettingService settingService;
+    @Autowired
+    UserService userService;
+    @Autowired
+    RoleService roleService;
 }

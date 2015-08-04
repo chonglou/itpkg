@@ -1,5 +1,7 @@
 package com.itpkg.core.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +64,11 @@ public class Smtp implements Serializable {
 
     public List<String> getBcc() {
         return bcc;
+    }
+
+    @JsonIgnore
+    public String[] getBccArray() {
+        return bcc.toArray(new String[bcc.size()]);
     }
 
     public void setBcc(List<String> bcc) {
