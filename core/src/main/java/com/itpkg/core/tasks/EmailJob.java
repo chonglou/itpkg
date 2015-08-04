@@ -22,7 +22,7 @@ public class EmailJob {
 
         try (ByteArrayInputStream bais = new ByteArrayInputStream(message)) {
             MimeMessage mm = new MimeMessage(null, bais);
-            log.debug("send mail: {} ", mm.getMessageID());
+            log.info("send mail: {} ", mm.getMessageID());
             sender.get().send(mm);
         }
 
