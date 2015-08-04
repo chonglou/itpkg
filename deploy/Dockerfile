@@ -12,8 +12,7 @@ RUN pacman -S --needed --noconfirm base-devel git wget unzip net-tools vim npm l
 nginx redis openssh postgresql
 
 ADD mnt/pkg /tmp/pkg
-RUN pacman -U --noconfirm /tmp/pkg/rabbitmq-3.5.4-1-x86_64.pkg.tar.xz \
-/tmp/pkg/jdk-8u51-2-x86_64.pkg.tar.xz \
+RUN pacman -U --noconfirm /tmp/pkg/jdk-8u51-2-x86_64.pkg.tar.xz \
 /tmp/pkg/gradle-2.5-1-any.pkg.tar.xz
 RUN pacman -S --noconfirm elasticsearch
 RUN pacman -Scc --noconfirm
@@ -44,7 +43,7 @@ echo -e "\tinclude itpkg.conf;\n}" >> /etc/nginx/nginx.conf && \
 mkdir -p /opt/itpkg/app/build/install/app/tmp
 
 
-RUN for s in sshd postgresql redis rabbitmq elasticsearch nginx itpkg;do systemctl enable $s;done
+RUN for s in sshd postgresql redis elasticsearch nginx itpkg;do systemctl enable $s;done
 
 
 EXPOSE 22 443

@@ -37,7 +37,7 @@ dependencies {
 //    compile 'com.lowagie:itext:4.2.2'
 //    compile 'org.olap4j:olap4j:1.2.0'
 
-    compile 'com.rabbitmq:amqp-client:3.5.4'
+
     compile 'com.sun.mail:javax.mail:1.5.4'
 
 
@@ -50,10 +50,11 @@ dependencies {
     compile "org.springframework:spring-context-support:${springVersion}"
     compile 'org.springframework.data:spring-data-jpa:1.8.1.RELEASE'
     compile 'org.springframework.data:spring-data-redis:1.5.2.RELEASE'
-    compile 'org.springframework.amqp:spring-rabbit:1.4.5.RELEASE'
     compile 'org.springframework.session:spring-session-data-redis:1.0.1.RELEASE'
 
 
+//    compile 'com.rabbitmq:amqp-client:3.5.4'
+//    compile 'org.springframework.amqp:spring-rabbit:1.4.5.RELEASE'
 
     compile "org.springframework.security:spring-security-config:${springSecurityVersion}"
     compile "org.springframework.security:spring-security-web:${springSecurityVersion}"

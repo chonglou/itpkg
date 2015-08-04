@@ -26,4 +26,9 @@ IT-PACKAGE(executable jar package)
     FLUSHDB
     KEYS *
 
+## Gradle
+    gradle dependencies
+
+
+
 

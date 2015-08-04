@@ -5,9 +5,9 @@ import com.itpkg.core.services.SettingService;
 import com.itpkg.core.utils.EmailHelper;
 import com.itpkg.core.utils.EmailSender;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
@@ -66,30 +66,18 @@ public class EmailHelperImpl implements EmailHelper {
                 mmh.setCc(cc);
             }
             mm.writeTo(baos);
-
-            amqpTemplate.convertAndSend("email", baos.toByteArray());
+            template.convertAndSend("emails", baos.toByteArray());
 
         } catch (MessagingException | IOException e) {
             log.error("generate eml error", e);
         }
 
-//        Mail m = new Mail();
-//        m.setHtml(html);
-//        m.setSubject(subject);
-//        m.setBody(body);
-//        m.setFiles(files);
-//        m.setFrom(from == null ? smtp.getFrom() : from);
-//        m.getTo().addAll(Arrays.asList(to));
-//        if(bcc == null){
-//            m.getBcc().addAll(smtp.getBcc());
-//        }else {
-//            m.getBcc().add(bcc);
-//        }
 
     }
 
     @Autowired
-    AmqpTemplate amqpTemplate;
+    StringRedisTemplate template;
+
     @Autowired
     SettingService settingService;
     @Autowired

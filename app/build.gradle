@@ -51,6 +51,8 @@ dependencies {
     runtime "org.hibernate:hibernate-ehcache:${hibernateVersion}"
 
     runtime "ch.qos.logback:logback-classic:${logbackVersion}"
+    runtime 'org.slf4j:jcl-over-slf4j:${slf4jVersion}'
+    runtime 'org.slf4j:log4j-over-slf4j:${slf4jVersion}'
 
     runtime "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
 
