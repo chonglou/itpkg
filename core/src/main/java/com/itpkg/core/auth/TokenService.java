@@ -36,6 +36,10 @@ public class TokenService {
         return redis.opsForValue().get(token2id(token));
     }
 
+    public void remove(String token) {
+        redis.delete(token2id(token));
+    }
+
     private String token2id(String token) {
         return "token://" + token;
     }

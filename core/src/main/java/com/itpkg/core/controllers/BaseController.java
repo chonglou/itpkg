@@ -1,9 +1,9 @@
 package com.itpkg.core.controllers;
 
 import com.itpkg.core.auth.JwtHelper;
+import com.itpkg.core.auth.TokenService;
 import com.itpkg.core.auth.UserToken;
 import com.itpkg.core.services.I18nService;
-import com.itpkg.core.services.SessionService;
 import com.itpkg.core.services.SettingService;
 import com.itpkg.core.utils.EmailHelper;
 import com.itpkg.core.utils.EncryptHelper;
@@ -20,7 +20,7 @@ import java.util.Locale;
 public class BaseController {
 
     void releaseToken(String token) {
-        sessionService.delByToken(encryptHelper.fromBase64(token));
+        tokenService.remove(token);
     }
 
     void sendTokenMail(String email, String path, UserToken token, Locale locale) throws Exception {
@@ -49,8 +49,6 @@ public class BaseController {
     }
 
     @Autowired
-    SessionService sessionService;
-    @Autowired
     JsonHelper jsonHelper;
     @Autowired
     EncryptHelper encryptHelper;
@@ -62,5 +60,7 @@ public class BaseController {
     EmailHelper emailHelper;
     @Autowired
     SettingService settingService;
+    @Autowired
+    TokenService tokenService;
 
 }

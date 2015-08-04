@@ -5,9 +5,9 @@ import com.itpkg.core.services.SettingService;
 import com.itpkg.core.utils.EmailHelper;
 import com.itpkg.core.utils.EmailSender;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ import java.util.Map;
  * Created by flamen on 15-8-3.
  */
 @Component
-@Profile("production")
+@Profile("!production")
 @Slf4j
 public class EmailHelperImpl implements EmailHelper {
 
@@ -41,8 +41,10 @@ public class EmailHelperImpl implements EmailHelper {
             MimeMessageHelper mmh;
             if (html) {
                 mmh = new MimeMessageHelper(mm, true);
+                //fixme
             } else {
                 mmh = new MimeMessageHelper(mm);
+                //fixme
 //                for (Map.Entry<String, String> en : files) {
 //                    mmh.addAttachment(en.getKey(), new File(en.getValue()));
 //
@@ -66,7 +68,8 @@ public class EmailHelperImpl implements EmailHelper {
                 mmh.setCc(cc);
             }
             mm.writeTo(baos);
-            template.convertAndSend("emails", baos.toByteArray());
+            template.convertAndSend("email", baos.toByteArray());
+
 
         } catch (MessagingException | IOException e) {
             log.error("generate eml error", e);
@@ -76,7 +79,7 @@ public class EmailHelperImpl implements EmailHelper {
     }
 
     @Autowired
-    StringRedisTemplate template;
+    AmqpTemplate template;
 
     @Autowired
     SettingService settingService;

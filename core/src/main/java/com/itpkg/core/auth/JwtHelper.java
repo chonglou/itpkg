@@ -1,6 +1,5 @@
 package com.itpkg.core.auth;
 
-import com.itpkg.core.services.SessionService;
 import com.itpkg.core.services.SettingService;
 import com.itpkg.core.utils.JsonHelper;
 import org.jose4j.jws.JsonWebSignature;
@@ -21,6 +20,9 @@ import java.util.Base64;
 public abstract class JwtHelper {
 
     public <T> T token2payload(String token, Class<T> clazz) throws InvalidJwtException, MalformedClaimException {
+        if (!token.contains(token)) {
+            return null;
+        }
         JwtConsumer consumer = new JwtConsumerBuilder()
                 .setRequireExpirationTime()
                 .setAllowedClockSkewInSeconds(30)
@@ -31,12 +33,7 @@ public abstract class JwtHelper {
                 .build();
 
         JwtClaims claims = consumer.processToClaims(token);
-        T t = jsonHelper.json2object(claims.getClaimValue(CLAIM_KEY, String.class), clazz);
-        if (sessionService.getByToken(token) == null) {
-            return null;
-        }
-        return t;
-
+        return jsonHelper.json2object(claims.getClaimValue(CLAIM_KEY, String.class), clazz);
     }
 
     public String payload2token(String subject, Object payload, long minutes) throws JoseException {
@@ -59,7 +56,10 @@ public abstract class JwtHelper {
 
 
         String token = jws.getCompactSerialization();
-        sessionService.saveToken(token);
+        if (!tokenService.contains(token)) {
+            tokenService.store(token, null); //todo
+        }
+
         return token;
 
     }
@@ -106,7 +106,7 @@ public abstract class JwtHelper {
 
     protected JsonHelper jsonHelper;
     protected SettingService settingService;
-    protected SessionService sessionService;
+    protected TokenService tokenService;
 
     public void setJsonHelper(JsonHelper jsonHelper) {
         this.jsonHelper = jsonHelper;
@@ -116,8 +116,7 @@ public abstract class JwtHelper {
         this.settingService = settingService;
     }
 
-    public void setSessionService(SessionService sessionService) {
-        this.sessionService = sessionService;
+    public void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
-
 }

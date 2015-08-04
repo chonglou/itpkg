@@ -9,21 +9,11 @@
         <property name="database" value="${redis.db}"/>
         <property name="usePool" value="true"/>
     </bean>
+
     <bean id="core.redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
         <property name="connectionFactory" ref="core.redisConnectionFactory"/>
     </bean>
 
-    <bean id="core.stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
-        <property name="connectionFactory" ref="core.redisConnectionFactory"/>
-    </bean>
 
-    <bean id="core.jobsContainer" class="org.springframework.data.redis.listener.RedisMessageListenerContainer">
-        <property name="connectionFactory" ref="core.redisConnectionFactory"/>
-    </bean>
-
-    <bean id="core.emailJobListener" class="org.springframework.data.redis.listener.adapter.MessageListenerAdapter">
-        <property name="delegate" ref="core.emailJob"/>
-        <property name="defaultListenerMethod" value="onMessage"/>
-    </bean>
 
 </beans>

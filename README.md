@@ -31,6 +31,7 @@ IT-PACKAGE
  * JCE: http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html
  * Gradle: https://gradle.org/
  * Redis: http://redis.io/
+ * RabbitMQ: https://www.rabbitmq.com/
  * A database, recommend mysql(https://www.mysql.com/, https://www.percona.com/software/percona-server) or postgresql(http://www.postgresql.org/)
 ## Setup
 #### Env

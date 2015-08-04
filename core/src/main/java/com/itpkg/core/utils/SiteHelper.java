@@ -6,10 +6,6 @@ import com.itpkg.core.services.RoleService;
 import com.itpkg.core.services.SettingService;
 import com.itpkg.core.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.redis.listener.PatternTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -39,9 +35,6 @@ public class SiteHelper {
             roleService.set(u.getId(), "root");
         }
 
-        jobContainer.addMessageListener(emailJobListener, new PatternTopic("emails"));
-
-
     }
 
     @Autowired
@@ -50,9 +43,5 @@ public class SiteHelper {
     UserService userService;
     @Autowired
     RoleService roleService;
-    @Autowired
-    RedisMessageListenerContainer jobContainer;
-    @Autowired
-    @Qualifier("core.emailJobListener")
-    MessageListenerAdapter emailJobListener;
+
 }
