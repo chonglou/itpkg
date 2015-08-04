@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -22,13 +23,12 @@ import java.util.Map;
  * Created by flamen on 15-8-3.
  */
 @Component
-@Profile("!production")
+@Profile("production")
 @Slf4j
 public class EmailHelperImpl implements EmailHelper {
 
     @Override
     public void sendHtml(String to, String subject, String body) {
-
         send(true, null, new String[]{to}, null, null, subject, body, null);
     }
 
@@ -41,14 +41,18 @@ public class EmailHelperImpl implements EmailHelper {
             MimeMessageHelper mmh;
             if (html) {
                 mmh = new MimeMessageHelper(mm, true);
-                //fixme
+                if (files != null) {
+                    for (Map.Entry<String, String> en : files.entrySet()) {
+                        mmh.addInline(en.getKey(), new File(en.getValue()));
+                    }
+                }
             } else {
                 mmh = new MimeMessageHelper(mm);
-                //fixme
-//                for (Map.Entry<String, String> en : files) {
-//                    mmh.addAttachment(en.getKey(), new File(en.getValue()));
-//
-//                }
+                if (files != null) {
+                    for (Map.Entry<String, String> en : files.entrySet()) {
+                        mmh.addAttachment(en.getKey(), new File(en.getValue()));
+                    }
+                }
             }
 
             if (from == null) {

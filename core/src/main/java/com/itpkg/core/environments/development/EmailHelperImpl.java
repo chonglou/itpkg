@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * Created by flamen on 15-8-3.
  */
 @Component
-@Profile("production")
+@Profile("!production")
 @Slf4j
 public class EmailHelperImpl implements EmailHelper {
     @Override
