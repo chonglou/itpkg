@@ -1,5 +1,7 @@
 package com.itpkg.core.models;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -14,6 +16,8 @@ import java.util.Date;
 @Entity
 @Table(name = "sessions")
 @Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class Session implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,27 +27,4 @@ public class Session implements Serializable {
     @Column(nullable = false, updatable = false)
     private Date created;
 
-    public String getPayload() {
-        return payload;
-    }
-
-    public void setPayload(String payload) {
-        this.payload = payload;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
 }

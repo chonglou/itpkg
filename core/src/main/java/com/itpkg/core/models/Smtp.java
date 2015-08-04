@@ -1,6 +1,8 @@
 package com.itpkg.core.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,6 +11,8 @@ import java.util.List;
 /**
  * Created by flamen on 15-8-3.
  */
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class Smtp implements Serializable {
     public Smtp() {
         bcc = new ArrayList<>();
@@ -22,64 +26,10 @@ public class Smtp implements Serializable {
     private List<String> bcc;
     private String from;
 
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public boolean isSsl() {
-        return ssl;
-    }
-
-    public void setSsl(boolean ssl) {
-        this.ssl = ssl;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public List<String> getBcc() {
-        return bcc;
-    }
 
     @JsonIgnore
     public String[] getBccArray() {
         return bcc.toArray(new String[bcc.size()]);
     }
 
-    public void setBcc(List<String> bcc) {
-        this.bcc = bcc;
-    }
-
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
-    }
 }

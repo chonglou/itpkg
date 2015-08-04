@@ -1,6 +1,8 @@
 package com.itpkg.email.models;
 
 import com.itpkg.core.models.IdEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -15,6 +17,9 @@ import javax.persistence.*;
         @Index(columnList = "destination")
 })
 @Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
+
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class Alias extends IdEntity {
 
     @ManyToOne
@@ -25,27 +30,5 @@ public class Alias extends IdEntity {
     @Column(nullable = false)
     private String destination;
 
-    public Domain getDomain() {
-        return domain;
-    }
 
-    public void setDomain(Domain domain) {
-        this.domain = domain;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public String getDestination() {
-        return destination;
-    }
-
-    public void setDestination(String destination) {
-        this.destination = destination;
-    }
 }

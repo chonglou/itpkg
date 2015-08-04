@@ -1,6 +1,8 @@
 package com.itpkg.email.models;
 
 import com.itpkg.core.models.IdEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -18,6 +20,9 @@ import java.util.List;
 @Entity(name = "EmailDomain")
 @Table(name = "email_domains")
 @Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
+
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class Domain extends IdEntity {
     public Domain() {
         users = new ArrayList<>();
@@ -31,27 +36,5 @@ public class Domain extends IdEntity {
     @OneToMany(mappedBy = "domain")
     private List<Alias> aliases;
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
-
-    public List<Alias> getAliases() {
-        return aliases;
-    }
-
-    public void setAliases(List<Alias> aliases) {
-        this.aliases = aliases;
-    }
 }

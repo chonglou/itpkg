@@ -1,5 +1,7 @@
 package com.itpkg.core.models;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -16,6 +18,8 @@ import java.util.Date;
         @Index(columnList = "name,rtype,rid,user_id", unique = true)
 })
 @Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class Role extends IdEntity {
 
     @ManyToOne
@@ -32,51 +36,4 @@ public class Role extends IdEntity {
     @Column(nullable = false)
     private Date shutDown;
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getrType() {
-        return rType;
-    }
-
-    public void setrType(String rType) {
-        this.rType = rType;
-    }
-
-    public Integer getrId() {
-        return rId;
-    }
-
-    public void setrId(Integer rId) {
-        this.rId = rId;
-    }
-
-    public Date getStartUp() {
-        return startUp;
-    }
-
-    public void setStartUp(Date startUp) {
-        this.startUp = startUp;
-    }
-
-    public Date getShutDown() {
-        return shutDown;
-    }
-
-    public void setShutDown(Date shutDown) {
-        this.shutDown = shutDown;
-    }
 }

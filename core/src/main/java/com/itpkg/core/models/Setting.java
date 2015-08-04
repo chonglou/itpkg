@@ -1,5 +1,7 @@
 package com.itpkg.core.models;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -15,6 +17,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "settings")
 @Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class Setting extends IdEntity {
 
 
@@ -27,27 +31,4 @@ public class Setting extends IdEntity {
 
     private boolean encode;
 
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getVal() {
-        return val;
-    }
-
-    public void setVal(String val) {
-        this.val = val;
-    }
-
-    public boolean isEncode() {
-        return encode;
-    }
-
-    public void setEncode(boolean encode) {
-        this.encode = encode;
-    }
 }

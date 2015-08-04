@@ -1,5 +1,7 @@
 package com.itpkg.core.models;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -16,6 +18,8 @@ import javax.persistence.*;
         @Index(columnList = "code,lang", unique = true)
 })
 @Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class Locale extends IdEntity {
     @Column(nullable = false)
     private String code;
@@ -24,27 +28,4 @@ public class Locale extends IdEntity {
     @Lob
     private String message;
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getLang() {
-        return lang;
-    }
-
-    public void setLang(String lang) {
-        this.lang = lang;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }

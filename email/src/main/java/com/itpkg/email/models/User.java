@@ -1,6 +1,8 @@
 package com.itpkg.email.models;
 
 import com.itpkg.core.models.IdEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -16,8 +18,9 @@ import javax.persistence.*;
         @Index(columnList = "email,domain_id", unique = true)
 })
 @Cache(region = "root", usage = CacheConcurrencyStrategy.READ_WRITE)
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class User extends IdEntity {
-
     @ManyToOne
     @JoinColumn(nullable = false)
     private Domain domain;
@@ -25,28 +28,4 @@ public class User extends IdEntity {
     private String password;
     @Column(nullable = false)
     private String email;
-
-    public Domain getDomain() {
-        return domain;
-    }
-
-    public void setDomain(Domain domain) {
-        this.domain = domain;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }
