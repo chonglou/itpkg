@@ -168,9 +168,11 @@ public class UserController extends BaseController {
                 String body = i18n.T(
                         "mail." + token.getAction() + ".body",
                         u.getEmail(),
-                        String.format("%s/#/users/change_password?code=%s&locale=%s", home, code, locale)
+                        String.format(
+                                "%s/#/users/change_password?code=%s&locale=%s",
+                                settingService.get("site.url", String.class), code, locale)
                 );
-                emailHelper.send(u.getEmail(), subject, body);
+                emailHelper.sendHtml(u.getEmail(), subject, body);
                 res.addData(i18n.T("form.user.forgot_password.success"));
             }
         }

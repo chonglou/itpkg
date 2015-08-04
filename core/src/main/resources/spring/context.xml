@@ -13,4 +13,9 @@
         <property name="settingService" ref="core.settingService"/>
     </bean>
 
+<bean class="org.springframework.mail.javamail.JavaMailSenderImpl">
+    <property name="host" value="localhost"/>
+    <property name="port" value="25"/>
+</bean>
+
 </beans>

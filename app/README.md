@@ -17,5 +17,9 @@ IT-PACKAGE(executable jar package)
     ./bin/itpkg
 
 
+## Rabbitmq
+    rabbitmq-plugins enable rabbitmq_management
+    systemctl restart rabbitmq
+    open http://localhost:15672 # default username and password is guest
 
 

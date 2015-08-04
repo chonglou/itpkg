@@ -37,6 +37,9 @@ dependencies {
 //    compile 'org.olap4j:olap4j:1.2.0'
 
     compile 'com.rabbitmq:amqp-client:3.5.4'
+    compile 'com.sun.mail:javax.mail:1.5.4'
+
+
 
     compile "org.springframework:spring-web:${springVersion}"
     compile "org.springframework:spring-webmvc:${springVersion}"

@@ -1,12 +1,9 @@
 package com.itpkg.core.auth;
 
 import com.itpkg.core.services.I18nService;
-import org.jose4j.jwt.MalformedClaimException;
-import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,11 +45,11 @@ public class AuthenticationFilter extends GenericFilterBean {
 //                if (respAuth == null || !respAuth.isAuthenticated()) {
 //                    throw new InternalAuthenticationServiceException(i18n.T("errors.user.bad_token"));
 //                }
-                if(respAuth != null &&respAuth.isAuthenticated()){
+                if (respAuth != null && respAuth.isAuthenticated()) {
                     SecurityContextHolder.getContext().setAuthentication(respAuth);
                 }
 
-            } catch (AuthenticationException  e) {
+            } catch (AuthenticationException e) {
                 logger.error("auth failed", e);
                 SecurityContextHolder.clearContext();
                 //resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);

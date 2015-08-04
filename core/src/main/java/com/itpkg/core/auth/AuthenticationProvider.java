@@ -24,7 +24,7 @@ public class AuthenticationProvider implements org.springframework.security.auth
         try {
             logger.debug("get ticket: ", ticket);
             UserToken tk = jwtHelper.token2payload(ticket, UserToken.class);
-            return tokenService.retrieve(tk.getTid());            
+            return tokenService.retrieve(tk.getTid());
 
         } catch (InvalidJwtException | MalformedClaimException e) {
             logger.error("parse token error", e);

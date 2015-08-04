@@ -4,12 +4,12 @@ import com.itpkg.core.auth.JwtHelper;
 import com.itpkg.core.auth.UserToken;
 import com.itpkg.core.services.I18nService;
 import com.itpkg.core.services.SessionService;
+import com.itpkg.core.services.SettingService;
 import com.itpkg.core.utils.EmailHelper;
 import com.itpkg.core.utils.EncryptHelper;
 import com.itpkg.core.utils.JsonHelper;
 import com.itpkg.core.web.widgets.Message;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Locale;
@@ -29,9 +29,9 @@ public class BaseController {
         String body = i18n.T(
                 "mail." + token.getAction() + ".body",
                 email,
-                String.format("%s%s/%s?locale=%s", home, path, code, locale)
+                String.format("%s/%s/%s?locale=%s", settingService.get("site.url", String.class), path, code, locale)
         );
-        emailHelper.send(email, subject, body);
+        emailHelper.sendHtml(email, subject, body);
     }
 
     String token2string(String subject, UserToken token, int minutes) throws Exception {
@@ -60,6 +60,7 @@ public class BaseController {
     I18nService i18n;
     @Autowired
     EmailHelper emailHelper;
-    @Value("${http.home}")
-    String home;
+    @Autowired
+    SettingService settingService;
+
 }

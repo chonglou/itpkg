@@ -21,12 +21,11 @@
             <rabbit:binding queue="core.emailQueue" key="email"/>
         </rabbit:bindings>
     </rabbit:direct-exchange>
-    
+
     <bean class="org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory">
         <property name="connectionFactory" ref="core.rabbitConnectionFactory"/>
         <property name="concurrentConsumers" value="3"/>
         <property name="maxConcurrentConsumers" value="10"/>
     </bean>
-    
 
 </beans>

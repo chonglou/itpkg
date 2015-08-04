@@ -19,8 +19,9 @@ buildscript {
 
 repositories {
     mavenCentral()
-    maven { url "http://repo.spring.io/libs-snapshot" }
+    maven { url 'http://repo.spring.io/libs-snapshot' }
     maven { url 'http://repository.pentaho.org/artifactory/repo/' }
+    maven { url 'https://maven.java.net/content/repositories/releases/'}
 }
 
 configurations {
