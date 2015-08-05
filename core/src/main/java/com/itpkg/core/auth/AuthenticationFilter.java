@@ -39,9 +39,7 @@ public class AuthenticationFilter extends GenericFilterBean {
             try {
                 Authentication reqAuth = new PreAuthenticatedAuthenticationToken(ticket, null);
                 Authentication respAuth = authenticationManager.authenticate(reqAuth);
-//                if (respAuth == null || !respAuth.isAuthenticated()) {
-//                    throw new InternalAuthenticationServiceException(i18n.T("errors.user.bad_token"));
-//                }
+
                 if (respAuth != null && respAuth.isAuthenticated()) {
                     SecurityContextHolder.getContext().setAuthentication(respAuth);
                 }

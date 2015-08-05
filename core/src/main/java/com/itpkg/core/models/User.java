@@ -36,10 +36,11 @@ public class User extends IdEntity {
     private String email;
     @Column(nullable = false)
     private String username;
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private String providerId;
     @Column(nullable = false)
     private String providerUserId;
+    @Column(nullable = false)
     private String accessToken;
     private String password;
 
@@ -53,4 +54,5 @@ public class User extends IdEntity {
 
     @OneToMany(mappedBy = "user")
     private List<Role> roles;
+
 }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by flamen on 15-7-14.
@@ -75,6 +76,10 @@ public class UserService {
         return userDao.findOne(id);
     }
 
+    public User findByToken(String provider, String token) {
+        return userDao.findByProviderIdAndAccessToken(provider, token);
+    }
+
     public User findByEmail(String email) {
         return userDao.findByEmail(email);
     }
@@ -97,6 +102,7 @@ public class UserService {
             u.setPassword(encryptHelper.password(password));
             u.setProviderId("email");
             u.setProviderUserId(email);
+            u.setAccessToken(UUID.randomUUID().toString());
 
 
             Date now = new Date();

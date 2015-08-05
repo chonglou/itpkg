@@ -1,6 +1,6 @@
 package com.itpkg.core.controllers;
 
-import com.itpkg.core.auth.UserToken;
+import com.itpkg.core.auth.Credential;
 import com.itpkg.core.forms.EmailFm;
 import com.itpkg.core.forms.PasswordFm;
 import com.itpkg.core.forms.SignInFm;
@@ -96,9 +96,7 @@ public class UserController extends BaseController {
                 } else if (u.isLocked()) {
                     res.addError(i18n.T("errors.user.need_to_unlock"));
                 } else {
-                    UserToken ut = new UserToken();
-                    ut.setUid(u.getId());
-                    res.addData(jwtHelper.payload2token("/users/sign_in", new UserToken(u.getId(), "users.sign_in"), 60 * 24));
+                    res.addData(jwtHelper.payload2token("/users/sign_in", new Credential(u, "users.sign_in"), 60 * 24 * 7));
                 }
             }
         }
@@ -130,7 +128,7 @@ public class UserController extends BaseController {
             if (u == null) {
                 res.addError(i18n.T("form.user.sign_up.failed"));
             } else {
-                sendTokenMail(fm.getEmail(), "/users/confirm", new UserToken(u.getId(), "users.confirm"), locale);
+                sendTokenMail(fm.getEmail(), "/users/confirm", new Credential(u, "users.confirm"), locale);
                 res.addData(i18n.T("form.user.confirm.success"));
             }
         }
@@ -160,7 +158,7 @@ public class UserController extends BaseController {
             if (u == null) {
                 res.addError(i18n.T("form.user.email_not_exists"));
             } else {
-                UserToken token = new UserToken(u.getId(), "users.change_password");
+                Credential token = new Credential(u, "users.change_password");
                 String code = token2string("/users/change_password", token, 30);
                 String subject = i18n.T("mail." + token.getAction() + ".subject");
                 String body = i18n.T(
@@ -199,9 +197,10 @@ public class UserController extends BaseController {
 
         Response res = new Response(result);
         if (res.isOk()) {
-            UserToken ut = string2token(fm.getToken());
+            Credential ut = string2token(fm.getToken());
             if (ut != null && "users.change_password".equals(ut.getAction())) {
-                userService.setPassword(ut.getUid(), fm.getPassword());
+                User u = userService.findByToken(ut.getProvider(), ut.getToken());
+                userService.setPassword(u.getId(), fm.getPassword());
                 releaseToken(fm.getToken());
                 res.addData(i18n.T("form.user.change_password.success"));
             } else {
@@ -236,7 +235,7 @@ public class UserController extends BaseController {
                 if (u.isConfirmed()) {
                     res.addError(i18n.T("errors.user.bad_status"));
                 } else {
-                    sendTokenMail(fm.getEmail(), "/users/confirm", new UserToken(u.getId(), "users.confirm"), locale);
+                    sendTokenMail(fm.getEmail(), "/users/confirm", new Credential(u, "users.confirm"), locale);
                     res.addData(i18n.T("form.user.confirm.success"));
                 }
             }
@@ -249,11 +248,11 @@ public class UserController extends BaseController {
     public RedirectView getConfirmToken(@PathVariable("token") String token) throws Exception {
 
         Message msg;
-        UserToken ut = string2token(token);
+        Credential ut = string2token(token);
         if (ut != null && "users.confirm".equals(ut.getAction())) {
-            User u = userService.findById(ut.getUid());
+            User u = userService.findByToken(ut.getProvider(), ut.getToken());
             if (u != null && !u.isConfirmed()) {
-                userService.setConfirmed(ut.getUid());
+                userService.setConfirmed(u.getId());
                 releaseToken(token);
                 msg = Message.Success(i18n.T("logs.success"), null, new Link("users.sign_in", i18n.T("form.user.sign_in.submit")));
             } else {
@@ -290,7 +289,7 @@ public class UserController extends BaseController {
 
             } else {
                 if (u.isLocked()) {
-                    sendTokenMail(fm.getEmail(), "/users/unlock", new UserToken(u.getId(), "users.unlock"), locale);
+                    sendTokenMail(fm.getEmail(), "/users/unlock", new Credential(u, "users.unlock"), locale);
                     res.addData(i18n.T("form.user.unlock.success"));
 
                 } else {
@@ -306,11 +305,11 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/unlock/{token}", method = RequestMethod.GET)
     public RedirectView getUnlockToken(@PathVariable("token") String token) throws Exception {
         Message msg;
-        UserToken ut = string2token(token);
+        Credential ut = string2token(token);
         if (ut != null && "users.unlock".equals(ut.getAction())) {
-            User u = userService.findById(ut.getUid());
+            User u = userService.findByToken(ut.getProvider(), ut.getToken());
             if (u != null && u.isLocked()) {
-                userService.setLocked(ut.getUid(), null);
+                userService.setLocked(u.getId(), null);
                 releaseToken(token);
                 msg = Message.Success(i18n.T("logs.success"), null, new Link("users.sign_in", i18n.T("form.user.sign_in.submit")));
             } else {

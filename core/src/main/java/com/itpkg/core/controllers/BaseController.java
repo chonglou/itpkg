@@ -1,8 +1,8 @@
 package com.itpkg.core.controllers;
 
+import com.itpkg.core.auth.Credential;
 import com.itpkg.core.auth.JwtHelper;
 import com.itpkg.core.auth.TokenService;
-import com.itpkg.core.auth.UserToken;
 import com.itpkg.core.services.I18nService;
 import com.itpkg.core.services.SettingService;
 import com.itpkg.core.utils.EmailHelper;
@@ -23,7 +23,7 @@ public class BaseController {
         tokenService.remove(token);
     }
 
-    void sendTokenMail(String email, String path, UserToken token, Locale locale) throws Exception {
+    void sendTokenMail(String email, String path, Credential token, Locale locale) throws Exception {
         String code = token2string(path, token, 30);
         String subject = i18n.T("mail." + token.getAction() + ".subject");
         String body = i18n.T(
@@ -34,12 +34,12 @@ public class BaseController {
         emailHelper.sendHtml(email, subject, body);
     }
 
-    String token2string(String subject, UserToken token, int minutes) throws Exception {
+    String token2string(String subject, Credential token, int minutes) throws Exception {
         return encryptHelper.toBase64(jwtHelper.payload2token(subject, token, minutes));
     }
 
-    UserToken string2token(String token) throws Exception {
-        return jwtHelper.token2payload(encryptHelper.fromBase64(token), UserToken.class);
+    Credential string2token(String token) throws Exception {
+        return jwtHelper.token2payload(encryptHelper.fromBase64(token), Credential.class);
     }
 
     RedirectView doShow(Message msg) {
