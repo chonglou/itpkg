@@ -27,6 +27,7 @@ public class UserService {
         User u = userDao.findOne(user);
         if (u != null) {
             u.setPassword(encryptHelper.password(password));
+            u.setAccessToken(UUID.randomUUID().toString());
             u.setUpdated(new Date());
             userDao.save(u);
             addLog(u, i18n.T("logs.user.change_password"), Log.Type.INFO);
@@ -82,14 +83,6 @@ public class UserService {
 
     public User findByEmail(String email) {
         return userDao.findByEmail(email);
-    }
-
-
-    public void setAccessToken(long id, String accessToken) {
-        User u = userDao.findOne(id);
-        u.setAccessToken(accessToken);
-        u.setUpdated(new Date());
-        userDao.save(u);
     }
 
 

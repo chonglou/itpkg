@@ -31,13 +31,17 @@ public class AuthenticationProvider implements org.springframework.security.auth
 
         try {
             Credential ut = jwtHelper.token2payload(ticket, Credential.class);
-            User user = userService.findByToken(ut.getProvider(), ut.getToken());
-            if (user == null) {
-                throw new BadCredentialsException(i18n.T("errors.user.bad_token"));
+
+            if ("users.sign_in".equals(ut.getAction())) {
+                User user = userService.findByToken(ut.getProvider(), ut.getToken());
+                if (user != null) {
+                    List<GrantedAuthority> auths = new ArrayList<>();
+                    //todo
+                    return new UsernamePasswordAuthenticationToken(ut.getProvider(), ut.getToken(), auths);
+                }
+
             }
-            List<GrantedAuthority> auths = new ArrayList<>();
-            //todo
-            return new UsernamePasswordAuthenticationToken(ut.getProvider(), ut.getToken(), auths);
+            throw new BadCredentialsException(i18n.T("errors.user.bad_token"));
 
 
         } catch (InvalidJwtException | MalformedClaimException e) {
