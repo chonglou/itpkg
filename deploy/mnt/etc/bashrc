@@ -1,5 +1,0 @@
-alias ls='ls --color'
-alias cp='cp -i'
-alias mv='mv -i'
-alias rm='rm -i'
-alias vi=vim

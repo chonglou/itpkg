@@ -1,9 +1,0 @@
-*.swp
-*.un~
-*.iml
-*.log
-out
-build
-tmp
-.gradle
-.idea
